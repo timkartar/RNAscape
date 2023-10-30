@@ -32,10 +32,11 @@ def process_resid(nt1):
 
     res1 = re.sub("\D",",",spl1[1]).split(",")[-1]
     
-    rest1 = untillastnumber(spl1[1])
+    rest1_n = untillastnumber(spl1[1])
+    rest1 = spl1[1]
     
-    if (rest1 not in list('AUGC') + ['DA','DC','DG','DT']):
-        het1 = 'H_' + rest1
+    if (rest1_n not in list('AUGC') + ['DA','DC','DG','DT']):
+        het1 = 'H_' + rest1_n
     else:
         het1=' '
 
@@ -200,7 +201,7 @@ def get_helix_coords(dssrout, model):
             local_perp = local_perp/np.linalg.norm(local_perp)
             p1 = helix_axis[i] + local_perp*d
             p2 = helix_axis[i] - local_perp*d
-            points += [p1, p2]
+            points += [p2, p1]
 
 
         last_point1 = points[-2] + helix_axis[-1] - helix_axis[-2]

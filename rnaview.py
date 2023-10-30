@@ -43,7 +43,27 @@ def get_linear_coords(nts, helix_ids, helix_coords):
     l = []
     prev = False
     covered = []
+    
+    starters = []
+    for item in dssrout['nts']:
+        spl1, nt_id, rest1 =  process_resid(item['nt_id'])  
 
+        if nt_id not in ids:
+            starters.append((nt_id, rest1))
+        else:
+            break
+
+    enders = []
+    for item in dssrout['nts'][::-1]:
+        spl1, nt_id, rest1 =  process_resid(item['nt_id'])
+        if nt_id not in ids:      
+            enders.append((nt_id, rest1))
+        else:
+            idx = ids.index(nt_id)
+            break
+    print(starters, enders)
+    dic[(0,0)] = starters
+    dic[(idx, idx)] = enders
     for item in dssrout['nts']:
         spl1, nt_id, rest1 =  process_resid(item['nt_id'])
 
@@ -60,8 +80,10 @@ def get_linear_coords(nts, helix_ids, helix_coords):
         else:
             prev = True
             l.append((nt_id, rest1)) 
+    '''
     l=[]
     c = 0
+
     for item in dssrout['nts']:
         
         spl1, nt_id, rest1 =  process_resid(item['nt_id'])
@@ -72,6 +94,8 @@ def get_linear_coords(nts, helix_ids, helix_coords):
             l.append((nt_id, rest1))
     
     dic[(0, len('nts')-1)] = l ## fix dangling edges/loop TODO
+    '''
+    print(dic)
     return generate_coords(helix_coords, helix_ids, dic)        
 
 if __name__ == "__main__":
@@ -95,7 +119,7 @@ if __name__ == "__main__":
 
     for i in range(len(markers)):
         plt.scatter(points[i,0], points[i,1], marker=markers[i], edgecolors='none', color='black',
-                s=100
+                s=200
                 )
     plt.show()
     
