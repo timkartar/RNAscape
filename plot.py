@@ -28,7 +28,7 @@ def getBackBoneEdges(ids, chids):
             pass
     return edges
 
-def Plot(points, markers, ids, chids, dssrids, dssrout):
+def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     G = nx.Graph()
     cold = {'A': '#90cc84',
     'C': '#AEC7E8',
@@ -69,5 +69,6 @@ def Plot(points, markers, ids, chids, dssrids, dssrout):
 
     style = [style_dict[item] for item in G.edges]
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style)
-    plt.savefig('nx.png')
+            #v = v/np.linalg.norm(v)
+    plt.savefig('{}nx.png'.format(prefix))
 

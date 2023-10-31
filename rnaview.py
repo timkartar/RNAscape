@@ -37,22 +37,19 @@ def generate_coords(helix_coords, helix_ids, dic):
             t_ids.append(item[0]) 
             t_markers.append("${}$".format(item[1]))
             v = (end_pos - start_pos)
-            #v = v/np.linalg.norm(v)
             pos = start_pos + v*(val.index(item)+1)/(l+1)
             t_poses.append(pos)
             t_chids.append(item[2])
             t_dssrids.append(item[3])
-        
         positions+=(t_poses)
         markers+=(t_markers)
         ids+=(t_ids)
         chids+=(t_chids)
         dssrids+=(t_dssrids)
     
-
     return positions, markers, ids, chids, dssrids
 
-def get_linear_coords(nts, helix_ids, helix_coords):
+def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
     dic = {} #keys are like (start, end) values are like [(nt_id, rest1),...]
 
     start = None
@@ -60,12 +57,12 @@ def get_linear_coords(nts, helix_ids, helix_coords):
     l = []
     prev = False
     covered = []
-    
     starters = []
+    
     for item in dssrout['nts']:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])  
 
-        if nt_id not in ids:
+        if nt_id not in ids and item['nt_id'] not in dssrids:
             starters.append((nt_id, rest1, chid, item['nt_id']))
         else:
             break
@@ -73,21 +70,24 @@ def get_linear_coords(nts, helix_ids, helix_coords):
     enders = []
     for item in dssrout['nts'][::-1]:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
-        if nt_id not in ids:      
+        if nt_id not in ids and item['nt_id'] not in dssrids:      
             enders.append((nt_id, rest1, chid, item['nt_id']))
         else:
-            idx = ids.index(nt_id)
+            idx = dssrids.index(item['nt_id'])
             break
+    
     dic[(0,0)] = starters
     dic[(idx, idx)] = enders
+    
+    curr_chain = None
     for item in dssrout['nts']:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
 
-        if nt_id in ids:
+        if nt_id in ids and item['nt_id'] in dssrids:
             if prev == False:
-                start = ids.index(nt_id)
+                start = dssrids.index(item['nt_id'])
             else:
-                end = ids.index(nt_id)
+                end = dssrids.index(item['nt_id'])
                 prev = False
                 dic[(start, end)] = l
                 covered += l
@@ -96,7 +96,6 @@ def get_linear_coords(nts, helix_ids, helix_coords):
         else:
             prev = True
             l.append((nt_id, rest1, chid, item['nt_id'])) 
-    
     return generate_coords(helix_coords, helix_ids, dic)        
 
 if __name__ == "__main__":
@@ -104,16 +103,18 @@ if __name__ == "__main__":
     parser = MMCIFParser()
     model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
     
-    '''
-    for item in model.get_residues():
-        print(item.get_id())
-    '''
+    
+    #for item in model.get_residues():
+    #    print(item.get_id(), item.get_parent().id, item.resname)
+    #print(len(list(model['A'].get_residues())))
+    #print(len(list(model['B'].get_residues())))
     with open("./{}.json".format(prefix),"r") as f:
         dssrout = json.load(f)
 
     points, ids, markers, chids, dssrids = get_helix_coords(dssrout, model)
     
-    rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout, ids, points)
+    rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout,
+            ids, points, dssrids)
     
     points = np.array(points.tolist() + rest_positions)
     
@@ -160,8 +161,9 @@ if __name__ == "__main__":
     chids = np.array(chids)[argsorted].tolist()
     dssrids = np.array(dssrids)[argsorted].tolist()
     ids = np.array(ids)[argsorted].tolist()
+    
 
-    Plot(points, markers, ids, chids, dssrids, dssrout)
+    Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
     
 
     
