@@ -6,11 +6,22 @@ import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from get_helix_coords import get_helix_coords, process_resid
+from plot import Plot
+
+import re 
+
+def sorted_nicely( l ): 
+    """ Sort the given iterable in the way that humans expect.""" 
+    convert = lambda text: int(text) if text.isdigit() else text 
+    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
+    return sorted(l, key = alphanum_key)
 
 def generate_coords(helix_coords, helix_ids, dic):
     positions = []
     markers = []
     ids = []
+    chids = []
+    dssrids = []
 
     for key, val in dic.items():
         start_pos = helix_coords[key[0]]
@@ -18,6 +29,8 @@ def generate_coords(helix_coords, helix_ids, dic):
         t_poses = []
         t_markers = []
         t_ids = []
+        t_chids = []
+        t_dssrids = []
 
         l = len(val)
         for item in val:
@@ -27,13 +40,17 @@ def generate_coords(helix_coords, helix_ids, dic):
             #v = v/np.linalg.norm(v)
             pos = start_pos + v*(val.index(item)+1)/(l+1)
             t_poses.append(pos)
+            t_chids.append(item[2])
+            t_dssrids.append(item[3])
         
         positions+=(t_poses)
         markers+=(t_markers)
         ids+=(t_ids)
+        chids+=(t_chids)
+        dssrids+=(t_dssrids)
     
 
-    return positions, markers, ids
+    return positions, markers, ids, chids, dssrids
 
 def get_linear_coords(nts, helix_ids, helix_coords):
     dic = {} #keys are like (start, end) values are like [(nt_id, rest1),...]
@@ -46,26 +63,25 @@ def get_linear_coords(nts, helix_ids, helix_coords):
     
     starters = []
     for item in dssrout['nts']:
-        spl1, nt_id, rest1 =  process_resid(item['nt_id'])  
+        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])  
 
         if nt_id not in ids:
-            starters.append((nt_id, rest1))
+            starters.append((nt_id, rest1, chid, item['nt_id']))
         else:
             break
 
     enders = []
     for item in dssrout['nts'][::-1]:
-        spl1, nt_id, rest1 =  process_resid(item['nt_id'])
+        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
         if nt_id not in ids:      
-            enders.append((nt_id, rest1))
+            enders.append((nt_id, rest1, chid, item['nt_id']))
         else:
             idx = ids.index(nt_id)
             break
-    print(starters, enders)
     dic[(0,0)] = starters
     dic[(idx, idx)] = enders
     for item in dssrout['nts']:
-        spl1, nt_id, rest1 =  process_resid(item['nt_id'])
+        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
 
         if nt_id in ids:
             if prev == False:
@@ -79,23 +95,8 @@ def get_linear_coords(nts, helix_ids, helix_coords):
 
         else:
             prev = True
-            l.append((nt_id, rest1)) 
-    '''
-    l=[]
-    c = 0
-
-    for item in dssrout['nts']:
-        
-        spl1, nt_id, rest1 =  process_resid(item['nt_id'])
-        if (nt_id, rest1) in covered or nt_id in ids:
-            c += 1
-            continue
-        else:
-            l.append((nt_id, rest1))
+            l.append((nt_id, rest1, chid, item['nt_id'])) 
     
-    dic[(0, len('nts')-1)] = l ## fix dangling edges/loop TODO
-    '''
-    print(dic)
     return generate_coords(helix_coords, helix_ids, dic)        
 
 if __name__ == "__main__":
@@ -110,18 +111,57 @@ if __name__ == "__main__":
     with open("./{}.json".format(prefix),"r") as f:
         dssrout = json.load(f)
 
-    points, ids, markers = get_helix_coords(dssrout, model)
-
-    rest_positions, rest_markers, rest_ids = get_linear_coords(dssrout, ids, points)
+    points, ids, markers, chids, dssrids = get_helix_coords(dssrout, model)
+    
+    rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout, ids, points)
     
     points = np.array(points.tolist() + rest_positions)
+    
     markers = markers + rest_markers
-
+    
+    ids = ids + rest_ids
+    
+    chids = chids + rest_chids
+    dssrids = dssrids + rest_dssrids
+    
+    '''
     for i in range(len(markers)):
         plt.scatter(points[i,0], points[i,1], marker=markers[i], edgecolors='none', color='black',
                 s=200
                 )
-    plt.show()
+    #plt.show()
+    '''
+    unique_chains = np.unique(chids)
+    d = {}
+    for item in unique_chains:
+        d[item] = []
+
+    for i in range(len(ids)):
+        d[chids[i]].append(ids[i][1])
+    
+    sorted_nice = []
+    for k in d.keys():
+        d[k] = np.sort(d[k])
+        d[k] = ["{}{}".format(i,k) for i in d[k]]
+        sorted_nice += d[k]
+
+    resnumbers = [] 
+    for i in range(len(ids)):
+        resnumbers.append("{}{}".format(ids[i][1], chids[i]))
+    
+    
+    argsorted = []
+    
+    for item in sorted_nice:
+        argsorted.append(resnumbers.index(item))
+    
+    points = points[argsorted,:]
+    markers = np.array(markers)[argsorted].tolist()
+    chids = np.array(chids)[argsorted].tolist()
+    dssrids = np.array(dssrids)[argsorted].tolist()
+    ids = np.array(ids)[argsorted].tolist()
+
+    Plot(points, markers, ids, chids, dssrids, dssrout)
     
 
     

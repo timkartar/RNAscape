@@ -40,7 +40,7 @@ def process_resid(nt1):
     else:
         het1=' '
 
-    return spl1, (het1.strip("/"), int(res1), icode), rest1.strip("/")
+    return spl1, (het1.strip("/"), int(res1), icode), rest1_n.strip("/"), spl1[0]
 
 
 def get_helix_coords(dssrout, model):
@@ -50,14 +50,16 @@ def get_helix_coords(dssrout, model):
             'coords' : [],
             'markers' : [],
             'pairs' : [],
-            'ids':[]
+            'ids':[],
+            'chids':[],
+            'dssrids':[]
         }
         for pair in helix['pairs']:
             nt1 = pair['nt1']
             nt2 = pair['nt2']
             
-            spl1, id1, rest1 = process_resid(nt1)
-            spl2, id2, rest2 = process_resid(nt2)
+            spl1, id1, rest1, chid1 = process_resid(nt1)
+            spl2, id2, rest2, chid2 = process_resid(nt2)
             ntc1 = get_cetroid(model[spl1[0]][id1])
             ntc2 = get_cetroid(model[spl2[0]][id2])
             #    sys.exit()
@@ -71,19 +73,26 @@ def get_helix_coords(dssrout, model):
             helix_data['pairs'].append((rest1, rest2))
             helix_data['ids'].append(id1)
             helix_data['ids'].append(id2)
+            helix_data['chids'].append(chid1)
+            helix_data['chids'].append(chid2)
+            helix_data['dssrids'].append(nt1)
+            helix_data['dssrids'].append(nt2)
              
             #coords.append((ntc1+ntc2)/2)
         helices.append(helix_data)
 
     coords = []
     markers = []
-
     ids = []
+    chids = []
+    dssrids = []
 
     for item in helices:
         coords += item['coords']
         markers += item['markers']
         ids += item['ids']
+        chids += item['chids']
+        dssrids += item['dssrids']
 
     pca = PCA(n_components=2)        
     pcs = pca.fit_transform(np.array(coords))
@@ -216,7 +225,7 @@ def get_helix_coords(dssrout, model):
         plt.scatter(points[i,0], points[i,1], marker=markers[i], edgecolors='none', color='black', s=100)
     plt.show()
     '''
-    return points, ids, markers
+    return points, ids, markers, chids, dssrids
 
 if __name__ == "__main__":
     prefix = sys.argv[1]
