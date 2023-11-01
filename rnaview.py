@@ -98,6 +98,39 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
             l.append((nt_id, rest1, chid, item['nt_id'])) 
     return generate_coords(helix_coords, helix_ids, dic)        
 
+def orderData(points, markers, ids, chids, dssrids):
+    unique_chains = np.unique(chids)
+    d = {}
+    for item in unique_chains:
+        d[item] = []
+
+    for i in range(len(ids)):
+        d[chids[i]].append(ids[i][1])
+
+    sorted_nice = []
+    for k in d.keys():
+        d[k] = np.sort(d[k])
+        d[k] = ["{}{}".format(i,k) for i in d[k]]
+        sorted_nice += d[k]
+
+    resnumbers = []
+    for i in range(len(ids)):
+        resnumbers.append("{}{}".format(ids[i][1], chids[i]))
+
+
+    argsorted = []
+
+    for item in sorted_nice:
+        argsorted.append(resnumbers.index(item))
+
+    points = points[argsorted,:]
+    markers = np.array(markers)[argsorted].tolist()
+    chids = np.array(chids)[argsorted].tolist()
+    dssrids = np.array(dssrids)[argsorted].tolist()
+    ids = np.array(ids)[argsorted].tolist()
+    
+    return points, markers, ids, chids, dssrids
+
 if __name__ == "__main__":
     prefix = sys.argv[1]
     parser = MMCIFParser()
@@ -132,36 +165,8 @@ if __name__ == "__main__":
                 )
     #plt.show()
     '''
-    unique_chains = np.unique(chids)
-    d = {}
-    for item in unique_chains:
-        d[item] = []
 
-    for i in range(len(ids)):
-        d[chids[i]].append(ids[i][1])
-    
-    sorted_nice = []
-    for k in d.keys():
-        d[k] = np.sort(d[k])
-        d[k] = ["{}{}".format(i,k) for i in d[k]]
-        sorted_nice += d[k]
-
-    resnumbers = [] 
-    for i in range(len(ids)):
-        resnumbers.append("{}{}".format(ids[i][1], chids[i]))
-    
-    
-    argsorted = []
-    
-    for item in sorted_nice:
-        argsorted.append(resnumbers.index(item))
-    
-    points = points[argsorted,:]
-    markers = np.array(markers)[argsorted].tolist()
-    chids = np.array(chids)[argsorted].tolist()
-    dssrids = np.array(dssrids)[argsorted].tolist()
-    ids = np.array(ids)[argsorted].tolist()
-    
+    points, markers, ids, chids, dssrids = orderData(points, markers, ids, chids, dssrids)
 
     Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
     

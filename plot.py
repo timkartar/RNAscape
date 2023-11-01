@@ -50,7 +50,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
         except:
             colors.append('#ffffff')
     
-        fig, ax = plt.subplots(1, figsize=(16, 12))
+    fig, ax = plt.subplots(1, figsize=(16, 12))
     nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False,
             node_color=colors, edgecolors='#000000')
     nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels)
