@@ -200,6 +200,9 @@ def getTails(dssrids, chids, points):
 
     return starters, enders, points
 
+def updateLoopPoints(points, dssrids, dssrout):
+    #TODO update loop coordinates
+    return points
 
 if __name__ == "__main__":
     prefix = sys.argv[1]
@@ -234,6 +237,8 @@ if __name__ == "__main__":
 
     points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
     
+    points = updateLoopPoints(points, dssrids, dssrout)
+
     starters, enders, points = getTails(dssrids, chids, points)
     Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
     
