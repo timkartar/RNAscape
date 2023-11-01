@@ -5,6 +5,7 @@ plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
 
 style_dict = {}
+arrow_dict = {}
 
 def getBasePairingEdges(dssrout, dssrids):
     edges = []
@@ -14,7 +15,7 @@ def getBasePairingEdges(dssrout, dssrids):
         i2 = dssrids.index(item['nt2'])
         edges.append((i1, i2))
         style_dict[(i1, i2)] = 'dashed'
-
+        arrow_dict[(i1, i2)] = 0.001
     return edges
 
 def getBackBoneEdges(ids, chids):
@@ -24,12 +25,13 @@ def getBackBoneEdges(ids, chids):
             if chids[i] == chids[i+1]:
                 edges.append((i,i+1))
                 style_dict[(i,i+1)] = 'solid'
+                arrow_dict[(i,i+1)] = 10
         except:
             pass
     return edges
 
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
-    G = nx.Graph()
+    G = nx.DiGraph()
     cold = {'A': '#90cc84',
     'C': '#AEC7E8',
     'G': '#DBDB8D',
@@ -68,7 +70,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
 
 
     style = [style_dict[item] for item in G.edges]
-    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style)
-            #v = v/np.linalg.norm(v)
+    arrow = [arrow_dict[item] for item in G.edges]
+    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style, arrowsize=arrow)
     plt.savefig('{}nx.png'.format(prefix))
 

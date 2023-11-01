@@ -62,7 +62,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
     for item in dssrout['nts']:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])  
 
-        if nt_id not in ids and item['nt_id'] not in dssrids:
+        if nt_id not in helix_ids and item['nt_id'] not in dssrids:
             starters.append((nt_id, rest1, chid, item['nt_id']))
         else:
             break
@@ -70,7 +70,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
     enders = []
     for item in dssrout['nts'][::-1]:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
-        if nt_id not in ids and item['nt_id'] not in dssrids:      
+        if nt_id not in helix_ids and item['nt_id'] not in dssrids:      
             enders.append((nt_id, rest1, chid, item['nt_id']))
         else:
             idx = dssrids.index(item['nt_id'])
@@ -83,7 +83,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
     for item in dssrout['nts']:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
 
-        if nt_id in ids and item['nt_id'] in dssrids:
+        if nt_id in helix_ids and item['nt_id'] in dssrids:
             if prev == False:
                 start = dssrids.index(item['nt_id'])
             else:
@@ -129,7 +129,68 @@ def orderData(points, markers, ids, chids, dssrids):
     dssrids = np.array(dssrids)[argsorted].tolist()
     ids = np.array(ids)[argsorted].tolist()
     
-    return points, markers, ids, chids, dssrids
+    return points, markers, ids, chids, dssrids, d
+
+def getTails(dssrids, chids, points):
+    starters = {}
+    enders = {}
+    for item in dic.keys():
+        starters[item] = []
+        enders[item] = []
+    
+    starting = True
+    for i in range(len(dssrids)-1):
+        chid = chids[i]
+        if dssrids[i] not in helix_dssrids:
+            if(starting):
+                starters[chid].append(i)
+        else:
+            starting = False
+            if chids[i+1] != chid:
+                #starters[chid].append(i+1)
+                starting=True
+    
+    #print(dssrids)
+    ending = True
+    for i in range(len(dssrids)-1):
+        rev_dssrids = dssrids[::-1]
+        rev_chids = chids[::-1]
+        chid = rev_chids[i]
+        
+        if rev_dssrids[i] not in helix_dssrids:
+            if(ending):
+                enders[chid].append(len(dssrids) -1 - i)
+        else:
+            ending = False
+            if rev_chids[i+1] != chid:
+                #enders[chid].append(i+1)
+                ending=True
+    
+    for k in starters.keys():
+        if len(starters[k]) == 0:
+            continue
+        ip1 = starters[k][0] - 1
+        ip2 = starters[k][0] - 2
+
+        v = points[ip1] - points[ip2]
+        for i in range(len(starters[k])):
+            points[starters[k][i]] = points[ip1] + v*(i+1)
+        
+
+    for k in enders.keys():
+        if len(enders[k]) == 0:
+            continue
+        enders[k] = enders[k][::-1]
+        ip1 = enders[k][0] - 1
+        ip2 = enders[k][0] - 2
+
+        v = points[ip1] - points[ip2]
+        for i in range(len(enders[k])):
+            points[enders[k][i]] = points[ip1] + v*(i+1)
+        
+
+    return starters, enders, points
+
 
 if __name__ == "__main__":
     prefix = sys.argv[1]
@@ -144,19 +205,19 @@ if __name__ == "__main__":
     with open("./{}.json".format(prefix),"r") as f:
         dssrout = json.load(f)
 
-    points, ids, markers, chids, dssrids = get_helix_coords(dssrout, model)
+    helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids = get_helix_coords(dssrout, model)
     
     rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout,
-            ids, points, dssrids)
+            helix_ids, helix_points, helix_dssrids)
     
-    points = np.array(points.tolist() + rest_positions)
+    points = np.array(helix_points.tolist() + rest_positions)
     
-    markers = markers + rest_markers
+    markers = helix_markers + rest_markers
     
-    ids = ids + rest_ids
+    ids = helix_ids + rest_ids
     
-    chids = chids + rest_chids
-    dssrids = dssrids + rest_dssrids
+    chids = helix_chids + rest_chids
+    dssrids = helix_dssrids + rest_dssrids
     
     '''
     for i in range(len(markers)):
@@ -166,8 +227,9 @@ if __name__ == "__main__":
     #plt.show()
     '''
 
-    points, markers, ids, chids, dssrids = orderData(points, markers, ids, chids, dssrids)
-
+    points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
+    
+    starters, enders, points = getTails(dssrids, chids, points)
     Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
     
 
