@@ -33,11 +33,14 @@ def generate_coords(helix_coords, helix_ids, dic):
         t_dssrids = []
 
         l = len(val)
-        for item in val:
+        
+        for i in range(len(val)):
+            item = val[i]
             t_ids.append(item[0]) 
             t_markers.append("${}$".format(item[1]))
             v = (end_pos - start_pos)
-            pos = start_pos + v*(val.index(item)+1)/(l+1)
+            pos = start_pos + v*(i+1)/(l+1)
+
             t_poses.append(pos)
             t_chids.append(item[2])
             t_dssrids.append(item[3])
@@ -96,6 +99,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
         else:
             prev = True
             l.append((nt_id, rest1, chid, item['nt_id'])) 
+    
     return generate_coords(helix_coords, helix_ids, dic)        
 
 def orderData(points, markers, ids, chids, dssrids):
@@ -116,12 +120,17 @@ def orderData(points, markers, ids, chids, dssrids):
     resnumbers = []
     for i in range(len(ids)):
         resnumbers.append("{}{}".format(ids[i][1], chids[i]))
-
+            
 
     argsorted = []
-
+    
+    done_indices = []
     for item in sorted_nice:
-        argsorted.append(resnumbers.index(item))
+        idx = resnumbers.index(item)
+        while idx in done_indices:
+            idx+=1
+        done_indices.append(idx)
+        argsorted.append(idx)
 
     points = points[argsorted,:]
     markers = np.array(markers)[argsorted].tolist()
@@ -198,10 +207,6 @@ if __name__ == "__main__":
     model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
     
     
-    #for item in model.get_residues():
-    #    print(item.get_id(), item.get_parent().id, item.resname)
-    #print(len(list(model['A'].get_residues())))
-    #print(len(list(model['B'].get_residues())))
     with open("./{}.json".format(prefix),"r") as f:
         dssrout = json.load(f)
 
