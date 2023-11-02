@@ -264,16 +264,14 @@ if __name__ == "__main__":
     model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
     
     
-    with open("./{}.json".format(prefix),"r") as f:
+    with open("./json/{}.json".format(prefix),"r") as f:
         dssrout = json.load(f)
 
     helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids = get_helix_coords(dssrout, model)
     
     '''
     for i in range(len(helix_markers)):
-        plt.scatter(helix_points[i,0], helix_points[i,1], marker=helix_markers[i], edgecolors='none', color='black',
-                s=200
-                )
+        plt.scatter(helix_points[i,0], helix_points[i,1], marker=helix_markers[i], edgecolors='none', color='black', s=200)
     plt.show()
     '''
     '''

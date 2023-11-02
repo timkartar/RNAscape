@@ -247,7 +247,7 @@ if __name__ == "__main__":
     parser = MMCIFParser()
     model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
 
-    with open("./{}.json".format(prefix),"r") as f:
+    with open("./json/{}.json".format(prefix),"r") as f:
         dssrout = json.load(f)
 
     get_helix_coords(dssrout, model)
