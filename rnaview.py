@@ -97,7 +97,7 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
         v = helix_coords[start] - helix_coords[end]
         if (helix_dssrids[start], helix_dssrids[end]) in pairs or (helix_dssrids[end], helix_dssrids[start]) in pairs:
             t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords)
-        elif np.linalg.norm(v) < 2: #threshold for bulging
+        elif np.linalg.norm(v) < 3: #threshold for bulging
             t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=True) 
         #else:
         #    t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords) 
