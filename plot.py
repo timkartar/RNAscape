@@ -82,5 +82,5 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style, arrowsize=arrow, width=1*magnification)
     plt.tight_layout()
-    plt.savefig('{}nx.png'.format(prefix))
+    plt.savefig('./fig/{}nx.png'.format(prefix))
 
