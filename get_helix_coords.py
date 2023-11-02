@@ -129,18 +129,30 @@ def get_helix_coords(dssrout, model):
             first = (pc2[0] + pc2[1])/2
             last = (pc2[-1] + pc2[-2])/2
             n = len(pc2)//2
-            pc1=[first]
-            #print(n)
-            for i in range(n-1):
-                p = first + (i+1)*(last - first)/(n-1)
-                pc1.append(p)
+            def comp(first, last, n):
+                pc1=[first]
+                #print(n)
+                for i in range(n-1):
+                    p = first + (i+1)*(last - first)/(n-1)
+                    pc1.append(p)
+                return pc1
+            pc1 = comp(first, last, n)
+            mean = pc2.mean(axis=0)
+            ax_mean = np.array(pc1).mean(axis=0)
+            if(np.linalg.norm(mean - ax_mean)) > 10: ##approximation is crude, need to divide into two
+                m = n - n%2
+                mid1 = (pc2[m] + pc2[m+1])/2  
+                mid2 = (pc2[m+2] + pc2[m+3])/2 
+                pc1 = comp(first, mid1, n//2) + comp(mid2, last, n-n//2)
+            
+            mean = pc2.mean(axis=0)
+            ax_mean = np.array(pc1).mean(axis=0)
             #print(len(pc1))
         return pc1
 
     helix_axes = []
     for item in helices:
         helix_axes += [transformHelix(item)]
-
     def processHelixAxes(helix_axes):
         axes = []
 
@@ -163,7 +175,7 @@ def get_helix_coords(dssrout, model):
 
                 if np.linalg.norm(first - prelast) < 20: #(check if within certain distance)
                     #print("here!!!", deviation)
-                    if deviation < 3.14/5: # check if axis deviation less than pi/6 (30 degrees)
+                    if deviation < np.pi/5: # check if axis deviation less than pi/6 (30 degrees)
                         toalign[-1].append(axis)
                     else:
                         toalign.append([axis])
@@ -187,8 +199,10 @@ def get_helix_coords(dssrout, model):
                 toappend.append(p)
             aligned += [toappend]
         return aligned
-
+    
+    #TODO uncomment to merge helices
     helix_axes= processHelixAxes(helix_axes)
+    
     #helix_axes = np.array(helix_axis)
     #print(helix_axis.shape)
     '''
@@ -201,7 +215,7 @@ def get_helix_coords(dssrout, model):
     '''
     points = []
 
-    d = 3.5
+    width = 3
     for helix_axis in helix_axes:   
         for i in range(len(helix_axis)-1):
             local_axis = (helix_axis[i+1] - helix_axis[i])
@@ -209,8 +223,8 @@ def get_helix_coords(dssrout, model):
             zaxis = np.array([0,0,1])
             local_perp = np.cross(local_axis_3ded, zaxis)[:2]
             local_perp = local_perp/np.linalg.norm(local_perp)
-            p1 = helix_axis[i] + local_perp*d
-            p2 = helix_axis[i] - local_perp*d
+            p1 = helix_axis[i] + local_perp*width
+            p2 = helix_axis[i] - local_perp*width
             points += [p2, p1]
 
 

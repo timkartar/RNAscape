@@ -8,29 +8,32 @@ style_dict = {}
 arrow_dict = {}
 
 def getBasePairingEdges(dssrout, dssrids):
+    magnification = max(1, len(dssrids)/80)
     edges = []
     
     for item in dssrout['pairs']:
         i1 = dssrids.index(item['nt1'])
         i2 = dssrids.index(item['nt2'])
         edges.append((i1, i2))
-        style_dict[(i1, i2)] = 'dashed'
-        arrow_dict[(i1, i2)] = 0.001
+        style_dict[(i1, i2)] = ':'#'dashed'
+        arrow_dict[(i1, i2)] = 0.001*magnification
     return edges
 
 def getBackBoneEdges(ids, chids):
+    magnification = max(1, len(ids)/80)
     edges = []
     for i in range(len(ids)):
         try:
             if chids[i] == chids[i+1]:
                 edges.append((i,i+1))
                 style_dict[(i,i+1)] = 'solid'
-                arrow_dict[(i,i+1)] = 10
+                arrow_dict[(i,i+1)] = 10*magnification
         except:
             pass
     return edges
 
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
+    magnification = max(1, len(points)/80)
     G = nx.DiGraph()
     cold = {'A': '#90cc84',
     'C': '#AEC7E8',
@@ -52,10 +55,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
         except:
             colors.append('#ffffff')
     
-    fig, ax = plt.subplots(1, figsize=(16, 12))
-    nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False,
+
+    fig, ax = plt.subplots(1, figsize=(12*magnification, 9*magnification))
+    nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False, node_size=160*magnification,
             node_color=colors, edgecolors='#000000')
-    nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels)
+    nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels, font_size=10)
     
     #### draw edges #######
     edges = getBackBoneEdges(ids, chids)
@@ -71,11 +75,12 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
 
     style = [style_dict[item] for item in G.edges]
     arrow = [arrow_dict[item] for item in G.edges]
-    '''
+    
     for item in G.edges:
         if(points[item[0]][0] == points[item[1]][0]):
             print(item, dssrids[item[0]], dssrids[item[1]])
-    '''
-    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style, arrowsize=arrow)
+    
+    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style, arrowsize=arrow, width=1*magnification)
+    plt.tight_layout()
     plt.savefig('{}nx.png'.format(prefix))
 

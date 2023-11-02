@@ -17,23 +17,25 @@ def sorted_nicely( l ):
     alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
     return sorted(l, key = alphanum_key)
 
-def circularLayout(n, m, d, theta):
+def circularLayout(n, m, d, theta, factor=False):
     poses = []
     rot = np.array([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]])
+    if factor:
+        d = d*n
     for i in range(n):
         d = np.dot(rot, d)
         poses.append(m+d)
 
     return poses
 
-def updateLoopPoints(start_pos, end_pos, val, helix_coords):
+def updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False):
     m = (start_pos + end_pos)/2
     poses = []
     v = (end_pos - start_pos)
     v = v.tolist() + [0]
     z = [0,0,1]
     p = np.cross(v,z)[:2]
-    p = p/np.linalg.norm(p)
+    p = p/(np.linalg.norm(p)+0.00000001)
     
     ## generate points circularly using m,v,p
     n = len(val)
@@ -41,8 +43,8 @@ def updateLoopPoints(start_pos, end_pos, val, helix_coords):
     
     
     theta = np.pi/(n+1)
-    poses = circularLayout(n,m,d,theta)
-    neg_poses = circularLayout(n,m,d,-1*theta)
+    poses = circularLayout(n,m,d,theta, factor)
+    neg_poses = circularLayout(n,m,d,-1*theta, factor)
     helix_coords_m = np.mean(helix_coords, axis=0)
     poses_m = np.mean(poses, axis=0)
     neg_poses_m = np.mean(neg_poses, axis=0)
@@ -70,6 +72,8 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
     for key, val in dic.items():
         start = key[0]
         end = key[1]
+        if(start == None or end ==None):
+            continue
         start_pos = helix_coords[key[0]]
         end_pos = helix_coords[key[1]]
 
@@ -90,8 +94,13 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
             t_poses.append(pos)
             t_chids.append(item[2])
             t_dssrids.append(item[3])
+        v = helix_coords[start] - helix_coords[end]
         if (helix_dssrids[start], helix_dssrids[end]) in pairs or (helix_dssrids[end], helix_dssrids[start]) in pairs:
             t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords)
+        elif np.linalg.norm(v) < 2: #threshold for bulging
+            t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=True) 
+        #else:
+        #    t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords) 
         positions+=(t_poses)
         markers+=(t_markers)
         ids+=(t_ids)
@@ -207,10 +216,8 @@ def getTails(dssrids, chids, points):
         else:
             starting = False
             if chids[i+1] != chid:
-                #starters[chid].append(i+1)
                 starting=True
     
-    #print(dssrids)
     ending = True
     for i in range(len(dssrids)-1):
         rev_dssrids = dssrids[::-1]
@@ -223,19 +230,18 @@ def getTails(dssrids, chids, points):
         else:
             ending = False
             if rev_chids[i+1] != chid:
-                #enders[chid].append(i+1)
                 ending=True
     
     for k in starters.keys():
         if len(starters[k]) == 0:
             continue
-        ip1 = starters[k][0] - 1
-        ip2 = starters[k][0] - 2
-
+        ip1 = starters[k][-1] + 1
+        ip2 = starters[k][-1] + 2
         v = points[ip1] - points[ip2]
+        n = len(starters[k])
         for i in range(len(starters[k])):
-            points[starters[k][i]] = points[ip1] + v*(i+1)
-        
+            points[starters[k][n-i-1]] = points[ip1] + v*(i+1)
+         
 
     for k in enders.keys():
         if len(enders[k]) == 0:
@@ -247,8 +253,8 @@ def getTails(dssrids, chids, points):
         v = points[ip1] - points[ip2]
         for i in range(len(enders[k])):
             points[enders[k][i]] = points[ip1] + v*(i+1)
-        
-
+    
+    
     return starters, enders, points
 
 
@@ -263,6 +269,18 @@ if __name__ == "__main__":
 
     helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids = get_helix_coords(dssrout, model)
     
+    '''
+    for i in range(len(helix_markers)):
+        plt.scatter(helix_points[i,0], helix_points[i,1], marker=helix_markers[i], edgecolors='none', color='black',
+                s=200
+                )
+    plt.show()
+    '''
+    '''
+    print(helix_dssrids,
+            helix_points,
+            helix_chids)
+    '''
     rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout,
             helix_ids, helix_points, helix_dssrids)
     
@@ -275,13 +293,6 @@ if __name__ == "__main__":
     chids = helix_chids + rest_chids
     dssrids = helix_dssrids + rest_dssrids
     
-    '''
-    for i in range(len(markers)):
-        plt.scatter(points[i,0], points[i,1], marker=markers[i], edgecolors='none', color='black',
-                s=200
-                )
-    #plt.show()
-    '''
 
     points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
     
