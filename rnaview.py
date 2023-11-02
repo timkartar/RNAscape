@@ -7,6 +7,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from get_helix_coords import get_helix_coords, process_resid
 from plot import Plot
+from math import cos, sin
 
 import re 
 
@@ -16,7 +17,50 @@ def sorted_nicely( l ):
     alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
     return sorted(l, key = alphanum_key)
 
-def generate_coords(helix_coords, helix_ids, dic):
+def circularLayout(n, m, d, theta):
+    poses = []
+    rot = np.array([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]])
+    for i in range(n):
+        d = np.dot(rot, d)
+        poses.append(m+d)
+
+    return poses
+
+def updateLoopPoints(start_pos, end_pos, val, helix_coords):
+    m = (start_pos + end_pos)/2
+    poses = []
+    v = (end_pos - start_pos)
+    v = v.tolist() + [0]
+    z = [0,0,1]
+    p = np.cross(v,z)[:2]
+    p = p/np.linalg.norm(p)
+    
+    ## generate points circularly using m,v,p
+    n = len(val)
+    d = start_pos - m
+    
+    
+    theta = np.pi/(n+1)
+    poses = circularLayout(n,m,d,theta)
+    neg_poses = circularLayout(n,m,d,-1*theta)
+    helix_coords_m = np.mean(helix_coords, axis=0)
+    poses_m = np.mean(poses, axis=0)
+    neg_poses_m = np.mean(neg_poses, axis=0)
+    
+    dis = np.linalg.norm(poses_m - helix_coords_m)
+    n_dis = np.linalg.norm(neg_poses_m - helix_coords_m)
+    
+    if dis > n_dis:
+        return poses
+    else:
+        return neg_poses
+
+def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
+    pairs = []
+    for item in dssrout['pairs']:
+        pairs.append((item['nt1'],item['nt2']))
+
+    
     positions = []
     markers = []
     ids = []
@@ -24,8 +68,11 @@ def generate_coords(helix_coords, helix_ids, dic):
     dssrids = []
 
     for key, val in dic.items():
+        start = key[0]
+        end = key[1]
         start_pos = helix_coords[key[0]]
         end_pos = helix_coords[key[1]]
+
         t_poses = []
         t_markers = []
         t_ids = []
@@ -40,10 +87,11 @@ def generate_coords(helix_coords, helix_ids, dic):
             t_markers.append("${}$".format(item[1]))
             v = (end_pos - start_pos)
             pos = start_pos + v*(i+1)/(l+1)
-
             t_poses.append(pos)
             t_chids.append(item[2])
             t_dssrids.append(item[3])
+        if (helix_dssrids[start], helix_dssrids[end]) in pairs or (helix_dssrids[end], helix_dssrids[start]) in pairs:
+            t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords)
         positions+=(t_poses)
         markers+=(t_markers)
         ids+=(t_ids)
@@ -83,6 +131,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
     dic[(idx, idx)] = enders
     
     curr_chain = None
+    
     for item in dssrout['nts']:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
 
@@ -93,6 +142,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
                 end = dssrids.index(item['nt_id'])
                 prev = False
                 dic[(start, end)] = l
+                start = dssrids.index(item['nt_id'])
                 covered += l
                 l = []
 
@@ -100,7 +150,8 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
             prev = True
             l.append((nt_id, rest1, chid, item['nt_id'])) 
     
-    return generate_coords(helix_coords, helix_ids, dic)        
+    #print(dic)
+    return generate_coords(helix_coords, helix_ids, dic, dssrids)        
 
 def orderData(points, markers, ids, chids, dssrids):
     unique_chains = np.unique(chids)
@@ -200,9 +251,6 @@ def getTails(dssrids, chids, points):
 
     return starters, enders, points
 
-def updateLoopPoints(points, dssrids, dssrout):
-    #TODO update loop coordinates
-    return points
 
 if __name__ == "__main__":
     prefix = sys.argv[1]
@@ -237,7 +285,7 @@ if __name__ == "__main__":
 
     points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
     
-    points = updateLoopPoints(points, dssrids, dssrout)
+    #points = updateLoopPoints(points, dssrids, dssrout)
 
     starters, enders, points = getTails(dssrids, chids, points)
     Plot(points, markers, ids, chids, dssrids, dssrout, prefix)

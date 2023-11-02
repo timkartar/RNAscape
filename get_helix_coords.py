@@ -32,6 +32,7 @@ def process_resid(nt1):
 
     res1 = re.sub("\D",",",spl1[1]).split(",")[-1]
     
+
     rest1_n = untillastnumber(spl1[1])
     rest1 = spl1[1]
     

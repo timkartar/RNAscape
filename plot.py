@@ -71,9 +71,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
 
     style = [style_dict[item] for item in G.edges]
     arrow = [arrow_dict[item] for item in G.edges]
+    '''
     for item in G.edges:
         if(points[item[0]][0] == points[item[1]][0]):
             print(item, dssrids[item[0]], dssrids[item[1]])
+    '''
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style, arrowsize=arrow)
     plt.savefig('{}nx.png'.format(prefix))
 
