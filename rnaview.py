@@ -11,6 +11,7 @@ from math import cos, sin
 
 import re 
 
+from sklearn.neighbors import KDTree
 def sorted_nicely( l ): 
     """ Sort the given iterable in the way that humans expect.""" 
     convert = lambda text: int(text) if text.isdigit() else text 
@@ -27,16 +28,23 @@ def circularLayout(n, m, d, theta, factor=False):
         poses.append(m+d)
 
     return poses
+def perp(v):
+    v = v.tolist() + [0]
+    z = [0,0,1]
+    p = np.cross(v,z)[:2]
+    p = p/(np.linalg.norm(p)+0.00000001)
+    return p
 
 def updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False):
     m = (start_pos + end_pos)/2
     poses = []
     v = (end_pos - start_pos)
-    v = v.tolist() + [0]
-    z = [0,0,1]
-    p = np.cross(v,z)[:2]
-    p = p/(np.linalg.norm(p)+0.00000001)
     
+    #v = v.tolist() + [0]
+    #z = [0,0,1]
+    #p = np.cross(v,z)[:2]
+    #p = p/(np.linalg.norm(p)+0.00000001)
+    p = perp(v)
     ## generate points circularly using m,v,p
     n = len(val)
     d = start_pos - m
@@ -52,7 +60,13 @@ def updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False):
     dis = np.linalg.norm(poses_m - helix_coords_m)
     n_dis = np.linalg.norm(neg_poses_m - helix_coords_m)
     
-    if dis > n_dis:
+    if len(poses) == 0:
+        return poses
+    
+    l = tree.query_radius(poses, r=5, count_only=True).sum()
+    n_l = tree.query_radius(neg_poses, r=5, count_only=True).sum()
+    #if dis > n_dis:
+    if l < n_l:
         return poses
     else:
         return neg_poses
@@ -68,7 +82,6 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
     ids = []
     chids = []
     dssrids = []
-
     for key, val in dic.items():
         start = key[0]
         end = key[1]
@@ -91,6 +104,19 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
             t_markers.append("${}$".format(item[1]))
             v = (end_pos - start_pos)
             pos = start_pos + v*(i+1)/(l+1)
+            if pos in helix_coords:
+                p = perp(v)
+                tpos = pos + p*2 + v/(2*(l+1)) ## perpeindicular and out shift for overlap
+                neg_tpos = pos - p*2 + v/(2*(l+1)) ## perpeindicular and out shift for overlap
+                l = tree.query_radius([tpos], r=5, count_only=True)
+                n_l = tree.query_radius([neg_tpos], r=5, count_only=True)
+                #if dis > n_dis:
+                if l < n_l:
+                    pos = tpos
+                else:
+                    pos = neg_tpos
+
+           
             t_poses.append(pos)
             t_chids.append(item[2])
             t_dssrids.append(item[3])
@@ -98,6 +124,8 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
         if (helix_dssrids[start], helix_dssrids[end]) in pairs or (helix_dssrids[end], helix_dssrids[start]) in pairs:
             t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords)
         elif np.linalg.norm(v) < 3: #threshold for bulging
+            t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=True) 
+        elif np.linalg.norm(v)/(len(val) +  0.0001) < 1.5: #threshold for bulging
             t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=True) 
         #else:
         #    t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords) 
@@ -170,18 +198,17 @@ def orderData(points, markers, ids, chids, dssrids):
 
     for i in range(len(ids)):
         d[chids[i]].append(ids[i][1])
-
+    
     sorted_nice = []
     for k in d.keys():
         d[k] = np.sort(d[k])
         d[k] = ["{}{}".format(i,k) for i in d[k]]
         sorted_nice += d[k]
-
+    
     resnumbers = []
     for i in range(len(ids)):
         resnumbers.append("{}{}".format(ids[i][1], chids[i]))
             
-
     argsorted = []
     
     done_indices = []
@@ -191,13 +218,11 @@ def orderData(points, markers, ids, chids, dssrids):
             idx+=1
         done_indices.append(idx)
         argsorted.append(idx)
-
     points = points[argsorted,:]
     markers = np.array(markers)[argsorted].tolist()
     chids = np.array(chids)[argsorted].tolist()
     dssrids = np.array(dssrids)[argsorted].tolist()
     ids = np.array(ids)[argsorted].tolist()
-    
     return points, markers, ids, chids, dssrids, d
 
 def getTails(dssrids, chids, points):
@@ -236,7 +261,7 @@ def getTails(dssrids, chids, points):
         if len(starters[k]) == 0:
             continue
         ip1 = starters[k][-1] + 1
-        ip2 = starters[k][-1] + 2
+        ip2 = starters[k][-1] + 2 
         v = points[ip1] - points[ip2]
         n = len(starters[k])
         for i in range(len(starters[k])):
@@ -254,7 +279,6 @@ def getTails(dssrids, chids, points):
         for i in range(len(enders[k])):
             points[enders[k][i]] = points[ip1] + v*(i+1)
     
-    
     return starters, enders, points
 
 
@@ -267,38 +291,74 @@ if __name__ == "__main__":
     with open("./json/{}.json".format(prefix),"r") as f:
         dssrout = json.load(f)
 
-    helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids = get_helix_coords(dssrout, model)
-    
-    '''
-    for i in range(len(helix_markers)):
-        plt.scatter(helix_points[i,0], helix_points[i,1], marker=helix_markers[i], edgecolors='none', color='black', s=200)
-    plt.show()
-    '''
-    '''
-    print(helix_dssrids,
-            helix_points,
-            helix_chids)
-    '''
-    rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout,
-            helix_ids, helix_points, helix_dssrids)
-    
-    points = np.array(helix_points.tolist() + rest_positions)
-    
-    markers = helix_markers + rest_markers
-    
-    ids = helix_ids + rest_ids
-    
-    chids = helix_chids + rest_chids
-    dssrids = helix_dssrids + rest_dssrids
-    
+    helices = get_helix_coords(dssrout, model)
+    if helices == None:
+        print("no helices in this structure")
+        #import matplotlib.pyplot as plt
+        #plt.text(0,0,"No helices in this structure")
+        #plt.tight_layout()
 
-    points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
-    
-    #points = updateLoopPoints(points, dssrids, dssrout)
+        from PIL import Image, ImageFont
 
-    starters, enders, points = getTails(dssrids, chids, points)
-    Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
-    
+        text = "No helices in this structure"
+        font_size = 36
+        font_filepath = "/home/raktim/anaconda3/lib/python3.9/site-packages/matplotlib/mpl-data/fonts/ttf/Helvetica.ttf"
+        color = (67, 33, 116)
+
+        font = ImageFont.truetype(font_filepath, size=font_size)
+        mask_image = font.getmask(text, "L")
+        img = Image.new("RGBA", mask_image.size)
+        img.im.paste(color, (0, 0) + mask_image.size, mask_image)  # need to use the inner `img.im.paste` due to `getmask` returning a core
+        img.save('./fig/{}nx.png'.format(prefix))
+        #plt.savefig('./fig/{}nx.png'.format(prefix))
+
+    else:
+        helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids = get_helix_coords(dssrout, model)
+        tree=KDTree(helix_points)
+        '''
+        l = [helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids]
+        for item in l:
+            print(len(item))
+
+        for i in range(len(helix_markers)):
+            plt.scatter(helix_points[i,0], helix_points[i,1], marker=helix_markers[i], edgecolors='none', color='black', s=200)
+        plt.show()
+        '''
+        '''
+        print(helix_dssrids,
+                helix_points,
+                helix_chids)
+        '''
+        
+        rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout,
+                helix_ids, helix_points, helix_dssrids)
+        
+        points = np.array(helix_points.tolist() + rest_positions)
+        
+        markers = helix_markers + rest_markers
+        
+        ids = helix_ids + rest_ids
+        
+        chids = helix_chids + rest_chids
+        dssrids = helix_dssrids + rest_dssrids
+        
+        points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
+        #points = updateLoopPoints(points, dssrids, dssrout)
+        
+        idx = (np.argsort(chids, kind='mergesort'))
+        chids = np.array(chids)[idx].tolist()
+
+        ids = np.array(ids)[idx].tolist()
+
+        markers = np.array(markers)[idx].tolist()
+
+        dssrids = np.array(dssrids)[idx].tolist()
+        points= points[idx,:]
+        
+
+        starters, enders, points = getTails(dssrids, chids, points)
+        Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
+        
 
     
 

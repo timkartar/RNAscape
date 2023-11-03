@@ -46,6 +46,8 @@ def process_resid(nt1):
 
 def get_helix_coords(dssrout, model):
     helices = []
+    if 'helices' not in dssrout:
+        return None
     for helix in dssrout['helices']:
         helix_data = {
             'coords' : [],
