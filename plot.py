@@ -119,7 +119,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     arrow = [arrow_dict[item] for item in G.edges]
     
     
-    for item in G.edges:
+    d = G.edges.copy()
+    for item in d:
         if(points[item[0]][0] == points[item[1]][0]):
             #print(item, dssrids[item[0]], dssrids[item[1]])
             #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
@@ -147,7 +148,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
     plt.close()
-
+    
+    '''
     for item in bp_map.keys():
         plt.scatter(0,0,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
                 edgecolor='k')
@@ -155,4 +157,4 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
                 linewidth=1)
     plt.legend()
     plt.savefig('{}/legend.png'.format(FIG_PATH))
-
+    '''
