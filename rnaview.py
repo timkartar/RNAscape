@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from get_helix_coords import get_helix_coords, process_resid
 from plot import Plot
 from math import cos, sin
-
+from config import DSSR_PATH, CIF_PATH, FIG_PATH
 import re 
 
 from sklearn.neighbors import KDTree
@@ -21,11 +21,13 @@ def sorted_nicely( l ):
 def circularLayout(n, m, d, theta, factor=False):
     poses = []
     rot = np.array([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]])
-    if factor:
-        d = d*n
     for i in range(n):
         d = np.dot(rot, d)
-        poses.append(m+d)
+
+        if factor:
+            poses.append(m+d*n)
+        else:
+            poses.append(m+d)
 
     return poses
 def perp(v):
@@ -285,10 +287,11 @@ def getTails(dssrids, chids, points):
 if __name__ == "__main__":
     prefix = sys.argv[1]
     parser = MMCIFParser()
-    model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
+    #model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
+    model = parser.get_structure(prefix,"{}/{}-assembly1.cif".format(CIF_PATH, prefix))[0]
     
     
-    with open("./json/{}.json".format(prefix),"r") as f:
+    with open("{}/{}-dssr.json".format(DSSR_PATH, prefix),"r") as f:
         dssrout = json.load(f)
 
     helices = get_helix_coords(dssrout, model)
@@ -309,7 +312,9 @@ if __name__ == "__main__":
         mask_image = font.getmask(text, "L")
         img = Image.new("RGBA", mask_image.size)
         img.im.paste(color, (0, 0) + mask_image.size, mask_image)  # need to use the inner `img.im.paste` due to `getmask` returning a core
-        img.save('./fig/{}nx.png'.format(prefix))
+        #img.save('./fig/{}nx.png'.format(prefix))
+        img.save('{}/{}.png'.format(FIG_PATH, prefix))
+
         #plt.savefig('./fig/{}nx.png'.format(prefix))
 
     else:

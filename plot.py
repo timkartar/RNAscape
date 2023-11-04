@@ -2,9 +2,9 @@ import networkx as nx
 from matplotlib import pyplot as plt
 import numpy as np
 import sre_yield
+from config import FIG_PATH
 plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
-
 style_dict = {}
 arrow_dict = {}
 def getBasePairingEdges(dssrout, dssrids, points):
@@ -12,9 +12,9 @@ def getBasePairingEdges(dssrout, dssrids, points):
     #bp types: DSSR [ct][MWm][+-][MWm]
     #dssr_bp_types = list(sre_yield.AllStrings('[ct][MWm][+-][MWm]'))
     dssr_bp_types = list(sre_yield.AllStrings('[MWm][MWm]'))
-    
+    dssr_bp_types.remove("WW")
     #bp_marker_types = '[o^dshP][o^dshP]'
-    bp_marker_types = '[o^pdshPH*]'
+    bp_marker_types = '[o^pdshP*]'
     marker_bp_types = list(sre_yield.AllStrings(bp_marker_types))
     
     bp_map = {}
@@ -23,7 +23,7 @@ def getBasePairingEdges(dssrout, dssrids, points):
     
     #print(bp_map)
     
-    magnification = max(1, len(dssrids)/80)
+    magnification = max(1, min(len(dssrids)/40, 10))
     edges = []
     bp_markers = []
 
@@ -50,14 +50,14 @@ def getBasePairingEdges(dssrout, dssrids, points):
             orient = 'k'
         else:
             orient = 'w'
-        bp_markers.append([p, bp_map[typ], orient])
+        bp_markers.append([p, bp_map[typ], orient, item['DSSR'][0]+typ])
 
         
-    return edges, bp_markers
+    return edges, bp_markers, bp_map
 
 def getBackBoneEdges(ids, chids, dssrids):
 
-    magnification = max(1, len(ids)/80)
+    magnification = max(1, min(len(ids)/40, 10))
     edges = []
     for i in range(len(ids)):
         try:
@@ -71,7 +71,7 @@ def getBackBoneEdges(ids, chids, dssrids):
 
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     
-    magnification = max(1, len(points)/80)
+    magnification = max(1, min(len(points)/40,10))
     G = nx.DiGraph()
     cold = {'A': '#FF9896',#'#90cc84',
     'C': '#DBDB8D',#'#AEC7E8',
@@ -99,11 +99,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
             colors.append('#ffffff')
     
 
-    fig, ax = plt.subplots(1, figsize=(12*magnification, 9*magnification))
+    fig, ax = plt.subplots(1, figsize=(8*magnification, 6*magnification))
     
     
     #### draw edges #######
-    pairings, bp_markers = getBasePairingEdges(dssrout, dssrids, points)
+    pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
     
     for item in pairings:
         G.add_edge(item[0],item[1])
@@ -118,20 +118,41 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     style = [style_dict[item] for item in G.edges]
     arrow = [arrow_dict[item] for item in G.edges]
     
+    
     for item in G.edges:
         if(points[item[0]][0] == points[item[1]][0]):
-            print(item, dssrids[item[0]], dssrids[item[1]])
+            #print(item, dssrids[item[0]], dssrids[item[1]])
             #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
-    
+            G.remove_edge(item[0],item[1])
     nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False, node_size=160*magnification,
             edgelist=[],
             node_color=colors, edgecolors='#000000')
-    nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels, font_size=10)
-    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style, arrowsize=arrow, width=1*magnification)
+    nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels,
+            font_size=10+(magnification))
+    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
+            arrowsize=arrow, width=1*magnification)
     
     for item in bp_markers:
         plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,
-                linewidth=1*magnification, edgecolor='k' )
+                linewidth=1*magnification, edgecolor='k', label=item[3] )
+
+    '''
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys(), title="non-WC bps")
+    '''
+    #plt.legend()
     plt.tight_layout()
-    plt.savefig('./fig/{}nx.png'.format(prefix))
+    #plt.savefig('./fig/{}nx.png'.format(prefix))
+    plt.gca().set_aspect('equal')
+    plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
+    plt.close()
+
+    for item in bp_map.keys():
+        plt.scatter(0,0,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
+                edgecolor='k')
+        plt.scatter(0,0,marker=bp_map[item], color='w', label = 't'+item, edgecolor='k',
+                linewidth=1)
+    plt.legend()
+    plt.savefig('{}/legend.png'.format(FIG_PATH))
 

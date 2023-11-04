@@ -22,26 +22,40 @@ def untillastnumber(l):
 
 def process_resid(nt1):
     spl1 = nt1.split(".")
-    if "^" in spl1[1]:
-        tmp = spl1[1].split("^")[0]
-        icode = spl1[1].split("^")[1]
-        spl1[1] = tmp
+    if len(spl1) < 6:
+        if "^" in spl1[1]:
+            tmp = spl1[1].split("^")[0]
+            icode = spl1[1].split("^")[1]
+            spl1[1] = tmp
+        else:
+            icode = ' ' 
+
+
+        res1 = re.sub("\D",",",spl1[1]).split(",")[-1]
+        
+
+        rest1_n = untillastnumber(spl1[1])
+        rest1 = spl1[1]
+        
+        if (rest1_n not in list('AUGC') + ['DA','DC','DG','DT']):
+            het1 = 'H_' + rest1_n
+        else:
+            het1=' '
+        chid = spl1[0]
     else:
-        icode = ' ' 
-
-
-    res1 = re.sub("\D",",",spl1[1]).split(",")[-1]
-    
-
-    rest1_n = untillastnumber(spl1[1])
-    rest1 = spl1[1]
-    
-    if (rest1_n not in list('AUGC') + ['DA','DC','DG','DT']):
-        het1 = 'H_' + rest1_n
-    else:
-        het1=' '
-
-    return spl1, (het1.strip("/"), int(res1), icode), rest1_n.strip("/"), spl1[0]
+        if spl1[5] == '':
+            icode = ' '
+        else:
+            icode = spl1[5]
+        rest1_n = spl1[3]
+        res1 = spl1[4]
+        if (rest1_n not in list('AUGC') + ['DA','DC','DG','DT']):
+            het1 = 'H_' + rest1_n
+        else:
+            het1=' '
+        chid = spl1[2]
+        
+    return spl1, (het1.strip("/"), int(res1), icode), rest1_n.strip("/"), chid
 
 
 def get_helix_coords(dssrout, model):
@@ -63,8 +77,8 @@ def get_helix_coords(dssrout, model):
             
             spl1, id1, rest1, chid1 = process_resid(nt1)
             spl2, id2, rest2, chid2 = process_resid(nt2)
-            ntc1 = get_cetroid(model[spl1[0]][id1])
-            ntc2 = get_cetroid(model[spl2[0]][id2])
+            ntc1 = get_cetroid(model[chid1][id1])
+            ntc2 = get_cetroid(model[chid2][id2])
             #    sys.exit()
             
             #coords.append((ntc1+ntc2)/2)
