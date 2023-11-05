@@ -10,8 +10,8 @@ from plot import Plot
 from math import cos, sin
 from config import DSSR_PATH, CIF_PATH, FIG_PATH
 import re 
-
 from sklearn.neighbors import KDTree
+
 def sorted_nicely( l ): 
     """ Sort the given iterable in the way that humans expect.""" 
     convert = lambda text: int(text) if text.isdigit() else text 
@@ -30,6 +30,7 @@ def circularLayout(n, m, d, theta, factor=False):
             poses.append(m+d)
 
     return poses
+
 def perp(v):
     v = v.tolist() + [0]
     z = [0,0,1]
@@ -42,10 +43,6 @@ def updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False):
     poses = []
     v = (end_pos - start_pos)
     
-    #v = v.tolist() + [0]
-    #z = [0,0,1]
-    #p = np.cross(v,z)[:2]
-    #p = p/(np.linalg.norm(p)+0.00000001)
     p = perp(v)
     ## generate points circularly using m,v,p
     n = len(val)
@@ -67,7 +64,7 @@ def updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False):
     
     l = tree.query_radius(poses, r=5, count_only=True).sum()
     n_l = tree.query_radius(neg_poses, r=5, count_only=True).sum()
-    #if dis > n_dis:
+    
     if l < n_l:
         return poses
     else:
@@ -189,7 +186,6 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
             prev = True
             l.append((nt_id, rest1, chid, item['nt_id'])) 
     
-    #print(dic)
     return generate_coords(helix_coords, helix_ids, dic, dssrids)        
 
 def orderData(points, markers, ids, chids, dssrids):
@@ -297,10 +293,6 @@ if __name__ == "__main__":
     helices = get_helix_coords(dssrout, model)
     if helices == None:
         print("no helices in this structure")
-        #import matplotlib.pyplot as plt
-        #plt.text(0,0,"No helices in this structure")
-        #plt.tight_layout()
-
         from PIL import Image, ImageFont
 
         text = "No helices in this structure"
@@ -312,10 +304,8 @@ if __name__ == "__main__":
         mask_image = font.getmask(text, "L")
         img = Image.new("RGBA", mask_image.size)
         img.im.paste(color, (0, 0) + mask_image.size, mask_image)  # need to use the inner `img.im.paste` due to `getmask` returning a core
-        #img.save('./fig/{}nx.png'.format(prefix))
         img.save('{}/{}.png'.format(FIG_PATH, prefix))
 
-        #plt.savefig('./fig/{}nx.png'.format(prefix))
 
     else:
         helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids = get_helix_coords(dssrout, model)
@@ -364,7 +354,3 @@ if __name__ == "__main__":
         starters, enders, points = getTails(dssrids, chids, points)
         Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
         
-
-    
-
-

@@ -10,10 +10,8 @@ arrow_dict = {}
 def getBasePairingEdges(dssrout, dssrids, points):
     
     #bp types: DSSR [ct][MWm][+-][MWm]
-    #dssr_bp_types = list(sre_yield.AllStrings('[ct][MWm][+-][MWm]'))
     dssr_bp_types = list(sre_yield.AllStrings('[MWm][MWm]'))
     dssr_bp_types.remove("WW")
-    #bp_marker_types = '[o^dshP][o^dshP]'
     bp_marker_types = '[o^pdshP*]'
     marker_bp_types = list(sre_yield.AllStrings(bp_marker_types))
     
@@ -121,7 +119,6 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     
     for item in G.edges:
         if(points[item[0]][0] == points[item[1]][0]):
-            #print(item, dssrids[item[0]], dssrids[item[1]])
             #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
             G.remove_edge(item[0],item[1])
     nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False, node_size=160*magnification,
@@ -141,13 +138,12 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), title="non-WC bps")
     '''
-    #plt.legend()
     plt.tight_layout()
-    #plt.savefig('./fig/{}nx.png'.format(prefix))
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
     plt.close()
 
+    '''
     for item in bp_map.keys():
         plt.scatter(0,0,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
                 edgecolor='k')
@@ -155,4 +151,4 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
                 linewidth=1)
     plt.legend()
     plt.savefig('{}/legend.png'.format(FIG_PATH))
-
+    '''
