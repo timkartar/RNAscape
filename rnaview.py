@@ -25,7 +25,7 @@ def circularLayout(n, m, d, theta, factor=False):
         d = np.dot(rot, d)
 
         if factor:
-            poses.append(m+d*n)
+            poses.append(m+d*np.sqrt(n))
         else:
             poses.append(m+d)
 
@@ -149,7 +149,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
     for item in dssrout['nts']:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])  
 
-        if nt_id not in helix_ids and item['nt_id'] not in dssrids:
+        if nt_id not in helix_ids or item['nt_id'] not in dssrids:
             starters.append((nt_id, rest1, chid, item['nt_id']))
         else:
             break
@@ -157,7 +157,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
     enders = []
     for item in dssrout['nts'][::-1]:
         spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
-        if nt_id not in helix_ids and item['nt_id'] not in dssrids:      
+        if nt_id not in helix_ids or item['nt_id'] not in dssrids:      
             enders.append((nt_id, rest1, chid, item['nt_id']))
         else:
             idx = dssrids.index(item['nt_id'])
@@ -254,17 +254,20 @@ def getTails(dssrids, chids, points):
             ending = False
             if rev_chids[i+1] != chid:
                 ending=True
+    #print(starters, enders)
     
     for k in starters.keys():
         if len(starters[k]) == 0:
             continue
         ip1 = starters[k][-1] + 1
-        ip2 = starters[k][-1] + 2 
+        ip2 = starters[k][-1] + 2
+
         v = points[ip1] - points[ip2]
         n = len(starters[k])
         for i in range(len(starters[k])):
+            #print(dssrids[ip1], dssrids[ip2], dssrids[starters[k][n-i-1]])
             points[starters[k][n-i-1]] = points[ip1] + v*(i+1)
-         
+            #print(points[ip1],points[ip2], points[starters[k][n-i-1]])
 
     for k in enders.keys():
         if len(enders[k]) == 0:
@@ -282,6 +285,8 @@ def getTails(dssrids, chids, points):
 
 if __name__ == "__main__":
     prefix = sys.argv[1]
+    #if os.path.exists("{}/{}.png".format(FIG_PATH, prefix)):
+    #    sys.exit()
     parser = MMCIFParser()
     #model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
     model = parser.get_structure(prefix,"{}/{}-assembly1.cif".format(CIF_PATH, prefix))[0]

@@ -129,8 +129,6 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
 
     
 
-    style = [style_dict[item] for item in G.edges]
-    arrow = [arrow_dict[item] for item in G.edges]
     
     
     d = deepcopy(G.edges)
@@ -138,6 +136,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         if(points[item[0]][0] == points[item[1]][0]):
             #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
             G.remove_edge(item[0],item[1])
+    style = [style_dict[item] for item in G.edges]
+    arrow = [arrow_dict[item] for item in G.edges]
     nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False, node_size=160*magnification,
             edgelist=[],
             node_color=colors, edgecolors='#000000')
