@@ -81,7 +81,6 @@ def get_helix_coords(dssrout, model):
             ntc2 = get_cetroid(model[chid2][id2])
             #    sys.exit()
             
-            #coords.append((ntc1+ntc2)/2)
 
             helix_data['coords'].append(ntc1)
             helix_data['coords'].append(ntc2)
@@ -95,7 +94,6 @@ def get_helix_coords(dssrout, model):
             helix_data['dssrids'].append(nt1)
             helix_data['dssrids'].append(nt2)
              
-            #coords.append((ntc1+ntc2)/2)
         helices.append(helix_data)
 
     coords = []
@@ -123,31 +121,12 @@ def get_helix_coords(dssrout, model):
     '''
     def transformHelix(helix, style="heur"):
         pc2 = pca.transform(helix['coords'])
-        if style == "center":
-            pc1 = []
-            for i in range(len(pc2)):
-                if i%2==1:
-                    pass
-                else:
-                    center = (pc2[i,:] + pc2[i+1,:])/2
-                    pc1.append(center)
-            #   l = pcs[i,:] - center
-            #   print(l, np.linalg.norm(l))
-        elif style == "polyfit":
-            pc1 = []
-            p = np.polyfit(pc2[:,0],pc2[:,1],deg=1)
-            for item in pc2:
-                pc1.append([item[0], item[0]*p[0] + p[1]])
-        elif style == "pc":
-            p = PCA(n_components=2)
-            pc1 = p.fit_transform(pc2).tolist()
-        elif style=="heur":
+        if style=="heur":
             first = (pc2[0] + pc2[1])/2
             last = (pc2[-1] + pc2[-2])/2
             n = len(pc2)//2
             def comp(first, last, n):
                 pc1=[first]
-                #print(n)
                 for i in range(n-1):
                     p = first + (i+1)*(last - first)/(n-1)
                     pc1.append(p)
@@ -163,7 +142,6 @@ def get_helix_coords(dssrout, model):
             
             mean = pc2.mean(axis=0)
             ax_mean = np.array(pc1).mean(axis=0)
-            #print(len(pc1))
         return pc1
 
     helix_axes = []
@@ -184,13 +162,11 @@ def get_helix_coords(dssrout, model):
                 predir = prev[-1] - prev[-2]
                 predir = predir/np.linalg.norm(predir)
                 first = axis[0]
-                #sys.exit()
                 currdir = axis[1] - axis[0]
                 currdir = currdir/np.linalg.norm(currdir)
                 deviation = np.arccos(np.dot(predir,currdir))
 
                 if np.linalg.norm(first - prelast) < 20: #(check if within certain distance)
-                    #print("here!!!", deviation)
                     if deviation < np.pi/5: # check if axis deviation less than pi/6 (30 degrees)
                         toalign[-1].append(axis)
                     else:
@@ -220,7 +196,6 @@ def get_helix_coords(dssrout, model):
     helix_axes= processHelixAxes(helix_axes)
     
     #helix_axes = np.array(helix_axis)
-    #print(helix_axis.shape)
     '''
     for helix_axis in helix_axes:
         for i in range(len(helix_axis)):
@@ -246,7 +221,6 @@ def get_helix_coords(dssrout, model):
 
         last_point1 = points[-2] + helix_axis[-1] - helix_axis[-2]
         last_point2 = points[-1] + helix_axis[-1] - helix_axis[-2]
-        #print(last_point1, last_point2)
 
         points += [last_point1, last_point2]
     points = np.array(points)
