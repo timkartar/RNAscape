@@ -3,10 +3,14 @@ from matplotlib import pyplot as plt
 import numpy as np
 import sre_yield
 from config import FIG_PATH
+from copy import deepcopy
+from math import cos, sin
+
 plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
 style_dict = {}
 arrow_dict = {}
+
 def getBasePairingEdges(dssrout, dssrids, points):
     
     #bp types: DSSR [ct][MWm][+-][MWm]
@@ -67,8 +71,20 @@ def getBackBoneEdges(ids, chids, dssrids):
             pass
     return edges
 
-def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
-    
+def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False):
+    '''rotation is False if no rotation is wished, otherwise, one
+    can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
+
+    if not rotation:
+        pass
+    else:
+        centroid = np.mean(points, axis=0)
+        V = points - centroid
+        theta = rotation #in radian 
+        rot = np.array([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]])
+        V_ = np.dot(rot, V.T).T
+        points = centroid + V_
+
     magnification = max(1, min(len(points)/40,10))
     G = nx.DiGraph()
     cold = {'A': '#FF9896',#'#90cc84',
@@ -117,7 +133,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     arrow = [arrow_dict[item] for item in G.edges]
     
     
-    d = G.edges.copy()
+    d = deepcopy(G.edges)
     for item in d:
         if(points[item[0]][0] == points[item[1]][0]):
             #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
@@ -143,6 +159,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix=""):
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
     plt.close()
+
     
     '''
     for item in bp_map.keys():
