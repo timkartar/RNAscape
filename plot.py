@@ -5,7 +5,7 @@ import sre_yield
 from config import FIG_PATH
 from copy import deepcopy
 from math import cos, sin
-
+from get_helix_coords import process_resid
 plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
 style_dict = {}
@@ -57,18 +57,24 @@ def getBasePairingEdges(dssrout, dssrids, points):
         
     return edges, bp_markers, bp_map
 
-def getBackBoneEdges(ids, chids, dssrids):
+def getBackBoneEdges(ids, chids, dssrids, dssrout):
 
     magnification = max(1, min(len(ids)/40, 10))
     edges = []
-    for i in range(len(ids)):
+    for i in range(len(dssrids) -1):
+        _,_,_, chid1 = process_resid(dssrout['nts'][i]["nt_id"])
+        _,_,_, chid_next = process_resid(dssrout['nts'][i+1]["nt_id"])
+        
         try:
-            if chids[i] == chids[i+1]:
-                edges.append((i,i+1))
-                style_dict[(i,i+1)] = 'solid'
-                arrow_dict[(i,i+1)] = 10*np.sqrt(magnification)
+            if chid1 == chid_next:
+                a = dssrids.index(dssrout['nts'][i]["nt_id"])
+                b = dssrids.index(dssrout['nts'][i+1]["nt_id"])
+                edges.append((a,b))
+                style_dict[(a,b)] = 'solid'
+                arrow_dict[(a,b)] = 10*np.sqrt(magnification)
         except:
             pass
+    
     return edges
 
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False):
@@ -123,7 +129,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         G.add_edge(item[0],item[1])
     
 
-    edges = getBackBoneEdges(ids, chids, dssrids)
+    edges = getBackBoneEdges(ids, chids, dssrids, dssrout)
     for item in edges:
         G.add_edge(item[0],item[1])
 
