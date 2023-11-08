@@ -66,7 +66,7 @@ def getBackBoneEdges(ids, chids, dssrids):
             if chids[i] == chids[i+1]:
                 edges.append((i,i+1))
                 style_dict[(i,i+1)] = 'solid'
-                arrow_dict[(i,i+1)] = 10*magnification
+                arrow_dict[(i,i+1)] = 10*np.sqrt(magnification)
         except:
             pass
     return edges

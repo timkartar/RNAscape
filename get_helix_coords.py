@@ -6,6 +6,8 @@ import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
+bp_width = 3
+TIGHT_HELIX_THRES=0.5
 def get_cetroid(res):
     atoms = []
     for atom in res:
@@ -195,6 +197,19 @@ def get_helix_coords(dssrout, model):
     #TODO uncomment to merge helices
     helix_axes= processHelixAxes(helix_axes)
     
+    ## extend tight helices ##
+    #print(helix_axes[0])
+    
+    for item in helix_axes:
+        v = item[1] - item[0]
+        vl = (np.linalg.norm(v))
+        if (vl / bp_width) < TIGHT_HELIX_THRES:
+            n = len(item)
+            for  i in range(1,n):
+                item[i]  = item[i-1] + v * bp_width/vl
+    
+    #print(helix_axes[0])
+    #sys.exit()
     #helix_axes = np.array(helix_axis)
     '''
     for helix_axis in helix_axes:
@@ -206,7 +221,6 @@ def get_helix_coords(dssrout, model):
     '''
     points = []
 
-    width = 3
     for helix_axis in helix_axes:   
         for i in range(len(helix_axis)-1):
             local_axis = (helix_axis[i+1] - helix_axis[i])
@@ -214,8 +228,8 @@ def get_helix_coords(dssrout, model):
             zaxis = np.array([0,0,1])
             local_perp = np.cross(local_axis_3ded, zaxis)[:2]
             local_perp = local_perp/np.linalg.norm(local_perp)
-            p1 = helix_axis[i] + local_perp*width
-            p2 = helix_axis[i] - local_perp*width
+            p1 = helix_axis[i] + local_perp*bp_width
+            p2 = helix_axis[i] - local_perp*bp_width
             points += [p2, p1]
 
 
