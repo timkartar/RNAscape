@@ -50,6 +50,7 @@ def process_resid(nt1):
         else:
             icode = spl1[5]
         rest1_n = spl1[3]
+        rest1 = spl1[3] + spl1[4]
         res1 = spl1[4]
         if (rest1_n not in list('AUGC') + ['DA','DC','DG','DT']):
             het1 = 'H_' + rest1_n
