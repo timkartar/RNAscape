@@ -356,6 +356,6 @@ if __name__ == "__main__":
         points= points[idx,:]
         
 
-        starters, enders, points = getTails(dssrids, chids, points)
+        starters, enders, points = getTails(dssrids, chids, points) # fix starters and enders
         Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
         
