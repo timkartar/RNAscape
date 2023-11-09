@@ -12,6 +12,9 @@ from config import DSSR_PATH, CIF_PATH, FIG_PATH
 import re 
 from sklearn.neighbors import KDTree
 
+dssrout = None
+tree=None
+
 def sorted_nicely( l ): 
     """ Sort the given iterable in the way that humans expect.""" 
     convert = lambda text: int(text) if text.isdigit() else text 
@@ -70,7 +73,7 @@ def updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False):
     else:
         return neg_poses
 
-def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
+def generate_coords(helix_coords, helix_ids, dic, helix_dssrids, dssrout):
     pairs = []
     for item in dssrout['pairs']:
         pairs.append((item['nt1'],item['nt2']))
@@ -136,7 +139,7 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids):
     
     return positions, markers, ids, chids, dssrids
 
-def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
+def get_linear_coords(nts, helix_ids, helix_coords, dssrids, dssrout):
     dic = {} #keys are like (start, end) values are like [(nt_id, rest1),...]
 
     start = None
@@ -186,7 +189,7 @@ def get_linear_coords(nts, helix_ids, helix_coords, dssrids):
             prev = True
             l.append((nt_id, rest1, chid, item['nt_id'])) 
     
-    return generate_coords(helix_coords, helix_ids, dic, dssrids)        
+    return generate_coords(helix_coords, helix_ids, dic, dssrids, dssrout)        
 
 def orderData(points, markers, ids, chids, dssrids):
     unique_chains = np.unique(chids)
@@ -223,10 +226,10 @@ def orderData(points, markers, ids, chids, dssrids):
     ids = np.array(ids)[argsorted].tolist()
     return points, markers, ids, chids, dssrids, d
 
-def getTails(dssrids, chids, points):
+def getTails(helix_dssrids, dssrids, chids, points):
     starters = {}
     enders = {}
-    for item in dic.keys():
+    for item in np.unique(chids):
         starters[item] = []
         enders[item] = []
     
@@ -283,8 +286,10 @@ def getTails(dssrids, chids, points):
     return starters, enders, points
 
 
-if __name__ == "__main__":
-    prefix = sys.argv[1]
+#if __name__ == "__main__":
+def rnaView(prefix):
+    global tree, dssrout
+    #prefix = sys.argv[1]
     #if os.path.exists("{}/{}.png".format(FIG_PATH, prefix)):
     #    sys.exit()
     parser = MMCIFParser()
@@ -331,7 +336,7 @@ if __name__ == "__main__":
         '''
         
         rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout,
-                helix_ids, helix_points, helix_dssrids)
+                helix_ids, helix_points, helix_dssrids, dssrout)
         
         points = np.array(helix_points.tolist() + rest_positions)
         
@@ -356,6 +361,6 @@ if __name__ == "__main__":
         points= points[idx,:]
         
 
-        starters, enders, points = getTails(dssrids, chids, points) # fix starters and enders
+        starters, enders, points = getTails(helix_dssrids, dssrids, chids, points)
         Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
-        
+    return points, markers, ids, chids, dssrids, dssrout, prefix
