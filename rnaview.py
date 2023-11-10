@@ -287,17 +287,18 @@ def getTails(helix_dssrids, dssrids, chids, points):
 
 
 #if __name__ == "__main__":
-def rnaView(prefix):
+def rnaView(prefix, cif_file, json_file ):
     global tree, dssrout
     #prefix = sys.argv[1]
     #if os.path.exists("{}/{}.png".format(FIG_PATH, prefix)):
     #    sys.exit()
     parser = MMCIFParser()
     #model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
-    model = parser.get_structure(prefix,"{}/{}-assembly1.cif".format(CIF_PATH, prefix))[0]
+    model = parser.get_structure(prefix,cif_file)[0]
     
-    
-    with open("{}/{}-dssr.json".format(DSSR_PATH, prefix),"r") as f:
+    figpath=''
+
+    with open(json_file,"r") as f:
         dssrout = json.load(f)
 
     helices = get_helix_coords(dssrout, model)
@@ -362,5 +363,5 @@ def rnaView(prefix):
         
 
         starters, enders, points = getTails(helix_dssrids, dssrids, chids, points)
-        Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
-    return points, markers, ids, chids, dssrids, dssrout, prefix
+        figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
+    return points, markers, ids, chids, dssrids, dssrout, prefix, figpath

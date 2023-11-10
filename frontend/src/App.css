@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.img-responsive {
+  max-width: 100%; /* Maximum width of the image is 100% of its container */
+  max-height: 80vh; /* Maximum height of the image is 80% of the viewport height */
+  object-fit: contain; /* This ensures that the aspect ratio is maintained without cropping the image */
+}
+
+/* Optional: center the image vertically and horizontally within its container */
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; /* Set the container height to be a percentage of the viewport height */
+}

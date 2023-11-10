@@ -9,11 +9,15 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Media files (user uploaded files)
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,12 +29,34 @@ SECRET_KEY = 'django-insecure-9m(_64-(ii&6+*&w6bs%z@5=k76oukzt5mbr32w$yriw((29uh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-
+# Allow all domains during development
+# CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # The origin of your React app
+    "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
+]
+
+# Allow sending of cookies to the front-end server.
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+"http://localhost:3000",  # The origin of your React app
+    "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
+]
+
+CSRF_COOKIE_DOMAIN = "localhost"
+
 INSTALLED_APPS = [
+        'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +66,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -121,3 +148,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

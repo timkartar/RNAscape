@@ -163,10 +163,12 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     '''
     plt.tight_layout()
     plt.gca().set_aspect('equal')
-    plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
+    # plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
+    plt.savefig('/home/aricohen/Desktop/rnaview/backend/media/processed_images/{}.png'.format(prefix))
     plt.close()
+    # return '{}/{}.png'.format(FIG_PATH, prefix)
+    return '/home/aricohen/Desktop/rnaview/backend/media/processed_images/{}.png'.format(prefix)
 
-    
     '''
     for item in bp_map.keys():
         plt.scatter(0,0,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
