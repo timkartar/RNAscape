@@ -2,7 +2,7 @@ import networkx as nx
 from matplotlib import pyplot as plt
 import numpy as np
 import sre_yield
-from config import FIG_PATH
+from config import FIG_PATH, MEDIA_PATH
 from copy import deepcopy
 from math import cos, sin
 from get_helix_coords import process_resid
@@ -164,10 +164,10 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     plt.tight_layout()
     plt.gca().set_aspect('equal')
     # plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
-    plt.savefig('/home/aricohen/Desktop/rnaview/backend/media/processed_images/{}.png'.format(prefix))
+    plt.savefig('{}/{}/{}.png'.format(MEDIA_PATH,FIG_PATH,prefix))
     plt.close()
     # return '{}/{}.png'.format(FIG_PATH, prefix)
-    return '/home/aricohen/Desktop/rnaview/backend/media/processed_images/{}.png'.format(prefix)
+    return '{}/{}.png'.format(FIG_PATH,prefix)
 
     '''
     for item in bp_map.keys():

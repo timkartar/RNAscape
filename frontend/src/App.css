@@ -38,15 +38,83 @@
 }
 
 .img-responsive {
-  max-width: 100%; /* Maximum width of the image is 100% of its container */
-  max-height: 80vh; /* Maximum height of the image is 80% of the viewport height */
-  object-fit: contain; /* This ensures that the aspect ratio is maintained without cropping the image */
+  max-width: 100%;
+  object-fit: contain;
+  max-height: 80vh; 
 }
 
-/* Optional: center the image vertically and horizontally within its container */
-.image-container {
+.controls {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh; /* Set the container height to be a percentage of the viewport height */
+  align-items: center; /* Aligns items vertically in the center */
+  justify-content: center; /* Centers items horizontally */
+  flex-wrap: wrap; /* Allows items to wrap to next line if space runs out */
+  gap: 10px; /* Adds space between items */
 }
+
+/* Style for the form */
+.upload-form {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Style for the file input */
+.upload-form input[type="file"] {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+/* Style for the upload button */
+.upload-form button {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.upload-form button:hover {
+  background-color: #45a049;
+}
+
+.upload-form button:active {
+  transform: scale(0.95);
+}
+
+.controls button {
+  padding: 10px 15px; /* Adjust padding for size */
+  background-color: #4CAF50; /* A pleasant green; change as you like */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 1rem; /* Adjust font size as needed */
+  cursor: pointer; /* Cursor changes to a hand symbol when hovered */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+}
+
+.controls button:hover {
+  background-color: #45a049; /* Slightly darker shade on hover */
+}
+
+.controls button:active {
+  transform: scale(0.95); /* Slightly scale down the button when clicked */
+}
+
+.controls label {
+  margin-right: 10px; /* Space between label and slider */
+}
+
+/* Additional styling for the rotation slider if needed */
+.controls input[type=range] {
+  cursor: pointer;
+}
+
+
+/* .image-container {
+  text-align: center;
+  } */

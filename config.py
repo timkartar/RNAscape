@@ -4,4 +4,5 @@
 
 DSSR_PATH="/home/aricohen/Desktop/rnaview/json/"
 CIF_PATH="/home/aricohen/Desktop/rnaview/vn/"
-FIG_PATH="/home/aricohen/Desktop/rnaview/fig/"
+FIG_PATH="/processed_images/"
+MEDIA_PATH = "/home/aricohen/Desktop/rnaview/backend/media/"
