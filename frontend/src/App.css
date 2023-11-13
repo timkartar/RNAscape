@@ -79,6 +79,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
+  margin: 10px;
 }
 
 .upload-form button:hover {
@@ -154,4 +155,21 @@
   width: 100%; /* Full width */
   font-size: 0.9rem; /* Adjust font size as needed */
   height: 40px;
+}
+
+.bulging-dropdown {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.bulging-dropdown:focus {
+  outline: none;
+  border-color: #4CAF50; /* Highlight color when focused */
 }

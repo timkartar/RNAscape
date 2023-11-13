@@ -122,10 +122,24 @@ function App() {
 
   return (
     <div className="App">
+
     <form onSubmit={handleSubmit} className="upload-form">
-      <h1>RNAViewer</h1>
-      <input type="file" onChange={handleChange} />
+    <h1>RNAViewer</h1>
+    <input type="file" onChange={handleChange} />
+    <label>Base Pair Annotation:</label>
+    <select className="bulging-dropdown">
+        <option value="dssr">DSSR</option>
+        <option value="rnaview">RNAView</option>
+      </select>
+      <label>Loop Bulging:</label>
+    <select className="bulging-dropdown">
+        <option value="1">Conditional</option>
+        <option value="0">Always</option>
+      </select>
+
+
       <button type="submit">Upload</button>
+
     </form>
       {imageUrl && (
         <div className="image-and-legend-container">
@@ -170,7 +184,7 @@ function App() {
         </div>
       )}
       <footer className="app-footer">
-      <p>© 2023 RNAViewer. All rights reserved.</p>
+      <p>RNAViewer: A USC x Rutgers collaboration. With gratitude, we recognize the efforts of the original RNAView paper found here.</p>
     </footer>
     </div>
   );
