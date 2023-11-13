@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import axios from 'axios';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
@@ -27,6 +27,22 @@ function App() {
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(''); // State to store the image URL
   const transformWrapperRef = useRef(null); // Ref to access TransformWrapper
+  const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
+
+  const calculateBounds = () => {
+    const footerHeight = document.querySelector('.app-footer').clientHeight;
+    const windowHeight = window.innerHeight;
+    const boundY = windowHeight - footerHeight;
+  
+    setBounds({ boundX: 0, boundY });
+  };
+  
+  useEffect(() => {
+    window.addEventListener('resize', calculateBounds);
+    return () => {
+      window.removeEventListener('resize', calculateBounds);
+    };
+  }, []);
 
   function handleChange(event) {
     setFile(event.target.files[0]);
@@ -67,7 +83,13 @@ function App() {
 
   const onImageLoad = () => {
     centerImage();
+    calculateBounds();
   };
+
+  useEffect(() => {
+    calculateBounds();
+  }, [imageUrl]); // Recalculate bounds when the image URL changes
+  
 
   const centerImage = () => {
     if (transformWrapperRef.current) {
@@ -101,11 +123,12 @@ function App() {
   return (
     <div className="App">
     <form onSubmit={handleSubmit} className="upload-form">
-      <h1>RNA CIF File Upload</h1>
+      <h1>RNAViewer</h1>
       <input type="file" onChange={handleChange} />
       <button type="submit">Upload</button>
     </form>
       {imageUrl && (
+        <div className="image-and-legend-container">
         <div className="image-container">
           <div className="controls">
             <button onClick={zoomIn}>Zoom In</button>
@@ -123,20 +146,32 @@ function App() {
           </div>
           <TransformWrapper 
             ref={transformWrapperRef} 
-            options={transformOptions}>
+            options={{ ...transformOptions, limitToBounds: true }}
+            defaultPositionX={bounds.boundX}
+            defaultPositionY={bounds.boundY}
+            >
             <TransformComponent
-              wrapperStyle={{ height: '100vh', width: '100vw' }}>
+              wrapperStyle={{ height: '80vh', width: '80vw' }}>
               <img 
                 src={imageUrl} 
-                alt="Uploaded" 
+                alt="RNAView Image" 
                 className="img-responsive" 
                 style={{ transform: `rotate(${rotation}deg)` }}
                 onLoad={onImageLoad}
               />
             </TransformComponent>
           </TransformWrapper>
+          </div>
+          <img 
+                src="/legend.png" 
+                alt="Legend"
+                className="img-legend"
+                />
         </div>
       )}
+      <footer className="app-footer">
+      <p>© 2023 RNAViewer. All rights reserved.</p>
+    </footer>
     </div>
   );
 }

@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  min-height: 100vh; /* Ensure the main container takes at least full viewport height */
+  position: relative; /* For footer positioning */
+  /* padding-bottom: 30px; Space for footer, adjust as needed */
 }
 
 .App-logo {
@@ -114,7 +117,41 @@
   cursor: pointer;
 }
 
+.controls{
+  margin-bottom: 40px;
+}
 
-/* .image-container {
-  text-align: center;
-  } */
+.image-and-legend-container {
+  display: flex;
+  justify-content: center; /* Centers children horizontally */
+  align-items: flex-start; /* Aligns children at the top */
+  width: 100%; /* Full width of its parent */
+  max-width: 1200px; /* Adjust this to limit the maximum size */
+  margin: 0 auto; /* Auto margin for horizontal centering */
+}
+
+.image-container {
+  flex: 1; /* Takes up as much space as possible */
+  flex-grow: 1; /* Allows it to grow and take necessary space */
+  position: relative; /* For absolute positioning of TransformWrapper */
+}
+
+.img-legend {
+  max-height: 30vh; /* Max height of viewport height to make it responsive */
+  flex-shrink: 0; /* Prevents the legend from shrinking */
+  width: auto; /* Maintain aspect ratio */
+  align-self: flex-start; /* Aligns at the top */
+}
+
+.app-footer {
+  background-color: #282c34;
+  color: white; /* Light text color for contrast */
+  text-align: center; /* Center the text */
+  padding: 10px 0; /* Padding for spacing */
+  margin-top: 40px; /* Top margin as requested */
+  position: fixed; /* Fix position to the bottom */
+  bottom: 0; /* Align to bottom */
+  width: 100%; /* Full width */
+  font-size: 0.9rem; /* Adjust font size as needed */
+  height: 40px;
+}
