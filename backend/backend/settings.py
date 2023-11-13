@@ -37,20 +37,26 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # The origin of your React app
+    "http://localhost:3001",  # The origin of your React app
     "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
+    "http://127.0.0.1:3001",  # Also include this if you access your frontend via 127.0.0.1
 ]
 
 # Allow sending of cookies to the front-end server.
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:3000",  # The origin of your React app
+    "http://localhost:3001",  # The origin of your React app
+    "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
+    "http://127.0.0.1:3001",  # Also include this if you access your frontend via 127.0.0.1
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-"http://localhost:3000",  # The origin of your React app
+    "http://localhost:3000",  # The origin of your React app
+    "http://localhost:3001",  # The origin of your React app
     "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
+    "http://127.0.0.1:3001",  # Also include this if you access your frontend via 127.0.0.1
 ]
 
 CSRF_COOKIE_DOMAIN = "localhost"
