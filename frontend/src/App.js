@@ -39,7 +39,7 @@ function App() {
       return;
     }
 
-    const url = 'http://localhost:8000/rnaview/run-rnaview/';
+    const url = 'http://localhost:8001/rnaview/run-rnaview/';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
