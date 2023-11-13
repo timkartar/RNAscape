@@ -101,7 +101,7 @@ function App() {
   return (
     <div className="App">
     <form onSubmit={handleSubmit} className="upload-form">
-      <h1>RNA CIF File Upload</h1>
+      <h1>New RNAView</h1>
       <input type="file" onChange={handleChange} />
       <button type="submit">Upload</button>
     </form>

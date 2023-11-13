@@ -14,7 +14,7 @@ from sklearn.neighbors import KDTree
 
 dssrout = None
 tree=None
-
+conditional_bulging = True
 def sorted_nicely( l ): 
     """ Sort the given iterable in the way that humans expect.""" 
     convert = lambda text: int(text) if text.isdigit() else text 
@@ -30,7 +30,7 @@ def circularLayout(n, m, d, theta, factor=False):
         if factor:
             poses.append(m+d*np.sqrt(n))
         else:
-            poses.append(m+d)
+            poses.append(m+d*2)
 
     return poses
 
@@ -49,6 +49,7 @@ def updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False):
     p = perp(v)
     ## generate points circularly using m,v,p
     n = len(val)
+    #m = m + p*np.linalg.norm(v)*0.2
     d = start_pos - m
     
     
@@ -123,7 +124,9 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids, dssrout):
             t_chids.append(item[2])
             t_dssrids.append(item[3])
         v = helix_coords[start] - helix_coords[end]
-        if (helix_dssrids[start], helix_dssrids[end]) in pairs or (helix_dssrids[end], helix_dssrids[start]) in pairs:
+        if not conditional_bulging:
+            t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=False)
+        elif (helix_dssrids[start], helix_dssrids[end]) in pairs or (helix_dssrids[end], helix_dssrids[start]) in pairs:
             t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords)
         elif np.linalg.norm(v) < 3: #threshold for bulging
             t_poses = updateLoopPoints(start_pos, end_pos, val, helix_coords, factor=True) 
@@ -287,8 +290,9 @@ def getTails(helix_dssrids, dssrids, chids, points):
 
 
 #if __name__ == "__main__":
-def rnaView(prefix, cif_file, json_file ):
-    global tree, dssrout
+def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
+    global tree, dssrout, conditional_bulging
+    conditional_bulging = cond_bulging
     #prefix = sys.argv[1]
     #if os.path.exists("{}/{}.png".format(FIG_PATH, prefix)):
     #    sys.exit()
