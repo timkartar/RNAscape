@@ -8,10 +8,56 @@ from math import cos, sin
 from get_helix_coords import process_resid
 import time
 import random
+
 plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
 style_dict = {}
 arrow_dict = {}
+def getBasePairingEdgesSaenger(dssrout, dssrids, points):
+    #bp types: DSSR [ct][MWm][+-][MWm]
+    dssr_bp_types = list(sre_yield.AllStrings('[012][0-9]'))
+    l = [int(i) for i in dssr_bp_types]
+    idx = np.argsort(l)
+    dssr_bp_types = np.array(dssr_bp_types)[idx].tolist()
+    print(dssr_bp_types)
+    
+    #dssr_bp_types.remove("WW")
+    
+    #bp_marker_types = '[o^pdshP*]'
+    #marker_bp_types = list(sre_yield.AllStrings(bp_marker_types))
+    
+    bp_map = {}
+    for item in dssr_bp_types:
+        bp_map[item] = item #'${}$'.format(item)
+    
+    
+    magnification = max(1, min(len(dssrids)/40, 10))
+    edges = []
+    bp_markers = []
+
+    for item in dssrout['pairs']:
+        i1 = dssrids.index(item['nt1'])
+        i2 = dssrids.index(item['nt2'])
+        edges.append((i1, i2))
+        style_dict[(i1, i2)] = ':'#'dashed'
+        arrow_dict[(i1, i2)] = 0.001*magnification
+
+        v = points[i1] - points[i2]
+        d = np.linalg.norm(v)
+
+        if d < 2: ## do not show bp type for too small edges
+            continue
+        p = points[i2]+v/2 
+        typ = item['Saenger'].split("-")[0]
+        
+        if typ not in dssr_bp_types: # DSSR couldn't determine properly
+            continue
+        orient = 'w'
+        bp_markers.append([p, bp_map[typ], orient, typ])
+
+        
+    return edges, bp_markers, bp_map
+
 
 def getBasePairingEdges(dssrout, dssrids, points):
     
@@ -79,7 +125,7 @@ def getBackBoneEdges(ids, chids, dssrids, dssrout):
     
     return edges
 
-def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False):
+def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR'):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
 
@@ -125,8 +171,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     
     
     #### draw edges #######
-    pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
-    
+    if bp_type == "DSSR":
+        pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
+    elif bp_type == "Saenger":
+        pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
+
     for item in pairings:
         G.add_edge(item[0],item[1])
     
@@ -154,9 +203,14 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
             arrowsize=arrow, width=1*magnification)
     
-    for item in bp_markers:
-        plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,
-                linewidth=1*magnification, edgecolor='k', label=item[3] )
+    if bp_type == "DSSR":
+        for item in bp_markers:
+            plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,
+                    linewidth=1*magnification, edgecolor='k', label=item[3] )
+    elif bp_type == "Saenger":
+        for item in bp_markers:
+            plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification))
+
 
     '''
     handles, labels = plt.gca().get_legend_handles_labels()

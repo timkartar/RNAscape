@@ -367,5 +367,5 @@ def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
         
 
         starters, enders, points = getTails(helix_dssrids, dssrids, chids, points)
-        figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
-    return points, markers, ids, chids, dssrids, dssrout, prefix, figpath
+        #figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix)
+    return points, markers, ids, chids, dssrids, dssrout, prefix
