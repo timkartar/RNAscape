@@ -21,7 +21,7 @@ def run_rnaview(request):
                 destination.write(chunk)
         
         # Now you can run your Python script using the saved file
-        script_path = '/home/aricohen/Desktop/rnaview/run.py'
+        script_path = '/home/raktim/rnaview/run.py'
 
         try:
             # Call your script with the file path as an argument
