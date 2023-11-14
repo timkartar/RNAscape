@@ -194,7 +194,7 @@ function App() {
         </div>
       )}
       <footer className="app-footer">
-      <p>RNAViewer: A USC x Rutgers collaboration. With gratitude, we recognize the efforts of the original RNAView paper found here.</p>
+      <p>The Rohs Lab @ University of Southern California</p>
     </footer>
     </div>
   );
