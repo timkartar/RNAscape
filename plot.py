@@ -6,6 +6,8 @@ from config import FIG_PATH, MEDIA_PATH
 from copy import deepcopy
 from math import cos, sin
 from get_helix_coords import process_resid
+import time
+import random
 plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
 style_dict = {}
@@ -163,11 +165,14 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     '''
     plt.tight_layout()
     plt.gca().set_aspect('equal')
-    # plt.savefig('{}/{}.png'.format(FIG_PATH, prefix))
-    plt.savefig('{}/{}/{}.png'.format(MEDIA_PATH,FIG_PATH,prefix))
+    time_string = str(int(time.time())) + str(random.randint(0,100))
+    plt.savefig('{}/{}/{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string))
+    # plt.savefig('{}/{}/{}.png'.format(MEDIA_PATH,FIG_PATH,prefix))
+
     plt.close()
-    # return '{}/{}.png'.format(FIG_PATH, prefix)
-    return '{}/{}.png'.format(FIG_PATH,prefix)
+    return '{}/{}{}.png'.format(FIG_PATH,prefix,time_string)
+    # return '{}/{}.png'.format(FIG_PATH,prefix)
+
 
     '''
     for item in bp_map.keys():

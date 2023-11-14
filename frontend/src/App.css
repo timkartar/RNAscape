@@ -157,7 +157,7 @@
   height: 40px;
 }
 
-.bulging-dropdown {
+.options-dropdown {
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -169,7 +169,7 @@
   margin-right: 10px;
 }
 
-.bulging-dropdown:focus {
+.options-dropdown:focus {
   outline: none;
   border-color: #4CAF50; /* Highlight color when focused */
 }

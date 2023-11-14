@@ -5,12 +5,23 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+import requests
+import time
+
+def is_file_served(url):
+    try:
+        response = requests.head(url)
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
 
 @csrf_exempt  # Exempting from CSRF for demonstration purposes only
 @require_POST
 def run_rnaview(request):
     # Get the file from the request
     file = request.FILES.get('file')
+    basePairAnnotation = request.POST.get('basePairAnnotation')
+    loopBulging = request.POST.get('loopBulging')
     if file:
         # Define file path (you can include a specific path if needed)
         file_path = os.path.join('uploads', file.name)
@@ -26,7 +37,7 @@ def run_rnaview(request):
         try:
             # Call your script with the file path as an argument
             result = subprocess.run(
-                ['python', script_path, file_path, file.name], 
+                ['python', script_path, file_path, file.name, loopBulging], 
                 capture_output=True, 
                 text=True,
                 check=True
@@ -35,10 +46,12 @@ def run_rnaview(request):
             # No need to save again, just construct the URL
             image_path = result.stdout.strip()
             image_url = request.build_absolute_uri(default_storage.url(image_path))
-            return JsonResponse({'image_url': image_url})
-
-
-            # return JsonResponse({"message": "File processed", "output": result.stdout})
+            # Polling to check if the file is being served
+            for _ in range(10):  # Number of attempts
+                if is_file_served(image_url):
+                    return JsonResponse({'image_url': image_url})
+                time.sleep(1)  # Wait for 1 second before next attempt
+            return JsonResponse({'error': 'File not ready'}, status=500)
         except subprocess.CalledProcessError as e:
             # Handle errors in the subprocess
             return JsonResponse({"error": str(e), "output": e.stderr}, status=500)

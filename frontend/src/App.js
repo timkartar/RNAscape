@@ -28,6 +28,8 @@ function App() {
   const [imageUrl, setImageUrl] = useState(''); // State to store the image URL
   const transformWrapperRef = useRef(null); // Ref to access TransformWrapper
   const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
+  const [basePairAnnotation, setBasePairAnnotation] = useState('dssr');
+  const [loopBulging, setLoopBulging] = useState('1');
 
   const calculateBounds = () => {
     const footerHeight = document.querySelector('.app-footer').clientHeight;
@@ -59,6 +61,8 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
+    formData.append('basePairAnnotation', basePairAnnotation);
+    formData.append('loopBulging', loopBulging);
 
     axios.post(url, formData, {
       headers: {
@@ -127,12 +131,18 @@ function App() {
     <h1>RNAViewer</h1>
     <input type="file" onChange={handleChange} />
     <label>Base Pair Annotation:</label>
-    <select className="bulging-dropdown">
+      <select className="options-dropdown"
+        value={basePairAnnotation}
+        onChange={(e) => setBasePairAnnotation(e.target.value)}
+      >
         <option value="dssr">DSSR</option>
         <option value="rnaview">RNAView</option>
       </select>
-      <label>Loop Bulging:</label>
-    <select className="bulging-dropdown">
+    <label>Loop Bulging:</label>
+    <select className="options-dropdown"
+      value={loopBulging}
+      onChange={(e) => setLoopBulging(e.target.value)}
+    >
         <option value="1">Conditional</option>
         <option value="0">Always</option>
       </select>
