@@ -6,3 +6,8 @@ DSSR_PATH="/home/raktim/rnaview/json/"
 CIF_PATH="/home/raktim/rnaview/vn/"
 FIG_PATH="/processed_images/"
 MEDIA_PATH = "/home/raktim/rnaview/backend/media/"
+
+DSSR_PATH="/home/aricohen/Desktop/rnaview/json/"
+CIF_PATH="/home/aricohen/Desktop/rnaview/vn/"
+FIG_PATH="/processed_images/"
+MEDIA_PATH = "/home/aricohen/Desktop/rnaview/backend/media/"
