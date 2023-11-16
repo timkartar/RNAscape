@@ -8,12 +8,42 @@ from django.core.files.base import ContentFile
 import requests
 import time
 
+base_script_path = '/home/aricohen/Desktop/rnaview/'
+
 def is_file_served(url):
     try:
         response = requests.head(url)
         return response.status_code == 200
     except requests.RequestException:
         return False
+
+
+def run_regen_labels(request):
+    if request.method == "GET":
+        # Define the path to your script
+        rotation = request.GET.get('rotation')
+        time_string = request.GET.get('timeString')
+
+        script_path = f'{base_script_path}/regen_labels.py'
+
+        try:
+            result = subprocess.run(
+                        ['python', script_path, time_string, rotation], 
+                        capture_output=True, 
+                        text=True,
+                        check=True
+                    )
+            image_path = result.stdout.strip()
+            image_url = request.build_absolute_uri(default_storage.url(image_path))
+            # Polling to check if the file is being served
+            for _ in range(10):  # Number of attempts
+                if is_file_served(image_url):
+                    return JsonResponse({'image_url': image_url, 'time_string': time_string})
+                time.sleep(1)  # Wait for 1 second before next attempt
+            return JsonResponse({'error': 'File not ready 1'}, status=500)
+        except subprocess.CalledProcessError as e:
+            # Handle errors in the subprocess
+            return JsonResponse({"error": str(e), "output": e.stderr}, status=500)
 
 @csrf_exempt  # Exempting from CSRF for demonstration purposes only
 @require_POST
@@ -27,7 +57,7 @@ def run_rnaview(request):
     additional_file_path=""
 
     # Now you can run your Python script using the saved file
-    script_path = '/home/aricohen/Desktop/rnaview/run.py'
+    script_path = f'{base_script_path}/run.py'
 
     if file:
         # Define file path (you can include a specific path if needed)
@@ -69,12 +99,16 @@ def run_rnaview(request):
 
             # You can access result.stdout, result.stderr, result.returncode here
             # No need to save again, just construct the URL
-            image_path = result.stdout.strip()
+
+            image_path = result.stdout.split(',')[0].strip()
+            time_string = result.stdout.split(',')[1].strip()
+            
+
             image_url = request.build_absolute_uri(default_storage.url(image_path))
             # Polling to check if the file is being served
             for _ in range(10):  # Number of attempts
                 if is_file_served(image_url):
-                    return JsonResponse({'image_url': image_url})
+                    return JsonResponse({'image_url': image_url, 'time_string': time_string})
                 time.sleep(1)  # Wait for 1 second before next attempt
             return JsonResponse({'error': 'File not ready 1'}, status=500)
         except subprocess.CalledProcessError as e:

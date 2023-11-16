@@ -150,7 +150,7 @@
   text-align: center; /* Center the text */
   padding: 10px 0; /* Padding for spacing */
   margin-top: 40px; /* Top margin as requested */
-  position: fixed; /* Fix position to the bottom */
+  /* position: fixed; Fix position to the bottom */
   bottom: 0; /* Align to bottom */
   width: 100%; /* Full width */
   font-size: 0.9rem; /* Adjust font size as needed */
@@ -172,4 +172,8 @@
 .options-dropdown:focus {
   outline: none;
   border-color: #4CAF50; /* Highlight color when focused */
+}
+
+.pad-label{
+  margin-right: 10px;
 }

@@ -23,6 +23,7 @@ function getCookie(name) {
 }
 
 function App() {
+  const [sumRotation, setSumRotation] = useState(0); // New state for rotation
   const [rotation, setRotation] = useState(0); // New state for rotation
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(''); // State to store the image URL
@@ -31,6 +32,8 @@ function App() {
   const [basePairAnnotation, setBasePairAnnotation] = useState('dssr');
   const [loopBulging, setLoopBulging] = useState('1');
   const [additionalFile, setAdditionalFile] = useState(null);
+  const [timeString, setTimeString] = useState(null);
+
 
   const calculateBounds = () => {
     const footerHeight = document.querySelector('.app-footer').clientHeight;
@@ -92,10 +95,41 @@ function App() {
     }).then(response => {
       // Set the image URL in the state
       setImageUrl(response.data.image_url);
+      setTimeString(response.data.time_string);
     }).catch(error => {
       console.error('Error uploading file:', error);
     });
   }
+
+  // Send timeString and rotation via axios get request to run_regen_labels
+  function handleRegenLabels(event) {
+    // Define the URL for the GET request
+    const url = `http://localhost:8001/rnaview/run-regen_labels`;
+  
+    // do something to sum rotation here!
+    // say I rotated 30 degrees already
+
+    // Set up the query parameters
+    const params = {
+      timeString: timeString,  // Assuming timeString is stored in state
+      rotation: parseInt(rotation) + parseInt(sumRotation)       // Assuming rotation is stored in state
+    };
+    // Send the GET request with the query parameters
+    axios.get(url, { params })
+      .then(response => {
+        // Handle the response
+        // console.log('Labels regenerated:', response.data);
+        setSumRotation(parseInt(rotation)+parseInt(sumRotation))
+        setRotation(0)
+        setImageUrl(response.data.image_url)
+        // You might want to update some state here based on the response
+      })
+      .catch(error => {
+        console.error('Error regenerating labels:', error);
+      });
+  }
+
+    
 
   const transformOptions = {
     initialScale: 1000,
@@ -146,7 +180,7 @@ function App() {
   return (
     <div className="App">
       <form onSubmit={handleSubmit} className="upload-form">
-        <h1>RNARender</h1>
+        <h1>RNA Landscape</h1>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -157,11 +191,13 @@ function App() {
         >
           <option value="dssr">DSSR</option>
           <option value="rnaview">RNAView</option>
+          <option value="saenger">Saenger</option>
+          <option value="dssrLw">LW (from DSSR)</option>
         </select>
   
         {basePairAnnotation === 'rnaview' && (
           <>
-            <label htmlFor="additional-file">Additional File for RNAView:</label>
+            <label class="pad-label" htmlFor="additional-file">Additional File for RNAView:</label>
             <input 
               type="file" 
               onChange={handleAdditionalFileChange} 
@@ -199,6 +235,7 @@ function App() {
               value={rotation} 
               onChange={handleRotationChange}
             />
+            <button onClick={handleRegenLabels}>Regenerate Labels</button>
           </div>
           <TransformWrapper 
             ref={transformWrapperRef} 

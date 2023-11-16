@@ -2,6 +2,11 @@ from rnaview import rnaView
 import os, sys, subprocess
 from config import *
 from plot import Plot
+import time
+import random
+import json
+import numpy as np
+import json
 
 cif = "{}/{}".format(MEDIA_PATH,sys.argv[1].strip())
 prefix = sys.argv[2]
@@ -9,15 +14,30 @@ prefix = prefix.split('.cif')[0].strip() # MUST INCLUDE CIF or breaks, error han
 cond_bulging = bool(int(sys.argv[3]))
 bp_type = sys.argv[4]
 
-out_path = None
+out_path = ""
 if bp_type.strip() == "rnaview":
     out_path = "{}/{}".format(MEDIA_PATH,sys.argv[5].strip())
 
 # cif = "{}/{}-assembly1.cif".format(CIF_PATH, prefix)
-json = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
-subprocess.run(["x3dna-dssr","-i={}".format(cif),"-o={}".format(json),"-idstr=long","--json"])
-points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, json,
+json_path = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
+subprocess.run(["x3dna-dssr","-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json"])
+points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, json_path,
         cond_bulging=cond_bulging)
-# can call Plot later again using this return
-figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=sys.argv[4], out_path=out_path)
-print(figpath)
+
+
+# If just generating for the first time, call time string
+# Otherwise no!
+time_string = str(int(time.time())) + str(random.randint(0,100))
+
+# Save output of rnaView function to enable regeneration of labels!
+npz_filepath = "{}/{}.npz".format(MEDIA_PATH,time_string)
+np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
+         chids=chids, prefix=prefix, bp_type=sys.argv[4], time_string=time_string, out_path=out_path)
+# Generate the file path for the JSON file
+json_filepath = f"{MEDIA_PATH}/{time_string}_dssrout.json"
+# Serialize and save dssrout as a JSON file
+with open(json_filepath, 'w') as json_file:
+    json.dump(dssrout, json_file)
+    
+figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=sys.argv[4], out_path=out_path, time_string=time_string)
+print(figpath +"," + time_string)

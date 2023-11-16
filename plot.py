@@ -15,6 +15,9 @@ plt.gca().invert_xaxis()
 style_dict = {}
 arrow_dict = {}
 
+
+#python /home/aricohen/Desktop/rnaview/run.py uploads/7vnv-assembly1.cif 7vnv 1 rnaview uploads/7vnv-assembly1.cif.out
+
 """
 Get index of a nucleotide from chain id and resid
 """
@@ -25,6 +28,55 @@ def getIndex(target_chid, target_resid, ids, chids):
         if chids[cur_index] == target_chid:
             return cur_index
 
+"""
+Use DSSR to get LW annotations rather than Rnaview file upload
+"""
+def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
+    dssr_lw_bp_types = list(sre_yield.AllStrings('[WHS][WHS]'))
+    dssr_lw_bp_types.remove("WW")
+    # ['HW', 'SW', 'WH', 'HH', 'SH', 'WS', 'HS', 'SS']
+    dssr_lw_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
+    bp_map = {}
+    for item in dssr_lw_bp_types:
+        bp_map[item] = dssr_lw_markers[dssr_lw_bp_types.index(item)]
+    magnification = max(1, min(len(dssrids)/40, 10))
+    edges = []
+    bp_markers = []
+
+    for item in dssrout['pairs']:
+        i1 = dssrids.index(item['nt1'])
+        i2 = dssrids.index(item['nt2'])
+        edges.append((i1, i2))
+        style_dict[(i1, i2)] = ':'#'dashed'
+        arrow_dict[(i1, i2)] = 0.001*magnification
+
+        v = points[i1] - points[i2]
+        d = np.linalg.norm(v)
+
+        if d < 2: ## do not show bp type for too small edges
+            continue
+        p = points[i2]+v/2 
+        typ = item['LW'][1]+ item['LW'][2]
+        
+
+        # Compute points for each shape based on directional vector
+        direc = v / d
+        SCALAR = 0.5
+        p2 = p + (-1 * direc * magnification * SCALAR)
+        p1 = p + (direc * magnification * SCALAR)
+        p=[p,p1,p2] # use p if hoog/hoog or sugar/sugar, otherwise p1 and p2
+
+
+        if "." in typ: # DSSR couldn't determine properly
+            continue
+        if typ == "WW": #do not show watson crick pairs
+            continue
+        if item['LW'][0] == 'c':
+            orient = 'k'
+        else:
+            orient = 'w'
+        bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ])
+    return edges, bp_markers, bp_map
 
 def getBasePairingEdgesRnaview(points, ids, chids, out_path):
     rnaview_bp_types= ["{}/{}".format(e[0], e[1]) for e in list(sre_yield.AllStrings('[WHS][WHS]'))]
@@ -74,7 +126,7 @@ def getBasePairingEdgesRnaview(points, ids, chids, out_path):
 
         typ = item["bp_type"]
         
-        if "." in typ or "?" in typ: # DSSR couldn't determine properly
+        if "." in typ or "?" in typ: # RNAView couldn't determine properly
             continue
         if typ == "+/+" or typ == "-/-" or typ == "W/W": #do not show watson crick pairs
             continue
@@ -225,15 +277,19 @@ def getBackBoneEdges(ids, chids, dssrids, dssrout):
     
     return edges
 
-def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR', out_path=None):
+def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR', out_path=None, time_string="ac1"):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
+    dssrids = list(dssrids) # for npz
+    rotation_string = "" # used to append to file name
     if not rotation:
         pass
     else:
+        rotation_string = str(rotation)
+        rotation = np.radians(float(rotation))
         centroid = np.mean(points, axis=0)
         V = points - centroid
-        theta = rotation #in radian 
+        theta = -1*rotation
         rot = np.array([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]])
         V_ = np.dot(rot, V.T).T
         points = centroid + V_
@@ -276,6 +332,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
     elif bp_type == "rnaview":
         pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
+    elif bp_type == "dssrLw":
+        pairings, bp_markers, bp_map = getBasePairingEdgesDssrLw(dssrout, dssrids, points)
 
     for item in pairings:
         G.add_edge(item[0],item[1])
@@ -311,9 +369,9 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     elif bp_type == "saenger":
         for item in bp_markers:
             plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification))
-    elif bp_type == "rnaview":
+    elif bp_type == "rnaview" or bp_type == "dssrLw":
         for item in bp_markers:
-            if(item[1][0] == "ss" or item[1][0] == ">>"): # just need one shape for these
+            if(item[1] == "ss" or item[1] == ">>"): # just need one shape for these
                 plt.scatter(item[0][0][0], item[0][0][1], marker=item[1][0], color=item[2], s = 80*magnification,
                     linewidth=1*magnification, edgecolor='k', label=item[3] )
             else:
@@ -323,7 +381,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
                 
                 # second shape!
                 plt.scatter(item[0][2][0], item[0][2][1], marker=item[1][1], color=item[2], s = 80*magnification,
-                    linewidth=1*magnification, edgecolor='k', label=item[3] )
+                    linewidth=1*magnification, edgecolor='k', label=item[3] )        
 
     '''
     handles, labels = plt.gca().get_legend_handles_labels()
@@ -332,12 +390,16 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     '''
     plt.tight_layout()
     plt.gca().set_aspect('equal')
-    time_string = str(int(time.time())) + str(random.randint(0,100))
-    plt.savefig('{}/{}/{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string))
+    plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))
     # plt.savefig('{}/{}/{}.png'.format(MEDIA_PATH,FIG_PATH,prefix))
 
     plt.close()
-    return '{}/{}{}.png'.format(FIG_PATH,prefix,time_string)
+
+
+    # SAVE JSON of pertinent information to call regenerate labels!
+    # maybe also print time string
+
+    return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
     # return '{}/{}.png'.format(FIG_PATH,prefix)
 
 
