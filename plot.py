@@ -26,7 +26,7 @@ def getIndex(target_chid, target_resid, ids, chids):
             return cur_index
 
 
-def getBasePairingEdgesRnaview(points, ids, chids):
+def getBasePairingEdgesRnaview(points, ids, chids, out_path):
     rnaview_bp_types= ["{}/{}".format(e[0], e[1]) for e in list(sre_yield.AllStrings('[WHS][WHS]'))]
     rnaview_bp_types.remove("W/W")
 
@@ -42,7 +42,7 @@ def getBasePairingEdgesRnaview(points, ids, chids):
     bp_markers = []
 
     # GET OUTPUT FROM RNAView
-    bp_list = readRnaview("/home/aricohen/Desktop/rnaview/7vnv-assembly1.cif.out")
+    bp_list = readRnaview(out_path)
 
     for item in bp_list:
         chain_id = item["ch_id"]
@@ -78,7 +78,7 @@ def getBasePairingEdgesRnaview(points, ids, chids):
             continue
         if typ == "+/+" or typ == "-/-" or typ == "W/W": #do not show watson crick pairs
             continue
-        if item['orient'] == 'cis':
+        if item['orient'].strip() == 'cis':
             orient = 'k'
         else:
             orient = 'w'
@@ -225,10 +225,9 @@ def getBackBoneEdges(ids, chids, dssrids, dssrout):
     
     return edges
 
-def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR'):
+def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR', out_path=None):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
-    getBasePairingEdgesRnaview(points, ids, chids)
     if not rotation:
         pass
     else:
@@ -276,7 +275,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     elif bp_type == "saenger":
         pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
     elif bp_type == "rnaview":
-        pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids)
+        pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
 
     for item in pairings:
         G.add_edge(item[0],item[1])

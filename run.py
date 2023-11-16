@@ -9,11 +9,15 @@ prefix = prefix.split('.cif')[0].strip() # MUST INCLUDE CIF or breaks, error han
 cond_bulging = bool(int(sys.argv[3]))
 bp_type = sys.argv[4]
 
+out_path = None
+if bp_type.strip() == "rnaview":
+    out_path = "{}/{}".format(MEDIA_PATH,sys.argv[5].strip())
+
 # cif = "{}/{}-assembly1.cif".format(CIF_PATH, prefix)
 json = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
 subprocess.run(["x3dna-dssr","-i={}".format(cif),"-o={}".format(json),"-idstr=long","--json"])
 points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, json,
         cond_bulging=cond_bulging)
 # can call Plot later again using this return
-figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=sys.argv[4])
+figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=sys.argv[4], out_path=out_path)
 print(figpath)

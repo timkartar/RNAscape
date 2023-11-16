@@ -30,6 +30,7 @@ function App() {
   const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
   const [basePairAnnotation, setBasePairAnnotation] = useState('dssr');
   const [loopBulging, setLoopBulging] = useState('1');
+  const [additionalFile, setAdditionalFile] = useState(null);
 
   const calculateBounds = () => {
     const footerHeight = document.querySelector('.app-footer').clientHeight;
@@ -50,6 +51,10 @@ function App() {
     setFile(event.target.files[0]);
   }
   
+  function handleAdditionalFileChange(event) {
+    setAdditionalFile(event.target.files[0]);
+  }  
+
   function handleSubmit(event) {
     event.preventDefault();
     if (!file) {
@@ -57,12 +62,26 @@ function App() {
       return;
     }
 
+    // Check if additional file is required and selected
+    if (basePairAnnotation === 'rnaview' && !additionalFile) {
+      alert('Please select an output file from RNAView!');
+      return;
+  }
+
     const url = 'http://localhost:8001/rnaview/run-rnaview/';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
     formData.append('basePairAnnotation', basePairAnnotation);
     formData.append('loopBulging', loopBulging);
+
+
+    // Append additional file if it's required and provided
+    if (basePairAnnotation === 'rnaview' && additionalFile) {
+      formData.append('additionalFile', additionalFile);
+      formData.append('additionalFileName', additionalFile.name);
+    }
+
 
     axios.post(url, formData, {
       headers: {
@@ -126,31 +145,44 @@ function App() {
 
   return (
     <div className="App">
-
-    <form onSubmit={handleSubmit} className="upload-form">
-    <h1>RNAViewer</h1>
-    <input type="file" onChange={handleChange} />
-    <label>Base Pair Annotation:</label>
-      <select className="options-dropdown"
-        value={basePairAnnotation}
-        onChange={(e) => setBasePairAnnotation(e.target.value)}
-      >
-        <option value="dssr">DSSR</option>
-        <option value="rnaview">RNAView</option>
-      </select>
-    <label>Loop Bulging:</label>
-    <select className="options-dropdown"
-      value={loopBulging}
-      onChange={(e) => setLoopBulging(e.target.value)}
-    >
-        <option value="1">Conditional</option>
-        <option value="0">Always</option>
-      </select>
-
-
-      <button type="submit">Upload</button>
-
-    </form>
+      <form onSubmit={handleSubmit} className="upload-form">
+        <h1>RNARender</h1>
+        <input type="file" onChange={handleChange} required />
+  
+        <label>Base Pair Annotation:</label>
+        <select 
+          className="options-dropdown"
+          value={basePairAnnotation}
+          onChange={(e) => setBasePairAnnotation(e.target.value)}
+        >
+          <option value="dssr">DSSR</option>
+          <option value="rnaview">RNAView</option>
+        </select>
+  
+        {basePairAnnotation === 'rnaview' && (
+          <>
+            <label htmlFor="additional-file">Additional File for RNAView:</label>
+            <input 
+              type="file" 
+              onChange={handleAdditionalFileChange} 
+              id="additional-file" 
+              required 
+            />
+          </>
+        )}
+  
+        <label>Loop Bulging:</label>
+        <select 
+          className="options-dropdown"
+          value={loopBulging}
+          onChange={(e) => setLoopBulging(e.target.value)}
+        >
+          <option value="1">Conditional</option>
+          <option value="0">Always</option>
+        </select>
+  
+        <button type="submit">Upload</button>
+      </form>
       {imageUrl && (
         <div className="image-and-legend-container">
         <div className="image-container">

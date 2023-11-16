@@ -12,11 +12,9 @@ def readRnaview(filepath):
     in_base_pair = False
     for line in lines:
         if line.startswith("BEGIN_base-pair"):
-            print(line)
             in_base_pair = True
             continue
         if line.startswith("END_base-pair"):
-            print(line)
             in_base_pair = False
             break
         # Logic to add to dict

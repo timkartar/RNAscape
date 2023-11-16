@@ -19,29 +19,54 @@ def is_file_served(url):
 @require_POST
 def run_rnaview(request):
     # Get the file from the request
+
     file = request.FILES.get('file')
+    additionalFile = request.FILES.get('additionalFile')
     basePairAnnotation = request.POST.get('basePairAnnotation')
     loopBulging = request.POST.get('loopBulging')
+    additional_file_path=""
+
+    # Now you can run your Python script using the saved file
+    script_path = '/home/aricohen/Desktop/rnaview/run.py'
+
     if file:
         # Define file path (you can include a specific path if needed)
         file_path = os.path.join('uploads', file.name)
+
 
         # Write file to disk
         with default_storage.open(file_path, 'wb+') as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
         
-        # Now you can run your Python script using the saved file
-        script_path = '/home/raktim/rnaview/run.py'
-
+        # If RNAView, special case
+        if basePairAnnotation == "rnaview":
+            # check if a file is provided!
+            if additionalFile:
+                additional_file_path = os.path.join('uploads', additionalFile.name)
+                with default_storage.open(additional_file_path, 'wb+') as destination:
+                    for chunk in additionalFile.chunks():
+                        destination.write(chunk)
+            else:
+                return JsonResponse({"error": "No rnaview output file provided"}, status=400)
         try:
             # Call your script with the file path as an argument
-            result = subprocess.run(
-                ['python', script_path, file_path, file.name, loopBulging], 
-                capture_output=True, 
-                text=True,
-                check=True
-            )
+            result = None
+            if basePairAnnotation == "rnaview":
+                result = subprocess.run(
+                    ['python', script_path, file_path, file.name, loopBulging, basePairAnnotation, additional_file_path], 
+                    capture_output=True, 
+                    text=True,
+                    check=True
+                )
+            else:
+                result = subprocess.run(
+                    ['python', script_path, file_path, file.name, loopBulging, basePairAnnotation], 
+                    capture_output=True, 
+                    text=True,
+                    check=True
+                )
+
             # You can access result.stdout, result.stderr, result.returncode here
             # No need to save again, just construct the URL
             image_path = result.stdout.strip()
@@ -51,7 +76,7 @@ def run_rnaview(request):
                 if is_file_served(image_url):
                     return JsonResponse({'image_url': image_url})
                 time.sleep(1)  # Wait for 1 second before next attempt
-            return JsonResponse({'error': 'File not ready'}, status=500)
+            return JsonResponse({'error': 'File not ready 1'}, status=500)
         except subprocess.CalledProcessError as e:
             # Handle errors in the subprocess
             return JsonResponse({"error": str(e), "output": e.stderr}, status=500)
