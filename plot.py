@@ -33,7 +33,6 @@ Use DSSR to get LW annotations rather than Rnaview file upload
 """
 def getCustomMarker(pos, item):
     marker = item[1][pos]
-    print(marker)
     m = item[0][0]
     
     if pos == 0 :
