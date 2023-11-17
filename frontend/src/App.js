@@ -5,7 +5,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import axios from 'axios';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Documentation from './Documentation'; // Adjust the path as necessary
-
+import TopRow from './TopRow';
 
 function getCookie(name) {
   let cookieValue = null;
@@ -173,6 +173,52 @@ function App() {
     }
   };
 
+  // const downloadImage = (url) => {
+  //   fetch(url)
+  //     .then(response => response.blob())
+  //     .then(blob => {
+  //       const rotationDegrees = rotation;
+  //       const localUrl = window.URL.createObjectURL(blob);
+  //       const image = new Image();
+  //       image.src = localUrl;
+  //       console.log(rotationDegrees);
+  //       image.onload = () => {
+  //         console.log("Hi!");
+  //         const canvas = document.createElement('canvas');
+  //         const ctx = canvas.getContext('2d');
+  
+  //         // Set canvas size to image size
+  //         canvas.width = image.width;
+  //         canvas.height = image.height;
+  //         console.log(image.width);
+  //         console.log(image.height);
+
+  //         // Apply rotation
+  //         ctx.translate(canvas.width / 2, canvas.height / 2);
+  //         ctx.rotate(rotationDegrees * Math.PI / 180);  // Convert degrees to radians
+  //         ctx.drawImage(image, -image.width / 2, -image.height / 2);
+  
+  //         // Convert canvas to image for download
+  //         canvas.toBlob(blob => {
+  //           const rotatedUrl = window.URL.createObjectURL(blob);
+  //           const link = document.createElement('a');
+  //           link.href = rotatedUrl;
+  //           link.download = 'rotated-image.png'; // Or dynamically set filename
+  //           document.body.appendChild(link);
+  //           link.click();
+  //           document.body.removeChild(link);
+  //           window.URL.revokeObjectURL(localUrl);
+  //           window.URL.revokeObjectURL(rotatedUrl);
+  //         }, 'image/png', 1); // '1' for maximum quality
+  //       };
+  //     })
+  //     .catch(error => {
+  //       console.error('Error rotating and downloading the image:', error);
+  //     });
+  // };
+  
+
+
   const transformOptions = {
     initialScale: 1,
     minScale: 0.1,
@@ -223,8 +269,8 @@ function App() {
 
   return (
     <div className="App">
+      <TopRow/>
       <form onSubmit={handleSubmit} className="upload-form">
-        <h1>RNA Landscape</h1>
         <button type="button" onClick={toggleDocumentation}>Toggle Documentation</button>
         <input type="file" onChange={handleChange} required />
   
@@ -237,7 +283,7 @@ function App() {
           <option value="dssr">DSSR</option>
           <option value="rnaview">RNAView</option>
           <option value="saenger">Saenger</option>
-          <option value="dssrLw">LW (from DSSR)</option>
+          <option value="dssrLw">Leontis-Westhof</option>
         </select>
         {basePairAnnotation === 'rnaview' && (
           <>
