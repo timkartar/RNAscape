@@ -30,11 +30,11 @@ points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, jso
 time_string = str(int(time.time())) + str(random.randint(0,100))
 
 # Save output of rnaView function to enable regeneration of labels!
-npz_filepath = "{}/{}.npz".format(MEDIA_PATH,time_string)
+npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
 np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
          chids=chids, prefix=prefix, bp_type=sys.argv[4], time_string=time_string, out_path=out_path)
 # Generate the file path for the JSON file
-json_filepath = f"{MEDIA_PATH}/{time_string}_dssrout.json"
+json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
 # Serialize and save dssrout as a JSON file
 with open(json_filepath, 'w') as json_file:
     json.dump(dssrout, json_file)

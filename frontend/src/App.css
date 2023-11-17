@@ -46,6 +46,7 @@
   max-height: 80vh; 
 }
 
+
 .controls {
   display: flex;
   align-items: center; /* Aligns items vertically in the center */
@@ -176,4 +177,31 @@
 
 .pad-label{
   margin-right: 10px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  position: fixed; /* To overlay on top of other content */
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.spinner {
+  border: 5px solid #f3f3f3; /* Light grey border */
+  border-top: 5px solid #3498db; /* Blue border for spinner */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

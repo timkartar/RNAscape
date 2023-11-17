@@ -12,8 +12,8 @@ time_string = sys.argv[1]
 rotation = int(sys.argv[2])
 
 
-npz_filepath = "{}/{}.npz".format(MEDIA_PATH,time_string)
-json_filepath = f"{MEDIA_PATH}/{time_string}_dssrout.json"
+npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
+json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
 
 # Code to open if necessary!
 npzfile = np.load(npz_filepath)

@@ -33,6 +33,7 @@ function App() {
   const [loopBulging, setLoopBulging] = useState('1');
   const [additionalFile, setAdditionalFile] = useState(null);
   const [timeString, setTimeString] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const calculateBounds = () => {
@@ -60,6 +61,7 @@ function App() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    setIsLoading(true); // Start loading
     if (!file) {
       alert('Please select a file first!');
       return;
@@ -94,15 +96,19 @@ function App() {
       withCredentials: true,
     }).then(response => {
       // Set the image URL in the state
+      setSumRotation(0);
       setImageUrl(response.data.image_url);
       setTimeString(response.data.time_string);
     }).catch(error => {
       console.error('Error uploading file:', error);
+    }).finally(() => {
+      setIsLoading(false); // Stop loading
     });
   }
 
   // Send timeString and rotation via axios get request to run_regen_labels
   function handleRegenLabels(event) {
+    setIsLoading(true); // Start loading
     // Define the URL for the GET request
     const url = `http://localhost:8001/rnaview/run-regen_labels`;
   
@@ -126,14 +132,17 @@ function App() {
       })
       .catch(error => {
         console.error('Error regenerating labels:', error);
+      })
+      .finally(() => {
+        setIsLoading(false); // Stop loading
       });
   }
 
     
 
   const transformOptions = {
-    initialScale: 1000,
-    minScale: 0.5,
+    initialScale: 1,
+    minScale: 0.1,
     maxScale: 2,
     // centerOnInit: true
   }
@@ -219,7 +228,12 @@ function App() {
   
         <button type="submit">Upload</button>
       </form>
-      {imageUrl && (
+        {isLoading && (
+        <div className="loading-container">
+          <div className="spinner"></div>
+        </div>
+      )}
+      {!isLoading && imageUrl && (
         <div className="image-and-legend-container">
         <div className="image-container">
           <div className="controls">
@@ -239,7 +253,7 @@ function App() {
           </div>
           <TransformWrapper 
             ref={transformWrapperRef} 
-            options={{ ...transformOptions, limitToBounds: true }}
+            options={{ ...transformOptions}}
             defaultPositionX={bounds.boundX}
             defaultPositionY={bounds.boundY}
             >
@@ -247,7 +261,7 @@ function App() {
               wrapperStyle={{ height: '80vh', width: '80vw' }}>
               <img 
                 src={imageUrl} 
-                alt="RNAView Image" 
+                alt="RNA Landscape Image" 
                 className="img-responsive" 
                 style={{ transform: `rotate(${rotation}deg)` }}
                 onLoad={onImageLoad}
