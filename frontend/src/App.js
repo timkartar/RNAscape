@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import React, {useState, useRef, useEffect} from 'react';
 import axios from 'axios';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-
+import Documentation from './Documentation'; // Adjust the path as necessary
 
 
 function getCookie(name) {
@@ -33,7 +33,11 @@ function App() {
   const [loopBulging, setLoopBulging] = useState('1');
   const [additionalFile, setAdditionalFile] = useState(null);
   const [timeString, setTimeString] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDocumentation, setShowDocumentation] = useState(false);
+  const toggleDocumentation = () => {
+    setShowDocumentation(!showDocumentation);
+  };
 
   const calculateBounds = () => {
     const footerHeight = document.querySelector('.app-footer').clientHeight;
@@ -60,6 +64,7 @@ function App() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    setIsLoading(true); // Start loading
     if (!file) {
       alert('Please select a file first!');
       return;
@@ -94,15 +99,19 @@ function App() {
       withCredentials: true,
     }).then(response => {
       // Set the image URL in the state
+      setSumRotation(0);
       setImageUrl(response.data.image_url);
       setTimeString(response.data.time_string);
     }).catch(error => {
       console.error('Error uploading file:', error);
+    }).finally(() => {
+      setIsLoading(false); // Stop loading
     });
   }
 
   // Send timeString and rotation via axios get request to run_regen_labels
   function handleRegenLabels(event) {
+    setIsLoading(true); // Start loading
     // Define the URL for the GET request
     const url = `http://localhost:8001/rnaview/run-regen_labels`;
   
@@ -115,25 +124,48 @@ function App() {
       rotation: parseInt(rotation) + parseInt(sumRotation)       // Assuming rotation is stored in state
     };
     // Send the GET request with the query parameters
-    axios.get(url, { params })
+    return axios.get(url, { params })
       .then(response => {
         // Handle the response
         // console.log('Labels regenerated:', response.data);
         setSumRotation(parseInt(rotation)+parseInt(sumRotation))
         setRotation(0)
         setImageUrl(response.data.image_url)
+        return response.data.image_url;
         // You might want to update some state here based on the response
       })
       .catch(error => {
         console.error('Error regenerating labels:', error);
+        throw error;
+      })
+      .finally(() => {
+        setIsLoading(false); // Stop loading
       });
   }
 
-    
+  const handleDownloadAndRegenerate = () => {
+    handleRegenLabels().then(newImageUrl => {
+      fetch(newImageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const localUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = localUrl;
+          link.download = 'processed-image.png'; // Or dynamically set filename
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(localUrl); // Clean up the URL
+        })
+        .catch(error => {
+          console.error('Error downloading the image:', error);
+        });
+    });
+  };
 
   const transformOptions = {
-    initialScale: 1000,
-    minScale: 0.5,
+    initialScale: 1,
+    minScale: 0.1,
     maxScale: 2,
     // centerOnInit: true
   }
@@ -177,10 +209,13 @@ function App() {
   };
 
 
+  
+
   return (
     <div className="App">
       <form onSubmit={handleSubmit} className="upload-form">
         <h1>RNA Landscape</h1>
+        <button type="button" onClick={toggleDocumentation}>Toggle Documentation</button>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -194,7 +229,6 @@ function App() {
           <option value="saenger">Saenger</option>
           <option value="dssrLw">LW (from DSSR)</option>
         </select>
-  
         {basePairAnnotation === 'rnaview' && (
           <>
             <label class="pad-label" htmlFor="additional-file">Additional File for RNAView:</label>
@@ -219,7 +253,13 @@ function App() {
   
         <button type="submit">Upload</button>
       </form>
-      {imageUrl && (
+        {isLoading && (
+        <div className="loading-container">
+          <div className="spinner"></div>
+        </div>
+      )}
+       {showDocumentation && <Documentation />}
+      {!showDocumentation && !isLoading && imageUrl && (
         <div className="image-and-legend-container">
         <div className="image-container">
           <div className="controls">
@@ -236,10 +276,11 @@ function App() {
               onChange={handleRotationChange}
             />
             <button onClick={handleRegenLabels}>Regenerate Labels</button>
+            <button onClick={handleDownloadAndRegenerate}>Download</button>
           </div>
           <TransformWrapper 
             ref={transformWrapperRef} 
-            options={{ ...transformOptions, limitToBounds: true }}
+            options={{ ...transformOptions}}
             defaultPositionX={bounds.boundX}
             defaultPositionY={bounds.boundY}
             >
@@ -247,7 +288,7 @@ function App() {
               wrapperStyle={{ height: '80vh', width: '80vw' }}>
               <img 
                 src={imageUrl} 
-                alt="RNAView Image" 
+                alt="RNA Landscape Image" 
                 className="img-responsive" 
                 style={{ transform: `rotate(${rotation}deg)` }}
                 onLoad={onImageLoad}
