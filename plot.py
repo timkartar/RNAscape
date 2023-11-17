@@ -31,10 +31,53 @@ def getIndex(target_chid, target_resid, ids, chids):
 """
 Use DSSR to get LW annotations rather than Rnaview file upload
 """
+def getCustomMarker(pos, item):
+    marker = item[1][pos]
+    print(marker)
+    m = item[0][0]
+    
+    if pos == 0 :
+        t = item[0][1]
+    else:
+        t = item[0][2]
+    
+    d = t - m
+    d = d/np.linalg.norm(d)
+    v = [0,1]
+    angle = np.rad2deg(np.arccos(np.dot(d,v)))
+    tanangle = np.rad2deg(np.arctan(d[1]/d[0]))
+
+    if marker == ">":
+        #print(angle, tanangle, item[1])
+
+        if tanangle < 0 and angle <= 90:
+            return (3,0, angle)
+        if tanangle < 0 and angle > 90:
+            return (3,0, -1*angle)
+        
+        if tanangle >= 0 and angle > 90:
+            return (3,0, angle)
+        if tanangle >= 0 and angle <= 90:
+            return (3,0, -1*angle)
+    
+    if marker == "s":
+        if tanangle < 0 and angle <= 90:
+            return (4,0, angle + 45)
+        if tanangle < 0 and angle > 90:
+            return (4,0, -1*angle + 45)
+        
+        if tanangle >= 0 and angle > 90:
+            return (4,0, angle + 45)
+        if tanangle >= 0 and angle <= 90:
+            return (4,0, -1*angle + 45)
+    else:
+        return marker
+
 def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
     dssr_lw_bp_types = list(sre_yield.AllStrings('[WHS][WHS]'))
     dssr_lw_bp_types.remove("WW")
     # ['HW', 'SW', 'WH', 'HH', 'SH', 'WS', 'HS', 'SS']
+    #dssr_lw_markers = ['so', '<o', 'os', 'ss', '<s', 'o>', 's>', '<>']
     dssr_lw_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
     bp_map = {}
     for item in dssr_lw_bp_types:
@@ -61,9 +104,9 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
 
         # Compute points for each shape based on directional vector
         direc = v / d
-        SCALAR = 0.5
-        p2 = p + (-1 * direc * magnification * SCALAR)
-        p1 = p + (direc * magnification * SCALAR)
+        SCALAR = 0.8
+        p2 = p + (-1 * direc * SCALAR)
+        p1 = p + (direc * SCALAR)
         p=[p,p1,p2] # use p if hoog/hoog or sugar/sugar, otherwise p1 and p2
 
 
@@ -75,7 +118,7 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
             orient = 'k'
         else:
             orient = 'w'
-        bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ])
+        bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ, v])
     return edges, bp_markers, bp_map
 
 def getBasePairingEdgesRnaview(points, ids, chids, out_path):
@@ -83,7 +126,9 @@ def getBasePairingEdgesRnaview(points, ids, chids, out_path):
     rnaview_bp_types.remove("W/W")
 
 
+    #rnaview_markers = ['so', '<o', 'os', 'ss', '<s', 'o>', 's>', '<>']
     rnaview_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
+    
     bp_map = {}
     for item in rnaview_bp_types:
         bp_map[item] = rnaview_markers[rnaview_bp_types.index(item)]
@@ -119,9 +164,9 @@ def getBasePairingEdgesRnaview(points, ids, chids, out_path):
 
         # Compute points for each shape based on directional vector
         direc = v / d
-        SCALAR = 0.5
-        p2 = p + (-1 * direc * magnification * SCALAR)
-        p1 = p + (direc * magnification * SCALAR)
+        SCALAR = 0.8
+        p2 = p + (-1 * direc * SCALAR)
+        p1 = p + (direc * SCALAR)
         p=[p,p1,p2] # use p if hoog/hoog or sugar/sugar, otherwise p1 and p2
 
         typ = item["bp_type"]
@@ -134,7 +179,7 @@ def getBasePairingEdgesRnaview(points, ids, chids, out_path):
             orient = 'k'
         else:
             orient = 'w'
-        bp_markers.append([p, bp_map[typ], orient, item['orient'][0]+typ]) # FOR NOW PASS IT LIKE HE HAS IT!
+        bp_markers.append([p, bp_map[typ], orient, item['orient'][0]+typ, v]) # FOR NOW PASS IT LIKE HE HAS IT!
 
     return edges, bp_markers, bp_map
         
@@ -369,18 +414,19 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     elif bp_type == "saenger":
         for item in bp_markers:
             plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification))
+    
     elif bp_type == "rnaview" or bp_type == "dssrLw":
         for item in bp_markers:
             if(item[1] == "ss" or item[1] == ">>"): # just need one shape for these
-                plt.scatter(item[0][0][0], item[0][0][1], marker=item[1][0], color=item[2], s = 80*magnification,
+                plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification,
                     linewidth=1*magnification, edgecolor='k', label=item[3] )
             else:
                 # first shape!
-                plt.scatter(item[0][1][0], item[0][1][1], marker=item[1][0], color=item[2], s = 80*magnification,
+                plt.scatter(item[0][1][0], item[0][1][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification,
                     linewidth=1*magnification, edgecolor='k', label=item[3] )
                 
                 # second shape!
-                plt.scatter(item[0][2][0], item[0][2][1], marker=item[1][1], color=item[2], s = 80*magnification,
+                plt.scatter(item[0][2][0], item[0][2][1], marker=getCustomMarker(1, item), color=item[2], s = 80*magnification,
                     linewidth=1*magnification, edgecolor='k', label=item[3] )        
 
     '''
