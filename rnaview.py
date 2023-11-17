@@ -30,7 +30,7 @@ def circularLayout(n, m, d, theta, factor=False):
         if factor:
             poses.append(m+d*np.sqrt(n))
         else:
-            poses.append(m+d*2)
+            poses.append(m+d*1.5)
 
     return poses
 
