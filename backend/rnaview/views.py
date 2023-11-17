@@ -8,8 +8,8 @@ from django.core.files.base import ContentFile
 import requests
 import time
 
-#base_script_path = '/home/aricohen/Desktop/rnaview/'
-base_script_path = '/home/raktim/rnaview/'
+base_script_path = '/home/aricohen/Desktop/rnaview/'
+# base_script_path = '/home/raktim/rnaview/'
 
 def is_file_served(url):
     try:

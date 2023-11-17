@@ -35,6 +35,7 @@ function App() {
   const [timeString, setTimeString] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(false);
+
   const toggleDocumentation = () => {
     setShowDocumentation(!showDocumentation);
   };
@@ -142,25 +143,34 @@ function App() {
         setIsLoading(false); // Stop loading
       });
   }
-
+  const downloadImage = (url) => {
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const localUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = localUrl;
+        link.download = 'processed-image.png'; // Or dynamically set filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(localUrl); // Clean up the URL
+      })
+      .catch(error => {
+        console.error('Error downloading the image:', error);
+      });
+  };
+  
   const handleDownloadAndRegenerate = () => {
-    handleRegenLabels().then(newImageUrl => {
-      fetch(newImageUrl)
-        .then(response => response.blob())
-        .then(blob => {
-          const localUrl = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = localUrl;
-          link.download = 'processed-image.png'; // Or dynamically set filename
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(localUrl); // Clean up the URL
-        })
-        .catch(error => {
-          console.error('Error downloading the image:', error);
-        });
-    });
+    if (rotation !== 0) {
+      // If rotation is not 0, regenerate labels and then download
+      handleRegenLabels().then(newImageUrl => {
+        downloadImage(newImageUrl);
+      });
+    } else {
+      // If rotation is 0, directly download the current image
+      downloadImage(imageUrl);
+    }
   };
 
   const transformOptions = {
