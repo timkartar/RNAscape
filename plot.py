@@ -117,7 +117,7 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
             orient = 'k'
         else:
             orient = 'w'
-        bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ, v])
+        bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ])
     return edges, bp_markers, bp_map
 
 def getBasePairingEdgesRnaview(points, ids, chids, out_path):
@@ -178,7 +178,7 @@ def getBasePairingEdgesRnaview(points, ids, chids, out_path):
             orient = 'k'
         else:
             orient = 'w'
-        bp_markers.append([p, bp_map[typ], orient, item['orient'][0]+typ, v]) # FOR NOW PASS IT LIKE HE HAS IT!
+        bp_markers.append([p, bp_map[typ], orient, item['orient'][0]+typ]) # FOR NOW PASS IT LIKE HE HAS IT!
 
     return edges, bp_markers, bp_map
         
