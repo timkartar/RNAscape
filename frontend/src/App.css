@@ -2,7 +2,7 @@
   text-align: center;
   min-height: 100vh; /* Ensure the main container takes at least full viewport height */
   position: relative; /* For footer positioning */
-  /* padding-bottom: 30px; Space for footer, adjust as needed */
+  padding-bottom: 30px; /*Space for footer, adjust as needed*/
 }
 
 .App-logo {
@@ -151,7 +151,7 @@
   text-align: center; /* Center the text */
   padding: 10px 0; /* Padding for spacing */
   margin-top: 40px; /* Top margin as requested */
-  /* position: fixed; Fix position to the bottom */
+  position: fixed; /*Fix position to the bottom*/
   bottom: 0; /* Align to bottom */
   width: 100%; /* Full width */
   font-size: 0.9rem; /* Adjust font size as needed */
