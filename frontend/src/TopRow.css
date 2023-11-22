@@ -1,0 +1,17 @@
+/* src/TopRow.css */
+.top-row {
+    background-color: #282c34;
+    color: #fff; /* Text color */
+    padding: 1rem; /* Add padding for a modern look */
+    text-align: center;
+    max-height: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .top-row h1 {
+    font-size: 2rem; /* Larger text size for the title */
+  }
+
+  .top-row h2 {
+    font-size: 1.25rem; /* Larger text size for the title */
+  }

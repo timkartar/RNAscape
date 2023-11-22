@@ -1,0 +1,25 @@
+.documentation {
+    font-family: 'Arial', sans-serif; /* Use a font that matches your theme */
+    color: #333; /* Adjust the text color as per your theme */
+    background-color: #f9f9f9; /* Light background for the documentation box */
+    border-radius: 8px;
+    padding: 1px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds subtle shadow */
+  }
+  
+  .documentation h2, .documentation h3 {
+    color: #2c3e50; /* Darker color for headings */
+  }
+  
+  .documentation p {
+    line-height: 1.6; /* Adjust line height for readability */
+  }
+  
+  .documentation p.indented {
+    margin-left: 20px; /* Indentation for specific paragraphs */
+  }
+  
+  .documentation b {
+    color: #3498db;
+  }

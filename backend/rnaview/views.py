@@ -10,6 +10,7 @@ import time
 
 base_script_path = '/home/aricohen/Desktop/rnaview/'
 # base_script_path = '/home/raktim/rnaview/'
+python_path = '/home/aricohen/anaconda3/envs/RNAproDB/bin/python'
 
 def is_file_served(url):
     try:
@@ -17,6 +18,11 @@ def is_file_served(url):
         return response.status_code == 200
     except requests.RequestException:
         return False
+
+
+def test_get(request):
+    if request.method == "GET":
+        return JsonResponse({'success': 'eskeetit'}, status=200)
 
 
 def run_regen_labels(request):
@@ -29,7 +35,7 @@ def run_regen_labels(request):
 
         try:
             result = subprocess.run(
-                        ['python', script_path, time_string, rotation], 
+                        [python_path, script_path, time_string, rotation], 
                         capture_output=True, 
                         text=True,
                         check=True
@@ -85,14 +91,14 @@ def run_rnaview(request):
             result = None
             if basePairAnnotation == "rnaview":
                 result = subprocess.run(
-                    ['python', script_path, file_path, file.name, loopBulging, basePairAnnotation, additional_file_path], 
+                    [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation, additional_file_path], 
                     capture_output=True, 
                     text=True,
                     check=True
                 )
             else:
                 result = subprocess.run(
-                    ['python', script_path, file_path, file.name, loopBulging, basePairAnnotation], 
+                    [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation], 
                     capture_output=True, 
                     text=True,
                     check=True

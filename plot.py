@@ -436,7 +436,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     plt.tight_layout()
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))
-    # plt.savefig('{}/{}/{}.png'.format(MEDIA_PATH,FIG_PATH,prefix))
+    plt.savefig('{}/{}/{}{}{}.svg'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))
 
     plt.close()
 
@@ -444,8 +444,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # SAVE JSON of pertinent information to call regenerate labels!
     # maybe also print time string
 
-    return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
-    # return '{}/{}.png'.format(FIG_PATH,prefix)
+    # return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
+    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string)
 
 
     '''

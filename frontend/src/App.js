@@ -35,6 +35,7 @@ function App() {
   const [timeString, setTimeString] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(false);
+  const url = 'http://localhost/rnaview/run-rnaview/';
 
   const toggleDocumentation = () => {
     setShowDocumentation(!showDocumentation);
@@ -77,7 +78,6 @@ function App() {
       return;
   }
 
-    const url = 'http://localhost:8001/rnaview/run-rnaview/';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
@@ -110,11 +110,89 @@ function App() {
     });
   }
 
+  // Automatically load example structure
+  const loadExampleData = () => {
+    setIsLoading(true); // Start loading
+    fetch('/testsite/3zp8-assembly1.cif')
+      .then(response => response.blob())
+      .then(blob => {
+        // Create a File object from the blob
+        const file = new File([blob], "3zp8-assembly1.cif"); // Adjust filename as needed
+        
+        // Programmatically set the file to your state and initiate upload
+        setFile(file);
+          // Check if additional file is required and selected
+        if (basePairAnnotation === 'rnaview') {
+          alert('Unable to use RNAView output for the example!');
+          setIsLoading(false);
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('fileName', file.name);
+        formData.append('basePairAnnotation', basePairAnnotation);
+        formData.append('loopBulging', loopBulging);
+        
+        axios.post(url, formData, {
+          headers: {
+            'content-type': 'multipart/form-data',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          withCredentials: true,
+        }).then(response => {
+          // Set the image URL in the state
+          setSumRotation(0);
+          setImageUrl(response.data.image_url);
+          setTimeString(response.data.time_string);
+        }).catch(error => {
+          console.error('Error uploading file:', error);
+        }).finally(() => {
+          setIsLoading(false); // Stop loading
+        });
+      })
+      .catch(error => console.error('Error loading example data:', error))
+  };
+
+
+ // Send timeString and rotation via axios get request to run_regen_labels
+ function testDjango(event) {
+  setIsLoading(true); // Start loading
+  // Define the URL for the GET request
+  const url = `http://localhost/rnaview/test-get/`;
+
+  // Set up the query parameters
+  const params = {
+    timeString: timeString,  // Assuming timeString is stored in state
+    rotation: parseInt(rotation) + parseInt(sumRotation)       // Assuming rotation is stored in state
+  };
+
+  // Send the GET request with the query parameters
+  return axios.get(url, { params })
+    .then(response => {
+      // Handle the response
+      // console.log('Labels regenerated:', response.data);
+      alert("SUCCESS!")
+      return true;
+      // You might want to update some state here based on the response
+    })
+    .catch(error => {
+      console.error('Error regenerating labels:', error);
+      throw error;
+    })
+    .finally(() => {
+      setIsLoading(false); // Stop loading
+    });
+}
+
+
+
+
   // Send timeString and rotation via axios get request to run_regen_labels
   function handleRegenLabels(event) {
     setIsLoading(true); // Start loading
     // Define the URL for the GET request
-    const url = `http://localhost:8001/rnaview/run-regen_labels`;
+    const url = `http://localhost/rnaview/run-regen_labels`;
   
     // do something to sum rotation here!
     // say I rotated 30 degrees already
@@ -150,7 +228,7 @@ function App() {
         const localUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = localUrl;
-        link.download = 'processed-image.png'; // Or dynamically set filename
+        link.download = 'processed-image.svg'; // Or dynamically set filename
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -164,17 +242,68 @@ function App() {
   const handleDownloadAndRegenerate = () => {
     if (rotation !== 0) {
       // If rotation is not 0, regenerate labels and then download
-      handleRegenLabels().then(newImageUrl => {
-        downloadImage(newImageUrl);
-      });
+      // handleRegenLabels().then(newImageUrl => {
+      //   downloadImage(newImageUrl);
+      // });
+      downloadRotatedSVG();
     } else {
       // If rotation is 0, directly download the current image
       downloadImage(imageUrl);
     }
   };
 
-  // const downloadImage = (url) => {
-  //   fetch(url)
+
+  const rotateAndDownloadSVG = (svgText, rotationDegrees) => {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
+  
+    const svgElement = xmlDoc.documentElement;
+    const firstGElement = xmlDoc.querySelector('g');
+    
+    if (firstGElement) {
+      // Apply rotation
+      const rotationTransform = `rotate(${rotationDegrees})`;
+      firstGElement.setAttribute('transform', rotationTransform);
+  
+      // Calculate new viewBox (rough approximation)
+      const originalWidth = parseFloat(svgElement.getAttribute("width"));
+      const originalHeight = parseFloat(svgElement.getAttribute("height"));
+      const maxDim = Math.max(originalWidth, originalHeight);
+      const newViewBox = `0 0 ${maxDim * 1} ${maxDim * 1}`;
+      svgElement.setAttribute('viewBox', newViewBox);
+    }
+  
+    // Serialize the modified SVG back to a string
+    const serializer = new XMLSerializer();
+    const rotatedSVGText = serializer.serializeToString(xmlDoc);
+  
+  
+    // Convert the SVG string to a blob
+    const blob = new Blob([rotatedSVGText], {type: "image/svg+xml"});
+  
+    // Create a download link for the blob
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'rotated-image.svg';  // Setting the download filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  const downloadRotatedSVG = () => {
+    fetch(imageUrl)
+      .then(response => response.text())
+      .then(svgText => {
+        rotateAndDownloadSVG(svgText, rotation);
+      })
+      .catch(error => {
+        console.error('Error fetching the SVG:', error);
+      });
+  };
+
+  // const downloadImage = () => {
+  //   fetch(imageUrl)
   //     .then(response => response.blob())
   //     .then(blob => {
   //       const rotationDegrees = rotation;
@@ -271,7 +400,13 @@ function App() {
     <div className="App">
       <TopRow/>
       <form onSubmit={handleSubmit} className="upload-form">
-        <button type="button" onClick={toggleDocumentation}>Toggle Documentation</button>
+        <a href="/testsite/3zp8-assembly1.cif" download className="download-link">
+          Download Example Data
+        </a>
+        <button type="button" onClick={loadExampleData}>Load Example Data</button>
+        <button type="button" onClick={toggleDocumentation}>
+          {showDocumentation ? "Hide Documentation" : "Show Documentation"}
+        </button>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -332,7 +467,7 @@ function App() {
               onChange={handleRotationChange}
             />
             <button onClick={handleRegenLabels}>Regenerate Labels</button>
-            <button onClick={handleDownloadAndRegenerate}>Download</button>
+            <button type="button" onClick={handleDownloadAndRegenerate}>Download</button>
           </div>
           <TransformWrapper 
             ref={transformWrapperRef} 
@@ -353,14 +488,14 @@ function App() {
           </TransformWrapper>
           </div>
           <img 
-                src="/legend.png" 
+                src="/testsite/legend.png" 
                 alt="Legend"
                 className="img-legend"
                 />
         </div>
       )}
       <footer className="app-footer">
-      <p>The Rohs Lab @ University of Southern California</p>
+      <p>RNAScape is maintained by The Rohs Lab @ University of Southern California. It is free to access and use by anyone.</p>
     </footer>
     </div>
   );
