@@ -7,7 +7,15 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import requests
 import time
-from config import *
+
+
+base_script_path = '/srv/www/rnascape/rnaview/'
+python_path = '/home/aricohen/.conda/envs/rnascape/bin/python'
+
+# base_script_path = '/home/aricohen/Desktop/rnaview/'
+# python_path = '/home/aricohen/anaconda3/envs/RNAproDB/bin/python'
+
+# base_script_path = '/home/raktim/rnaview/'
 
 def is_file_served(url):
     try:
