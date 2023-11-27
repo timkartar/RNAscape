@@ -113,7 +113,7 @@ function App() {
   // Automatically load example structure
   const loadExampleData = () => {
     setIsLoading(true); // Start loading
-    fetch('/testsite/3zp8-assembly1.cif')
+    fetch('/rnascape/3zp8-assembly1.cif')
       .then(response => response.blob())
       .then(blob => {
         // Create a File object from the blob
@@ -488,7 +488,7 @@ function App() {
           </TransformWrapper>
           </div>
           <img 
-                src="/testsite/legend.png" 
+                src="/rnascape/legend.png" 
                 alt="Legend"
                 className="img-legend"
                 />
