@@ -400,7 +400,7 @@ function App() {
     <div className="App">
       <TopRow/>
       <form onSubmit={handleSubmit} className="upload-form">
-        <a href="/testsite/3zp8-assembly1.cif" download className="download-link">
+        <a href="/rnascape/3zp8-assembly1.cif" download className="download-link">
           Download Example Data
         </a>
         <button type="button" onClick={loadExampleData}>Load Example Data</button>
