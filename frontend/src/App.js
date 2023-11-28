@@ -271,56 +271,15 @@ function App() {
       }
     }
   };
-  function getRotatedViewBox(svgElement, rotationDegrees, strokeWidth) {
-    const bbox = svgElement.getBBox();
-    console.log('Original BBox:', bbox);
-
-    const centerX = bbox.x + svgElement.getAttribute("width") / 2;
-    const centerY = bbox.y + svgElement.getAttribute("height") / 2;
-    const radians = rotationDegrees * Math.PI / 180;
-    const padding = strokeWidth / 2; // Half of the stroke width as padding around the bbox
   
-    // Function to rotate a point around the center
-    const rotatePoint = (x, y) => {
-      const dx = x - centerX;
-      const dy = y - centerY;
-      return {
-        x: dx * Math.cos(radians) - dy * Math.sin(radians) + centerX,
-        y: dx * Math.sin(radians) + dy * Math.cos(radians) + centerY,
-      };
-    };
-  
-    // Get all corners of the bounding box, including the stroke width
-    const corners = [
-      rotatePoint(bbox.x - padding, bbox.y - padding),
-      rotatePoint(bbox.x + bbox.width + padding, bbox.y - padding),
-      rotatePoint(bbox.x - padding, bbox.y + bbox.height + padding),
-      rotatePoint(bbox.x + bbox.width + padding, bbox.y + bbox.height + padding),
-    ];
-    console.log('Rotated Corners:', corners);
-    // Compute the min and max x and y from the rotated corners
-    const xs = corners.map((c) => c.x);
-    const ys = corners.map((c) => c.y);
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
-    console.log('minX, maxX, minY, maxY:', minX, maxX, minY, maxY);
-    // Construct the viewBox string
-    const newViewBox = `${minX} ${minY} ${maxX - minX} ${maxY - minY}`;
-    return newViewBox;
-  }
 
   const rotateAndDownloadSVG = (svgText, rotationDegrees) => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
 
     const svgElement = xmlDoc.documentElement;
-    const strokeWidth = 1.575
     const firstGElement = xmlDoc.querySelector('g');
     
-
-
     if (firstGElement) {
         // Original dimensions
         const originalWidth = parseFloat(svgElement.getAttribute("width"));
@@ -334,8 +293,12 @@ function App() {
         const rotationTransform = `rotate(${rotationDegrees}, ${centerX}, ${centerY})`;
         firstGElement.setAttribute('transform', rotationTransform);
 
-        // Get the new viewBox
-        const newViewBox = getRotatedViewBox(svgElement, rotationDegrees, strokeWidth);
+        // Adjust viewBox to fit the rotated image
+        // The new viewBox dimensions might need to be adjusted based on the rotation
+        const maxDim = Math.max(originalWidth, originalHeight) * Math.sqrt(2); // sqrt(2) accounts for rotation
+        const newViewBoxX = centerX - maxDim / 2;
+        const newViewBoxY = centerY - maxDim / 2;
+        const newViewBox = `${newViewBoxX} ${newViewBoxY} ${maxDim} ${maxDim}`;
         svgElement.setAttribute('viewBox', newViewBox);
     }
 
