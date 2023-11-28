@@ -271,15 +271,56 @@ function App() {
       }
     }
   };
+  function getRotatedViewBox(svgElement, rotationDegrees, strokeWidth) {
+    const bbox = svgElement.getBBox();
+    console.log('Original BBox:', bbox);
 
+    const centerX = bbox.x + svgElement.getAttribute("width") / 2;
+    const centerY = bbox.y + svgElement.getAttribute("height") / 2;
+    const radians = rotationDegrees * Math.PI / 180;
+    const padding = strokeWidth / 2; // Half of the stroke width as padding around the bbox
+  
+    // Function to rotate a point around the center
+    const rotatePoint = (x, y) => {
+      const dx = x - centerX;
+      const dy = y - centerY;
+      return {
+        x: dx * Math.cos(radians) - dy * Math.sin(radians) + centerX,
+        y: dx * Math.sin(radians) + dy * Math.cos(radians) + centerY,
+      };
+    };
+  
+    // Get all corners of the bounding box, including the stroke width
+    const corners = [
+      rotatePoint(bbox.x - padding, bbox.y - padding),
+      rotatePoint(bbox.x + bbox.width + padding, bbox.y - padding),
+      rotatePoint(bbox.x - padding, bbox.y + bbox.height + padding),
+      rotatePoint(bbox.x + bbox.width + padding, bbox.y + bbox.height + padding),
+    ];
+    console.log('Rotated Corners:', corners);
+    // Compute the min and max x and y from the rotated corners
+    const xs = corners.map((c) => c.x);
+    const ys = corners.map((c) => c.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    console.log('minX, maxX, minY, maxY:', minX, maxX, minY, maxY);
+    // Construct the viewBox string
+    const newViewBox = `${minX} ${minY} ${maxX - minX} ${maxY - minY}`;
+    return newViewBox;
+  }
 
   const rotateAndDownloadSVG = (svgText, rotationDegrees) => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
 
     const svgElement = xmlDoc.documentElement;
+    const strokeWidth = 1.575
     const firstGElement = xmlDoc.querySelector('g');
     
+
+
     if (firstGElement) {
         // Original dimensions
         const originalWidth = parseFloat(svgElement.getAttribute("width"));
@@ -293,12 +334,8 @@ function App() {
         const rotationTransform = `rotate(${rotationDegrees}, ${centerX}, ${centerY})`;
         firstGElement.setAttribute('transform', rotationTransform);
 
-        // Adjust viewBox to fit the rotated image
-        // The new viewBox dimensions might need to be adjusted based on the rotation
-        const maxDim = Math.max(originalWidth, originalHeight) * Math.sqrt(2); // sqrt(2) accounts for rotation
-        const newViewBoxX = centerX - maxDim / 2;
-        const newViewBoxY = centerY - maxDim / 2;
-        const newViewBox = `${newViewBoxX} ${newViewBoxY} ${maxDim} ${maxDim}`;
+        // Get the new viewBox
+        const newViewBox = getRotatedViewBox(svgElement, rotationDegrees, strokeWidth);
         svgElement.setAttribute('viewBox', newViewBox);
     }
 
@@ -320,30 +357,41 @@ function App() {
 };
 
 const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
-  // Create an Image object
   const image = new Image();
-  image.crossOrigin = "Anonymous"; // Handle CORS if the image is from a different origin
+  image.crossOrigin = "Anonymous"; // Handle CORS if needed
   image.src = imagePngUrl;
 
-  // Load the image and rotate it on the canvas
   image.onload = () => {
-    // Create a canvas
+    // Calculate the dimensions of the rotated image
+    const radians = rotationDegrees * Math.PI / 180;
+    const sin = Math.abs(Math.sin(radians));
+    const cos = Math.abs(Math.cos(radians));
+    const newWidth = image.width * cos + image.height * sin;
+    const newHeight = image.width * sin + image.height * cos;
+
+    // Create a canvas with dimensions to fit the rotated image
     const canvas = document.createElement('canvas');
+    canvas.width = newWidth;
+    canvas.height = newHeight;
     const ctx = canvas.getContext('2d');
 
-    // Calculate the new canvas size to accommodate the rotated image
-    const diagonal = Math.sqrt(image.width ** 2 + image.height ** 2);
-    canvas.width = canvas.height = diagonal;
+    // Fill the canvas with a white rectangle
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Translate and rotate
-    ctx.translate(diagonal / 2, diagonal / 2);
-    ctx.rotate(rotationDegrees * Math.PI / 180);
+    // Move the origin to the center of the new canvas
+    ctx.translate(newWidth / 2, newHeight / 2);
+
+    // Rotate the canvas
+    ctx.rotate(radians);
+
+    // Draw the image so that its center aligns with the canvas origin
     ctx.drawImage(image, -image.width / 2, -image.height / 2);
 
     // Convert the canvas to a data URL in PNG format
     const dataURL = canvas.toDataURL('image/png');
 
-    // Create a download link for the image
+    // Download the rotated image
     const link = document.createElement('a');
     link.href = dataURL;
     link.download = 'rotated-image.png'; // Set the download file name
@@ -352,11 +400,12 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     document.body.removeChild(link);
   };
 
-  // Error handling if the image fails to load
   image.onerror = () => {
     console.error('Error loading the image:', imagePngUrl);
   };
 };
+
+
 
   const downloadRotatedSVG = () => {
     fetch(imageUrl)
