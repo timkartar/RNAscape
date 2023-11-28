@@ -26,7 +26,8 @@ function App() {
   const [sumRotation, setSumRotation] = useState(0); // New state for rotation
   const [rotation, setRotation] = useState(0); // New state for rotation
   const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(''); // State to store the image URL
+  const [imageUrl, setImageUrl] = useState(''); // State to store the image SVG URL
+  const [imagePngUrl, setImagePngUrl] = useState(''); // State to store the image SVG URL
   const transformWrapperRef = useRef(null); // Ref to access TransformWrapper
   const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
   const [basePairAnnotation, setBasePairAnnotation] = useState('dssr');
@@ -102,6 +103,8 @@ function App() {
       // Set the image URL in the state
       setSumRotation(0);
       setImageUrl(response.data.image_url);
+      setImagePngUrl(response.data.image_png_url);
+
       setTimeString(response.data.time_string);
     }).catch(error => {
       console.error('Error uploading file:', error);
@@ -144,6 +147,7 @@ function App() {
           // Set the image URL in the state
           setSumRotation(0);
           setImageUrl(response.data.image_url);
+          setImagePngUrl(response.data.image_png_url);
           setTimeString(response.data.time_string);
         }).catch(error => {
           console.error('Error uploading file:', error);
@@ -210,6 +214,7 @@ function App() {
         setSumRotation(parseInt(rotation)+parseInt(sumRotation))
         setRotation(0)
         setImageUrl(response.data.image_url)
+        setImagePngUrl(response.data.image_png_url);
         return response.data.image_url;
         // You might want to update some state here based on the response
       })
@@ -221,14 +226,18 @@ function App() {
         setIsLoading(false); // Stop loading
       });
   }
-  const downloadImage = (url) => {
+  const downloadImage = (url, isPng) => {
     fetch(url)
       .then(response => response.blob())
       .then(blob => {
         const localUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = localUrl;
-        link.download = 'processed-image.svg'; // Or dynamically set filename
+        if(isPng){
+          link.download = 'processed-image.png'
+        } else{
+          link.download = 'processed-image.svg';
+        }
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -239,16 +248,27 @@ function App() {
       });
   };
   
-  const handleDownloadAndRegenerate = () => {
+  const handleDownloadAndRegenerate = (type) => {
+    console.log(type);
     if (rotation !== 0) {
       // If rotation is not 0, regenerate labels and then download
       // handleRegenLabels().then(newImageUrl => {
       //   downloadImage(newImageUrl);
       // });
-      downloadRotatedSVG();
+      if(type === "PNG"){
+        rotateAndDownloadPNG(imagePngUrl, rotation);
+      }
+      else{
+        downloadRotatedSVG();
+      }
     } else {
       // If rotation is 0, directly download the current image
-      downloadImage(imageUrl);
+      if(type === "PNG"){
+        downloadImage(imagePngUrl, true);
+      }
+      else{
+        downloadImage(imageUrl, false);
+      }
     }
   };
 
@@ -256,31 +276,39 @@ function App() {
   const rotateAndDownloadSVG = (svgText, rotationDegrees) => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
-  
+
     const svgElement = xmlDoc.documentElement;
     const firstGElement = xmlDoc.querySelector('g');
     
     if (firstGElement) {
-      // Apply rotation
-      const rotationTransform = `rotate(${rotationDegrees})`;
-      firstGElement.setAttribute('transform', rotationTransform);
-  
-      // Calculate new viewBox (rough approximation)
-      const originalWidth = parseFloat(svgElement.getAttribute("width"));
-      const originalHeight = parseFloat(svgElement.getAttribute("height"));
-      const maxDim = Math.max(originalWidth, originalHeight);
-      const newViewBox = `0 0 ${maxDim * 1} ${maxDim * 1}`;
-      svgElement.setAttribute('viewBox', newViewBox);
+        // Original dimensions
+        const originalWidth = parseFloat(svgElement.getAttribute("width"));
+        const originalHeight = parseFloat(svgElement.getAttribute("height"));
+
+        // Calculate center
+        const centerX = originalWidth / 2;
+        const centerY = originalHeight / 2;
+
+        // Apply rotation around the center
+        const rotationTransform = `rotate(${rotationDegrees}, ${centerX}, ${centerY})`;
+        firstGElement.setAttribute('transform', rotationTransform);
+
+        // Adjust viewBox to fit the rotated image
+        // The new viewBox dimensions might need to be adjusted based on the rotation
+        const maxDim = Math.max(originalWidth, originalHeight) * Math.sqrt(2); // sqrt(2) accounts for rotation
+        const newViewBoxX = centerX - maxDim / 2;
+        const newViewBoxY = centerY - maxDim / 2;
+        const newViewBox = `${newViewBoxX} ${newViewBoxY} ${maxDim} ${maxDim}`;
+        svgElement.setAttribute('viewBox', newViewBox);
     }
-  
+
     // Serialize the modified SVG back to a string
     const serializer = new XMLSerializer();
     const rotatedSVGText = serializer.serializeToString(xmlDoc);
-  
-  
+
     // Convert the SVG string to a blob
     const blob = new Blob([rotatedSVGText], {type: "image/svg+xml"});
-  
+
     // Create a download link for the blob
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -289,7 +317,46 @@ function App() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
+};
+
+const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
+  // Create an Image object
+  const image = new Image();
+  image.crossOrigin = "Anonymous"; // Handle CORS if the image is from a different origin
+  image.src = imagePngUrl;
+
+  // Load the image and rotate it on the canvas
+  image.onload = () => {
+    // Create a canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Calculate the new canvas size to accommodate the rotated image
+    const diagonal = Math.sqrt(image.width ** 2 + image.height ** 2);
+    canvas.width = canvas.height = diagonal;
+
+    // Translate and rotate
+    ctx.translate(diagonal / 2, diagonal / 2);
+    ctx.rotate(rotationDegrees * Math.PI / 180);
+    ctx.drawImage(image, -image.width / 2, -image.height / 2);
+
+    // Convert the canvas to a data URL in PNG format
+    const dataURL = canvas.toDataURL('image/png');
+
+    // Create a download link for the image
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'rotated-image.png'; // Set the download file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
+
+  // Error handling if the image fails to load
+  image.onerror = () => {
+    console.error('Error loading the image:', imagePngUrl);
+  };
+};
 
   const downloadRotatedSVG = () => {
     fetch(imageUrl)
@@ -453,22 +520,29 @@ function App() {
       {!showDocumentation && !isLoading && imageUrl && (
         <div className="image-and-legend-container">
         <div className="image-container">
-          <div className="controls">
-            <button onClick={zoomIn}>Zoom In</button>
-            <button onClick={zoomOut}>Zoom Out</button>
-            <button onClick={centerImage}>Center</button>
-            <button onClick={resetTransform}>Reset</button>
-            <label>Rotate Image:</label>
-            <input 
-              type="range" 
-              min="0" 
-              max="360" 
-              value={rotation} 
-              onChange={handleRotationChange}
-            />
-            <button onClick={handleRegenLabels}>Regenerate Labels</button>
-            <button type="button" onClick={handleDownloadAndRegenerate}>Download</button>
+        <div className="controls">
+          <button onClick={zoomIn}>Zoom In</button>
+          <button onClick={zoomOut}>Zoom Out</button>
+          <button onClick={centerImage}>Center</button>
+          <button onClick={resetTransform}>Reset</button>
+          <label>Rotate Image:</label>
+          <input 
+            type="range" 
+            min="0" 
+            max="360" 
+            value={rotation} 
+            onChange={handleRotationChange}
+          />
+          <button onClick={handleRegenLabels}>Regenerate Labels</button>
+
+          <div className="dropdown">
+            <button type="button" className="dropbtn">Download</button>
+            <div className="dropdown-content">
+              <a href="#" onClick={() => handleDownloadAndRegenerate('SVG')}>SVG</a>
+              <a href="#" onClick={() => handleDownloadAndRegenerate('PNG')}>PNG</a>
+            </div>
           </div>
+        </div>
           <TransformWrapper 
             ref={transformWrapperRef} 
             options={{ ...transformOptions}}

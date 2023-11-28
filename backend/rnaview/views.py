@@ -45,12 +45,17 @@ def run_regen_labels(request):
                         text=True,
                         check=True
                     )
-            image_path = result.stdout.strip()
+            image_path = result.stdout.strip().split(',')[0]
+            image_png_path = result.stdout.strip().split(',')[1]
+
+
             image_url = request.build_absolute_uri(default_storage.url(image_path))
+            image_png_url = request.build_absolute_uri(default_storage.url(image_png_path))
+
             # Polling to check if the file is being served
             for _ in range(10):  # Number of attempts
                 if is_file_served(image_url):
-                    return JsonResponse({'image_url': image_url, 'time_string': time_string})
+                    return JsonResponse({'image_url': image_url, 'time_string': time_string, 'image_png_url': image_png_url})
                 time.sleep(1)  # Wait for 1 second before next attempt
             return JsonResponse({'error': 'File not ready 1'}, status=500)
         except subprocess.CalledProcessError as e:
@@ -114,13 +119,15 @@ def run_rnaview(request):
 
             image_path = result.stdout.split(',')[0].strip()
             time_string = result.stdout.split(',')[1].strip()
-            
+            image_png_path = result.stdout.split(',')[2].strip()
 
             image_url = request.build_absolute_uri(default_storage.url(image_path))
+            image_png_url = request.build_absolute_uri(default_storage.url(image_png_path))
+
             # Polling to check if the file is being served
             for _ in range(10):  # Number of attempts
                 if is_file_served(image_url):
-                    return JsonResponse({'image_url': image_url, 'time_string': time_string})
+                    return JsonResponse({'image_url': image_url, 'time_string': time_string, 'image_png_url': image_png_url})
                 time.sleep(1)  # Wait for 1 second before next attempt
             return JsonResponse({'error': 'File not ready 1'}, status=500)
         except subprocess.CalledProcessError as e:

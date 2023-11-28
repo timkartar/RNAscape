@@ -33,5 +33,5 @@ out_path = str(npzfile['out_path'])
 with open(json_filepath, 'r') as json_file:
     dssrout = json.load(json_file)
 
-figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, out_path=out_path, time_string=time_string, rotation=rotation)
-print(figpath)
+figpath,pngpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, out_path=out_path, time_string=time_string, rotation=rotation)
+print(figpath +"," + pngpath)

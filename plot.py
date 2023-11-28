@@ -445,7 +445,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # maybe also print time string
 
     # return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
-    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string)
+    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string), '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
 
 
     '''
