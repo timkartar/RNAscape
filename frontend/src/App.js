@@ -472,7 +472,20 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     setRotation(event.target.value);
   };
 
-
+ // Function to determine the image source based on basePairAnnotation
+  const getImageSrc = () => {
+    switch (basePairAnnotation) {
+      case 'dssrLw':
+        return '/rnascape/lw_legend.svg';
+      case 'rnaview':
+        return '/rnascape/lw_legend.svg';
+      case 'dssr':
+        return '/rnascape/legend.png';
+      // Add more cases as needed
+      default:
+        return '/rnascape/legend.png'; // Default image
+    }
+  };
   
 
   return (
@@ -574,7 +587,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           </TransformWrapper>
           </div>
           <img 
-                src="/rnascape/legend.png" 
+                src={getImageSrc()}
                 alt="Legend"
                 className="img-legend"
                 />

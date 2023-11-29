@@ -139,10 +139,12 @@
 }
 
 .img-legend {
-  max-height: 30vh; /* Max height of viewport height to make it responsive */
-  flex-shrink: 0; /* Prevents the legend from shrinking */
-  width: auto; /* Maintain aspect ratio */
-  align-self: flex-start; /* Aligns at the top */
+  max-height: 30vh; /* Max height as a percentage of the viewport height */
+  max-width: 25%;  /* Max width as a percentage of the containing element's width */
+  height: auto; /* Height auto for maintaining aspect ratio */
+  width: auto; /* Width auto for maintaining aspect ratio */
+  flex-shrink: 0; /* Prevents the image from shrinking */
+  align-self: flex-start; /* Aligns the image at the top */
 }
 
 .app-footer {
