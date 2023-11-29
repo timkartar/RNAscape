@@ -586,11 +586,11 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             </TransformComponent>
           </TransformWrapper>
           </div>
-          <img 
+          {basePairAnnotation !== "saenger" && <img 
                 src={getImageSrc()}
                 alt="Legend"
                 className="img-legend"
-                />
+                />}
         </div>
       )}
       <footer className="app-footer">
