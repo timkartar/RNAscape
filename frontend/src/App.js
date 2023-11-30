@@ -570,20 +570,19 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         </div>
           <TransformWrapper 
             ref={transformWrapperRef} 
-            options={{ ...transformOptions}}
+            minScale={0.1}
+            maxScale={5}
             defaultPositionX={bounds.boundX}
             defaultPositionY={bounds.boundY}
             >
-            <TransformComponent
-              wrapperStyle={{ height: '80vh', width: '80vw' }}>
-              <img 
-                src={imageUrl} 
-                alt="RNA Landscape Image" 
-                className="img-responsive" 
-                style={{ transform: `rotate(${rotation}deg)` }}
-                onLoad={onImageLoad}
-              />
-            </TransformComponent>
+               {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                 <React.Fragment>
+                 <TransformComponent
+                      wrapperStyle={{ height: '80vh', width: '80vw' }}>
+                   <img src={imageUrl} alt="RNA Landscape" onLoad={onImageLoad} className="img-responsive" style={{ transform: `rotate(${rotation}deg)` }} />
+                 </TransformComponent>
+                 </React.Fragment>
+      )}
           </TransformWrapper>
           </div>
           {basePairAnnotation !== "saenger" && <img 

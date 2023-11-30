@@ -444,16 +444,15 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # SAVE JSON of pertinent information to call regenerate labels!
     # maybe also print time string
 
+    # for item in bp_map.keys():
+    #     plt.scatter(0,0,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
+    #             edgecolor='k')
+    #     plt.scatter(0,0,marker=bp_map[item], color='w', label = 't'+item, edgecolor='k',
+    #             linewidth=1)
+    # plt.legend()
+    # plt.savefig('{}/{}/legend.svg'.format(MEDIA_PATH,FIG_PATH))
+
     # return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
-    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string), '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
+    # return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string), '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
 
 
-    '''
-    for item in bp_map.keys():
-        plt.scatter(0,0,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
-                edgecolor='k')
-        plt.scatter(0,0,marker=bp_map[item], color='w', label = 't'+item, edgecolor='k',
-                linewidth=1)
-    plt.legend()
-    plt.savefig('{}/legend.png'.format(FIG_PATH))
-    '''

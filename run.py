@@ -8,6 +8,8 @@ import json
 import numpy as np
 import json
 
+#python run.py uploads/1ivs-assembly1.cif 1ivs 1 dssr
+
 cif = "{}/{}".format(MEDIA_PATH,sys.argv[1].strip())
 prefix = sys.argv[2]
 prefix = prefix.split('.cif')[0].strip() # MUST INCLUDE CIF or breaks, error handle later!
