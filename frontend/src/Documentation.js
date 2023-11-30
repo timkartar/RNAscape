@@ -7,6 +7,9 @@ import React from 'react';
 function Documentation() {
   return (
     <div className="documentation">
+              <a href="/rnascape/3zp8-assembly1.cif" download className="download-link">
+          Download Example Data
+        </a>
       <h2>Documentation</h2>
       <p><b>RNAScape</b> is a tool for the <b>visualization</b> of <b>RNA secondary structure</b>. It outputs highly <b>customizable</b> images that provide insight into RNA <b>tertiary structure</b>.</p>
       <h3>Quickstart</h3>

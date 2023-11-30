@@ -492,9 +492,6 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     <div className="App">
       <TopRow/>
       <form onSubmit={handleSubmit} className="upload-form">
-        <a href="/rnascape/3zp8-assembly1.cif" download className="download-link">
-          Download Example Data
-        </a>
         <button type="button" onClick={loadExampleData}>Load Example Data</button>
         <button type="button" onClick={toggleDocumentation}>
           {showDocumentation ? "Hide Documentation" : "Show Documentation"}

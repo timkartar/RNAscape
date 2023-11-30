@@ -453,6 +453,6 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # plt.savefig('{}/{}/legend.svg'.format(MEDIA_PATH,FIG_PATH))
 
     # return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
-    # return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string), '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
+    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string), '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
 
 
