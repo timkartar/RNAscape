@@ -29,39 +29,16 @@ SECRET_KEY = 'django-insecure-9m(_64-(ii&6+*&w6bs%z@5=k76oukzt5mbr32w$yriw((29uh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.123.13.8", "10.136.114.14"
+# This must include the server's IP address
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.123.13.8", "10.136.114.14",
 ]
 
 # Allow all domains during development
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 # Application definition
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # The origin of your React app
-    "http://localhost:3001",  # The origin of your React app
-    "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
-    "http://127.0.0.1:3001",  # Also include this if you access your frontend via 127.0.0.1
-    "http://10.123.13.8:3001",
-]
 
 # Allow sending of cookies to the front-end server.
 CORS_ALLOW_CREDENTIALS = True
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",  # The origin of your React app
-    "http://localhost:3001",  # The origin of your React app
-    "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
-    "http://127.0.0.1:3001",  # Also include this if you access your frontend via 127.0.0.1
-    "http://10.123.13.8:3001",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",  # The origin of your React app
-    "http://localhost:3001",  # The origin of your React app
-    "http://127.0.0.1:3000",  # Also include this if you access your frontend via 127.0.0.1
-    "http://127.0.0.1:3001",  # Also include this if you access your frontend via 127.0.0.1
-    "http://10.123.13.8:3001",
-]
 
 CSRF_COOKIE_DOMAIN = "localhost"
 
