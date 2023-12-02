@@ -211,8 +211,8 @@
 .download-link {
   display: inline-block;
   padding: 10px 15px;
-  margin: 10px 0;
-  background-color: #4CAF50;
+  margin: 10px 10px;
+  background-color: #616662;
   color: white;
   border-radius: 5px;
   text-decoration: none;
@@ -268,4 +268,8 @@
 .dropdown {
   position: relative;
   display: inline-block;
+}
+
+.app-footer p a {
+  color: inherit; /* This will make the color the same as the parent element */
 }

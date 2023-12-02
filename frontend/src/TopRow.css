@@ -6,12 +6,34 @@
     text-align: center;
     max-height: 50px;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
+  .toggle-docs-btn {
+    background-color: #3498db; /* Choose a color that fits your theme */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  
+    /* You can adjust the font, padding, border-radius, etc., as per your design */
+  }
+
+  .toggle-docs-btn:hover {
+    background-color: #2980b9; /* Slightly darker shade for hover effect */
+  }
+
   .top-row h1 {
     font-size: 2rem; /* Larger text size for the title */
   }
 
   .top-row h2 {
-    font-size: 1.25rem; /* Larger text size for the title */
+    text-align: left;
+    padding-left: 30px;
+    font-size: 2rem; /* Larger text size for the title */
   }

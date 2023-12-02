@@ -1,25 +1,31 @@
 .documentation {
-    font-family: 'Arial', sans-serif; /* Use a font that matches your theme */
-    color: #333; /* Adjust the text color as per your theme */
-    background-color: #f9f9f9; /* Light background for the documentation box */
-    border-radius: 8px;
-    padding: 1px;
-    margin: 20px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds subtle shadow */
-  }
-  
-  .documentation h2, .documentation h3 {
-    color: #2c3e50; /* Darker color for headings */
-  }
-  
-  .documentation p {
-    line-height: 1.6; /* Adjust line height for readability */
-  }
-  
-  .documentation p.indented {
-    margin-left: 20px; /* Indentation for specific paragraphs */
-  }
-  
-  .documentation b {
-    color: #3498db;
-  }
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem; /* Or adjust as necessary */
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.documentation h3, .documentation h2 {
+  color: #2c3e50;
+  text-align: left; /* Center-align headings */
+  padding-left: 20%; /* Add substantial padding on the left */
+  padding-right: 20%; /* Add substantial padding on the right */
+}
+
+.documentation p {
+  line-height: 1.6;
+  padding-left: 20%; /* Add substantial padding on the left */
+  padding-right: 20%; /* Add substantial padding on the right */
+  text-align: left; /* Ensure text is aligned left */
+}
+
+.documentation p.indented {
+  margin-left: 20px; /* Additional indentation if needed */
+}
+
+.documentation b {
+  color: #3498db;
+}

@@ -31,12 +31,16 @@ function App() {
   const transformWrapperRef = useRef(null); // Ref to access TransformWrapper
   const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
   const [basePairAnnotation, setBasePairAnnotation] = useState('dssr');
+  const [uploadBasePairAnnotation, setUploadBasePairAnnotation] = useState(''); // used to set the legend
   const [loopBulging, setLoopBulging] = useState('1');
   const [additionalFile, setAdditionalFile] = useState(null);
   const [timeString, setTimeString] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(false);
-  const url = 'http://localhost/rnaview/run-rnaview/';
+  const baseUrl = 'https://rohslab.usc.edu'
+  // const baseUrl = 'http://10.136.114.14'
+
+  // /rnaview/rnaview/run-rnaview/';
 
   const toggleDocumentation = () => {
     setShowDocumentation(!showDocumentation);
@@ -65,7 +69,9 @@ function App() {
     setAdditionalFile(event.target.files[0]);
   }  
 
+  // Main function to handle uploading a file!
   function handleSubmit(event) {
+    const url = baseUrl + '/rnaview/rnaview/run-rnaview/';
     event.preventDefault();
     setIsLoading(true); // Start loading
     if (!file) {
@@ -104,9 +110,13 @@ function App() {
       setSumRotation(0);
       setImageUrl(response.data.image_url);
       setImagePngUrl(response.data.image_png_url);
-
+      setUploadBasePairAnnotation(basePairAnnotation);
       setTimeString(response.data.time_string);
+      if(showDocumentation){
+        toggleDocumentation(); // hide documentation if it is being shown!
+      }
     }).catch(error => {
+      alert('Error uploading file!');
       console.error('Error uploading file:', error);
     }).finally(() => {
       setIsLoading(false); // Stop loading
@@ -115,6 +125,7 @@ function App() {
 
   // Automatically load example structure
   const loadExampleData = () => {
+    const url = baseUrl + '/rnaview/rnaview/run-rnaview/';
     setIsLoading(true); // Start loading
     fetch('/rnascape/3zp8-assembly1.cif')
       .then(response => response.blob())
@@ -146,10 +157,15 @@ function App() {
         }).then(response => {
           // Set the image URL in the state
           setSumRotation(0);
+          setUploadBasePairAnnotation(basePairAnnotation);
           setImageUrl(response.data.image_url);
           setImagePngUrl(response.data.image_png_url);
           setTimeString(response.data.time_string);
+          if(showDocumentation){
+            toggleDocumentation(); // hide documentation if it is being shown!
+          }
         }).catch(error => {
+          alert('Error loading file!');
           console.error('Error uploading file:', error);
         }).finally(() => {
           setIsLoading(false); // Stop loading
@@ -163,7 +179,7 @@ function App() {
  function testDjango(event) {
   setIsLoading(true); // Start loading
   // Define the URL for the GET request
-  const url = `http://localhost/rnaview/test-get/`;
+  const url = baseUrl+`/rnaview/rnaview/test-get/`;
 
   // Set up the query parameters
   const params = {
@@ -181,6 +197,7 @@ function App() {
       // You might want to update some state here based on the response
     })
     .catch(error => {
+      alert('Error regenerating labels!');
       console.error('Error regenerating labels:', error);
       throw error;
     })
@@ -196,7 +213,7 @@ function App() {
   function handleRegenLabels(event) {
     setIsLoading(true); // Start loading
     // Define the URL for the GET request
-    const url = `http://localhost/rnaview/run-regen_labels`;
+    const url = baseUrl + `/rnaview/rnaview/run-regen_labels`;
   
     // do something to sum rotation here!
     // say I rotated 30 degrees already
@@ -219,6 +236,7 @@ function App() {
         // You might want to update some state here based on the response
       })
       .catch(error => {
+        alert('Error regenerating labels!');
         console.error('Error regenerating labels:', error);
         throw error;
       })
@@ -244,14 +262,16 @@ function App() {
         window.URL.revokeObjectURL(localUrl); // Clean up the URL
       })
       .catch(error => {
+        alert('Error downloading the image!');
+
         console.error('Error downloading the image:', error);
       });
   };
   
   const handleDownloadAndRegenerate = (type) => {
     console.log(type);
-    if (rotation !== 0) {
-      // If rotation is not 0, regenerate labels and then download
+    if (rotation !== 0 && rotation !== 360) {
+      // If rotation is not 0/360, regenerate labels and then download
       // handleRegenLabels().then(newImageUrl => {
       //   downloadImage(newImageUrl);
       // });
@@ -262,7 +282,7 @@ function App() {
         downloadRotatedSVG();
       }
     } else {
-      // If rotation is 0, directly download the current image
+      // If rotation is 0/360, directly download the current image
       if(type === "PNG"){
         downloadImage(imagePngUrl, true);
       }
@@ -377,6 +397,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         rotateAndDownloadSVG(svgText, rotation);
       })
       .catch(error => {
+        alert('Error fetching the SVG!');
         console.error('Error fetching the SVG:', error);
       });
   };
@@ -469,12 +490,22 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
   };
 
   const handleRotationChange = (event) => {
-    setRotation(event.target.value);
+    let newRotation = parseInt(event.target.value, 10);
+
+    // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
+    if (isNaN(newRotation)) {
+      newRotation = 0;
+    }
+
+    // Clamp the newRotation between 0 and 360
+    newRotation = Math.max(0, Math.min(newRotation, 360));
+  
+    setRotation(newRotation);
   };
 
  // Function to determine the image source based on basePairAnnotation
   const getImageSrc = () => {
-    switch (basePairAnnotation) {
+    switch (uploadBasePairAnnotation) {
       case 'dssrLw':
         return '/rnascape/lw_legend.svg';
       case 'rnaview':
@@ -490,12 +521,9 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
 
   return (
     <div className="App">
-      <TopRow/>
+      <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
-        <button type="button" onClick={loadExampleData}>Load Example Data</button>
-        <button type="button" onClick={toggleDocumentation}>
-          {showDocumentation ? "Hide Documentation" : "Show Documentation"}
-        </button>
+        <button type="button" onClick={loadExampleData}>Load Example</button>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -555,6 +583,14 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             value={rotation} 
             onChange={handleRotationChange}
           />
+           <input
+              type="number"
+              min="0"
+              max="360"
+              value={rotation}
+              onChange={handleRotationChange}
+              style={{ marginLeft: '0px', width: '50px' }} // Adjust style as needed
+            />
           <button onClick={handleRegenLabels}>Regenerate Labels</button>
 
           <div className="dropdown">
@@ -582,7 +618,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       )}
           </TransformWrapper>
           </div>
-          {basePairAnnotation !== "saenger" && <img 
+          {uploadBasePairAnnotation !== "saenger" && <img 
                 src={getImageSrc()}
                 alt="Legend"
                 className="img-legend"
@@ -590,7 +626,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         </div>
       )}
       <footer className="app-footer">
-      <p>RNAScape is maintained by The Rohs Lab @ University of Southern California. It is free to access and use by anyone.</p>
+      <p>RNAScape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to access and use by anyone.</p>
     </footer>
     </div>
   );

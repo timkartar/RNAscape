@@ -1,11 +1,14 @@
 // src/TopRow.js
 import React from 'react';
-import './TopRow.css'; // You can create a separate CSS file for this component
+import './TopRow.css';
 
-function TopRow() {
+function TopRow({ onToggleDocumentation, showDocumentation }) {
   return (
     <div className="top-row">
-     <span><h2>RNAScape</h2></span>
+      <h2>RNAScape</h2>
+      <button className="toggle-docs-btn" onClick={onToggleDocumentation}>
+        {showDocumentation ? "Hide Documentation" : "Show Documentation"}
+      </button>
     </div>
   );
 }
