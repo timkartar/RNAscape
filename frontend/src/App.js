@@ -37,8 +37,9 @@ function App() {
   const [timeString, setTimeString] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(false);
-  const baseUrl = 'https://rohslab.usc.edu'
+  //const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
+  const baseUrl = 'http://10.136.113.92'
 
   // /rnaview/rnaview/run-rnaview/';
 

@@ -30,7 +30,8 @@ SECRET_KEY = 'django-insecure-9m(_64-(ii&6+*&w6bs%z@5=k76oukzt5mbr32w$yriw((29uh
 DEBUG = True
 
 # This must include the server's IP address
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.123.13.8", "10.136.114.14","68.181.32.55", "rohslab.usc.edu",
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.123.13.8", "10.136.114.14","68.181.32.55",
+        "rohslab.usc.edu","10.136.113.92"
 ]
 
 # Allow all domains during development
