@@ -491,15 +491,15 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
   };
 
   const handleRotationChange = (event) => {
-    let newRotation = parseInt(event.target.value, 10);
+    let newRotation = parseInt(event.target.value, 10) - sumRotation;
 
     // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
     if (isNaN(newRotation)) {
       newRotation = 0;
     }
 
-    // Clamp the newRotation between 0 and 360
-    newRotation = Math.max(0, Math.min(newRotation, 360));
+    // Clamp the newRotation
+    newRotation = Math.max((-1*sumRotation), Math.min(newRotation, 360));
   
     setRotation(newRotation);
   };
@@ -581,14 +581,14 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             type="range" 
             min="0" 
             max="360" 
-            value={rotation} 
+            value={rotation + sumRotation} 
             onChange={handleRotationChange}
           />
            <input
               type="number"
               min="0"
               max="360"
-              value={rotation}
+              value={rotation + sumRotation}
               onChange={handleRotationChange}
               style={{ marginLeft: '0px', width: '50px' }} // Adjust style as needed
             />
