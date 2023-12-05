@@ -81,6 +81,16 @@ def run_rnaview(request):
         # Define file path (you can include a specific path if needed)
         file_path = os.path.join('uploads', file.name)
 
+        # CHECK FILE SIZE
+        max_file_size = 51 * 1024 * 1024  # 10MB
+        if file.size > max_file_size:
+            return JsonResponse({'error': 'File size exceeds the allowed limit'}, status=400)
+
+        # Check file type (extension)
+        file_extension = os.path.splitext(file.name)[1]
+        if file_extension.lower() != '.cif':
+            return JsonResponse({'error': 'Invalid file type'}, status=400)
+
 
         # Write file to disk
         with default_storage.open(file_path, 'wb+') as destination:

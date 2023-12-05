@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/rnascape/static/css/main.81299100.css",
-    "main.js": "/rnascape/static/js/main.c9a06b19.js",
+    "main.css": "/rnascape/static/css/main.9cfef2a8.css",
+    "main.js": "/rnascape/static/js/main.45bad2ab.js",
     "static/js/787.9e9f4ffd.chunk.js": "/rnascape/static/js/787.9e9f4ffd.chunk.js",
     "static/media/logo.svg": "/rnascape/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/rnascape/index.html",
-    "main.81299100.css.map": "/rnascape/static/css/main.81299100.css.map",
-    "main.c9a06b19.js.map": "/rnascape/static/js/main.c9a06b19.js.map",
+    "main.9cfef2a8.css.map": "/rnascape/static/css/main.9cfef2a8.css.map",
+    "main.45bad2ab.js.map": "/rnascape/static/js/main.45bad2ab.js.map",
     "787.9e9f4ffd.chunk.js.map": "/rnascape/static/js/787.9e9f4ffd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.81299100.css",
-    "static/js/main.c9a06b19.js"
+    "static/css/main.9cfef2a8.css",
+    "static/js/main.45bad2ab.js"
   ]
 }

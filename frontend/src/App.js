@@ -6,6 +6,7 @@ import axios from 'axios';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Documentation from './Documentation'; // Adjust the path as necessary
 import TopRow from './TopRow';
+import './TopRow.css';
 
 function getCookie(name) {
   let cookieValue = null;
@@ -524,7 +525,6 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     <div className="App">
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
-        <button type="button" onClick={loadExampleData}>Load Example</button>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -560,7 +560,8 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           <option value="0">Always</option>
         </select>
   
-        <button type="submit">Upload</button>
+        <button type="submit">Run</button>
+        <button id="run-example-button" type="button" onClick={loadExampleData}>Run Example</button>
       </form>
         {isLoading && (
         <div className="loading-container">

@@ -7,14 +7,11 @@ import React from 'react';
 function Documentation() {
   return (
     <div className="documentation">
-              <a href="/rnascape/3zp8-assembly1.cif" download className="download-link">
-          Download Example Data
-        </a>
       <h2>Documentation</h2>
       <p><b>RNAScape</b> is a tool for the <b>visualization</b> of <b>RNA secondary structure</b>. It outputs highly <b>customizable</b> images that provide insight into RNA <b>tertiary structure</b>.</p>
       <h3>Quickstart</h3>
-      <p>To get started, click <b>Load Example</b>. This runs RNAScape on PDB structure <a href="https://www.rcsb.org/structure/3ZP8">3zp8</a> using the selected settings.</p>
-      <p>You can also click <b>Download Example Data</b> above to see an example input data file. Note RNAScape requires the <b>biological assembly</b>.</p>
+      <p>To get started, click <b>Run Example</b>. This runs RNAScape on PDB structure <a href="https://www.rcsb.org/structure/3ZP8">3zp8</a> using the selected settings.</p>
+      <p>You can also click <b>Example Input</b> above to see an example input data file. Note RNAScape requires the <b>biological assembly</b>.</p>
       <h3>Uploading Data</h3>
       <p>RNAScape supports <b>CIF file uploads</b>, which can include other nucleic acids or proteins. Only the RNA will be visualized.</p>
       <p>To upload a file for processing, click <b>Browse</b> or drag the file into the browse input box.</p>
