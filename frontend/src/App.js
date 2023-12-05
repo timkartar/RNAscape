@@ -33,15 +33,94 @@ function App() {
   const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
   const [basePairAnnotation, setBasePairAnnotation] = useState('dssr');
   const [uploadBasePairAnnotation, setUploadBasePairAnnotation] = useState(''); // used to set the legend
-  const [loopBulging, setLoopBulging] = useState('1');
+  const [loopBulging, setLoopBulging] = useState('0');
   const [additionalFile, setAdditionalFile] = useState(null);
   const [timeString, setTimeString] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(false);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
 
+  // Nucleotide colors
+  const [colorG, setColorG] = useState("#90CC84");
+  const [colorA, setColorA] = useState("#FF9896");
+  const [colorU, setColorU] = useState("#AEC7E8");
+  const [colorC, setColorC] = useState("#DBDB8D");
+  const [colorX, setColorX] = useState("#FFFFFF");
+
+  const [magnification, setMagnification] = useState(50);
+  const [arrowSize, setArrowSize] = useState(50);
+  const [circleSize, setCircleSize] = useState(50);
+  const [showNumberLabelsInput, setShowNumberLabelsInput] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setShowNumberLabelsInput(event.target.checked);
+  };
+
+  const handleCircleSizeChange = (event) => {
+    let newCircleSize = parseInt(event.target.value, 10);
+
+    // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
+    if (isNaN(newCircleSize)) {
+      newCircleSize = 50;
+    }
+
+    // Clamp the newRotation
+    newCircleSize = Math.max((1), Math.min(newCircleSize, 100));
+  
+    setCircleSize(newCircleSize);
+  };
+
+  const handleArrowSizeChange = (event) => {
+    let newArrowSize = parseInt(event.target.value, 10);
+
+    // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
+    if (isNaN(newArrowSize)) {
+      newArrowSize = 50;
+    }
+
+    // Clamp the newRotation
+    newArrowSize = Math.max((1), Math.min(newArrowSize, 100));
+  
+    setArrowSize(newArrowSize);
+  };
+
+  const handleMagnificationChange = (event) => {
+    let newMagnification = parseInt(event.target.value, 10);
+
+    // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
+    if (isNaN(newMagnification)) {
+      newMagnification = 50;
+    }
+
+    // Clamp the newRotation
+    newMagnification = Math.max((1), Math.min(newMagnification, 100));
+  
+    setMagnification(newMagnification);
+  };
+
+  const handleAColorChange = (event) => {
+    setColorA(event.target.value);
+  };
+  const handleUColorChange = (event) => {
+    setColorU(event.target.value);
+  };
+  const handleGColorChange = (event) => {
+    setColorA(event.target.value);
+  };
+  const handleCColorChange = (event) => {
+    setColorC(event.target.value);
+  };
+  const handleXColorChange = (event) => {
+    setColorX(event.target.value);
+  };
+
   // /rnaview/rnaview/run-rnaview/';
+  const toggleAdvancedSettings = () => {
+    setShowAdvancedSettings(!showAdvancedSettings);
+  };
+
 
   const toggleDocumentation = () => {
     setShowDocumentation(!showDocumentation);
@@ -524,6 +603,9 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     <div className="App">
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
+        <button type="button" onClick={toggleAdvancedSettings}>
+          {showAdvancedSettings ? 'Hide Advanced Settings' : 'Show Advanced Settings'}
+        </button>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -549,18 +631,182 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           </>
         )}
   
-        <label>Loop Bulging:</label>
-        <select 
-          className="options-dropdown"
-          value={loopBulging}
-          onChange={(e) => setLoopBulging(e.target.value)}
-        >
-          <option value="1">Conditional</option>
-          <option value="0">Always</option>
-        </select>
+
   
         <button type="submit">Run</button>
         <button id="run-example-button" type="button" onClick={loadExampleData}>Run Example</button>
+        {showAdvancedSettings && (
+          <div className="advanced-settings">
+            <label>Loop Bulging:</label>
+            <select 
+              className="options-dropdown"
+              value={loopBulging}
+              onChange={(e) => setLoopBulging(e.target.value)}
+            >
+              <option value="0">Always</option>
+              <option value="1">Conditional</option>
+            </select>
+
+            <div className="slider-container">
+              <label>Magnification</label>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={magnification}
+                onChange={handleMagnificationChange}
+              />
+              <input
+                type="number"
+                min="1"
+                max="100"
+                value={magnification}
+                onChange={handleMagnificationChange}
+                style={{ width: '50px' }}
+              />
+            </div>
+
+            <div className="slider-container">
+              <label>Arrow Size</label>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={arrowSize}
+                onChange={handleArrowSizeChange}
+              />
+              <input
+                type="number"
+                min="1"
+                max="100"
+                value={arrowSize}
+                onChange={handleArrowSizeChange}
+                style={{ width: '50px' }}
+              />
+            </div>
+
+            <div className="slider-container">
+              <label>Circle Size</label>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={circleSize}
+                onChange={handleCircleSizeChange}
+              />
+              <input
+                type="number"
+                min="1"
+                max="100"
+                value={circleSize}
+                onChange={handleCircleSizeChange}
+                style={{ width: '50px' }}
+              />
+            </div>
+            <label>
+              <input
+                type="checkbox"
+                checked={showNumberLabelsInput}
+                onChange={handleCheckboxChange}
+              />
+              Residue Numbers
+            </label>
+            {showNumberLabelsInput && (
+              <input
+                type="number"
+                placeholder="Every N residues"
+                // additional attributes like min, max, step can be added here
+              />
+            )}
+        <div id="color-picker-div">
+        <div className="color-container">
+          <label htmlFor="color-picker">A: </label>
+          <input
+            type="color"
+            id="color-picker-a"
+            value={colorA}
+            onChange={handleAColorChange}
+          />
+          <input
+            type="text"
+            value={colorA}
+            onChange={handleAColorChange}
+            pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+            title="Enter a valid hex color code"
+          />
+        </div>
+        <div className="color-container">
+          <label htmlFor="color-picker">U: </label>
+          <input
+            type="color"
+            id="color-picker-u"
+            value={colorU}
+            onChange={handleUColorChange}
+          />
+          <input
+            type="text"
+            value={colorU}
+            onChange={handleUColorChange}
+            pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+            title="Enter a valid hex color code"
+          />
+        </div>
+          <div className="color-container">
+
+            <label htmlFor="color-picker">G: </label>
+
+                    <input
+            type="color"
+            id="color-picker-g"
+            value={colorG}
+            onChange={handleGColorChange}
+          />
+          <input
+            type="text"
+            value={colorG}
+            onChange={handleGColorChange}
+            pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+            title="Enter a valid hex color code"
+          />
+        </div>
+        <div className="color-container">
+          <label htmlFor="color-picker">C: </label>
+
+          <input
+            type="color"
+            id="color-picker-c"
+            value={colorC}
+            onChange={handleCColorChange}
+          />
+          <input
+          type="text"
+          value={colorC}
+          onChange={handleCColorChange}
+          pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+          title="Enter a valid hex color code"
+          />
+        </div>
+        <div className="color-container">
+          <label htmlFor="color-picker">X: </label>
+
+          <input
+            type="color"
+            id="color-picker-x"
+            value={colorX}
+            onChange={handleXColorChange}
+          />
+          <input
+          type="text"
+          value={colorX}
+          onChange={handleXColorChange}
+          pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+          title="Enter a valid hex color code"
+          />
+        </div>
+        </div>
+
+          </div>   
+      )}
       </form>
         {isLoading && (
         <div className="loading-container">
@@ -627,7 +873,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         </div>
       )}
       <footer className="app-footer">
-      <p>RNAScape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to access and use by anyone.</p>
+      <p>RNAScape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to use by anyone.</p>
     </footer>
     </div>
   );

@@ -282,3 +282,39 @@
 #run-example-button:hover{
   background-color: #d0d3d7;
 }
+
+.advanced-settings {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap onto the next line if needed */
+  align-items: center; /* Aligns items vertically */
+  justify-content: center; /* Centers items horizontally */
+  gap: 10px; /* Space between items */
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between label, slider, and input */
+}
+
+.slider-container label {
+  white-space: nowrap; /* Prevents label from wrapping */
+}
+
+#color-picker-div {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Center items vertically */
+  flex-wrap: wrap; /* Wrap items to the next line if they don't fit */
+  gap: 10px; /* Space between color containers */
+}
+
+.color-container {
+  display: flex;
+  align-items: center; /* Align items vertically in each container */
+  gap: 5px; /* Space between label and input */
+}
+
+.color-container label {
+  white-space: nowrap; /* Prevent label from wrapping */
+}
