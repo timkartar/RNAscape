@@ -273,3 +273,12 @@
 .app-footer p a {
   color: inherit; /* This will make the color the same as the parent element */
 }
+
+#run-example-button {
+  background-color: #f1f1f1;
+  color: black;
+}
+
+#run-example-button:hover{
+  background-color: #d0d3d7;
+}

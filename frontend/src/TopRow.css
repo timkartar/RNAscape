@@ -1,39 +1,39 @@
 /* src/TopRow.css */
 .top-row {
-    background-color: #282c34;
-    color: #fff; /* Text color */
-    padding: 1rem; /* Add padding for a modern look */
-    text-align: center;
-    max-height: 50px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .toggle-docs-btn {
-    background-color: #3498db; /* Choose a color that fits your theme */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-  
-    /* You can adjust the font, padding, border-radius, etc., as per your design */
-  }
+  background-color: #282c34;
+  color: #fff;
+  padding: 1rem;
+  max-height: 50px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .toggle-docs-btn:hover {
-    background-color: #2980b9; /* Slightly darker shade for hover effect */
-  }
+.right-section {
+  display: flex; /* Align the link and button in a row */
+  align-items: center;
+}
 
-  .top-row h1 {
-    font-size: 2rem; /* Larger text size for the title */
-  }
+.toggle-docs-btn, .download-link {
+  background-color: #f1f1f1;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px; /* Adds space between link and button */
+  text-decoration: none; /* Remove underline from link */
+  display: inline-block; /* Align link with the button */
+}
 
-  .top-row h2 {
-    text-align: left;
-    padding-left: 30px;
-    font-size: 2rem; /* Larger text size for the title */
-  }
+.toggle-docs-btn:hover, .download-link:hover {
+  background-color: #d0d3d7;
+}
+
+.top-row h2 {
+  text-align: left;
+  padding-left: 30px;
+  font-size: 2rem;
+}
