@@ -13,9 +13,10 @@ base_script_path = '/srv/www/rnascape/rnaview/'
 python_path = '/home/aricohen/.conda/envs/rnascape/bin/python'
 
 # base_script_path = '/home/aricohen/Desktop/rnaview/'
+# python_path = '/home/aricohen/anaconda3/envs/RNAproDB/bin/python'
+
 # base_script_path = '/home/raktim/rnaview/'
 # python_path = '/home/raktim/anaconda3/bin/python'
-# python_path = '/home/aricohen/anaconda3/envs/RNAproDB/bin/python'
 
 # base_script_path = '/home/raktim/rnaview/'
 
@@ -73,6 +74,20 @@ def run_rnaview(request):
     additionalFile = request.FILES.get('additionalFile')
     basePairAnnotation = request.POST.get('basePairAnnotation')
     loopBulging = request.POST.get('loopBulging')
+
+    circleSize = request.POST.get('circleSize')
+    circleLabelSize = request.POST.get('circleSize')
+    arrowSize = request.POST.get('arrowSize')
+
+    # colors
+    colorA = request.POST.get('colorA')
+    colorC = request.POST.get('colorC')
+    colorG = request.POST.get('colorG')
+    colorU = request.POST.get('colorU')
+    colorX = request.POST.get('colorX')
+    extra_list=[circleSize, circleLabelSize, arrowSize, colorA, colorC, colorG, colorU, colorX]
+    extra_string = ','.join(extra_list)
+
     additional_file_path=""
 
     # Now you can run your Python script using the saved file
@@ -113,14 +128,14 @@ def run_rnaview(request):
             result = None
             if basePairAnnotation == "rnaview":
                 result = subprocess.run(
-                    [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation, additional_file_path], 
+                    [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation, extra_string, additional_file_path], 
                     capture_output=True, 
                     text=True,
                     check=True
                 )
             else:
                 result = subprocess.run(
-                    [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation], 
+                   [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation, extra_string], 
                     capture_output=True, 
                     text=True,
                     check=True
