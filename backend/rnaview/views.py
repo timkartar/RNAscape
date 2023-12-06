@@ -103,7 +103,7 @@ def run_rnaview(request):
 
         # Check file type (extension)
         file_extension = os.path.splitext(file.name)[1]
-        if file_extension.lower() != '.cif':
+        if file_extension.lower() not in ['.cif', '.pdb']:
             return JsonResponse({'error': 'Invalid file type'}, status=400)
 
 

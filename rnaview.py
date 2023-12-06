@@ -1,4 +1,4 @@
-from Bio.PDB import MMCIFParser
+from Bio.PDB import MMCIFParser, PDBParser
 import Bio
 import json
 import re, os, sys
@@ -296,7 +296,10 @@ def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
     #prefix = sys.argv[1]
     #if os.path.exists("{}/{}.png".format(FIG_PATH, prefix)):
     #    sys.exit()
-    parser = MMCIFParser()
+    if cif_file.endswith(".cif"):
+        parser = MMCIFParser()
+    elif cif_file.endswith(".pdb"):
+        parser = PDBParser()
     #model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
     model = parser.get_structure(prefix,cif_file)[0]
     
