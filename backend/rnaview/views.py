@@ -75,7 +75,7 @@ def run_rnaview(request):
     loopBulging = request.POST.get('loopBulging')
 
     circleSize = request.POST.get('circleSize')
-    circleLabelSize = request.POST.get('circleSize')
+    circleLabelSize = request.POST.get('circleLabelSize')
     arrowSize = request.POST.get('arrowSize')
 
     # colors

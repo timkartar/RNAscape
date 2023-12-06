@@ -22,8 +22,8 @@ extra={'arrowsize':1, 'circlesize':1,
 if len(sys.argv) != 5: # append extra if length equals 5 (did not pass extra)
     extra_string = sys.argv[5]
     extra_list = extra_string.split(',')
-    extra={'arrowsize':float(extra_list[0]), 'circlesize':float(extra_list[1]),
-                'circle_labelsize':float(extra_list[2]), 'cols':[extra_list[3], extra_list[4], extra_list[5], extra_list[6], extra_list[7]]  #A,C,G,U,X
+    extra={'arrowsize':float(extra_list[2]), 'circlesize':float(extra_list[1]),
+                'circle_labelsize':float(extra_list[0]), 'cols':[extra_list[3], extra_list[4], extra_list[5], extra_list[6], extra_list[7]]  #A,C,G,U,X
                 }
 
 # arrow_size = float(sys.argv[5])
