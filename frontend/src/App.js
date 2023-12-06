@@ -734,7 +734,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               <label>Circle Size</label>
               <input
                 type="range"
-                min="0.1"
+                min="0"
                 max="5"
                 step="0.01" // Step value to allow decimals
                 value={circleSize}
