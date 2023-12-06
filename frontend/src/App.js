@@ -648,7 +648,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               <option value="1">Conditional</option>
             </select>
 
-            <div className="slider-container">
+            {/* <div className="slider-container">
               <label>Magnification</label>
               <input
                 type="range"
@@ -665,7 +665,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
                 onChange={handleMagnificationChange}
                 style={{ width: '50px' }}
               />
-            </div>
+            </div> */}
 
             <div className="slider-container">
               <label>Arrow Size</label>
@@ -704,7 +704,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
                 style={{ width: '50px' }}
               />
             </div>
-            <label>
+            {/* <label>
               <input
                 type="checkbox"
                 checked={showNumberLabelsInput}
@@ -718,7 +718,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
                 placeholder="Every N residues"
                 // additional attributes like min, max, step can be added here
               />
-            )}
+            )} */}
         <div id="color-picker-div">
         <div className="color-container">
           <label htmlFor="color-picker">A: </label>
