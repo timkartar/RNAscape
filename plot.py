@@ -372,7 +372,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
                 labels[i] = parent[-1].lower()
             else:
                 labels[i] = 'X'
-            log.append("Non standard residue {} assigned label {}.".format(dssrids[i][1], labels[i]))
+            log.append("Non standard residue {} assigned label {}.".format(dssrids[i], labels[i]))
         try:
             colors.append(cold[marker])
         except:
