@@ -50,53 +50,70 @@ function App() {
   const [colorC, setColorC] = useState("#DBDB8D");
   const [colorX, setColorX] = useState("#FFFFFF");
 
-  const [magnification, setMagnification] = useState(50);
-  const [arrowSize, setArrowSize] = useState(50);
-  const [circleSize, setCircleSize] = useState(50);
-  const [showNumberLabelsInput, setShowNumberLabelsInput] = useState(false);
+  const [magnification, setMagnification] = useState(1);
+  const [arrowSize, setArrowSize] = useState(1);
+  const [circleSize, setCircleSize] = useState(1);
+  const [circleLabelSize, setCircleLabelSize] = useState(1);
 
+  // For showing residue numbers on the output image, at a specified interval
+  const [showNumberLabelsInput, setShowNumberLabelsInput] = useState(false);
   const handleCheckboxChange = (event) => {
     setShowNumberLabelsInput(event.target.checked);
   };
 
-  const handleCircleSizeChange = (event) => {
-    let newCircleSize = parseInt(event.target.value, 10);
+  const handleCircleLabelSizeChange = (event) => {
+    let newCircleLabelSize = parseFloat(event.target.value);
 
     // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
-    if (isNaN(newCircleSize)) {
-      newCircleSize = 50;
+    if (isNaN(newCircleLabelSize)) {
+      newCircleLabelSize = 1;
     }
 
     // Clamp the newRotation
-    newCircleSize = Math.max((1), Math.min(newCircleSize, 100));
+    newCircleLabelSize = Math.max((0.1), Math.min(newCircleLabelSize, 5));
+  
+    setCircleLabelSize(newCircleLabelSize);
+  };
+
+
+  const handleCircleSizeChange = (event) => {
+    let newCircleSize = parseFloat(event.target.value);
+
+    // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
+    if (isNaN(newCircleSize)) {
+      newCircleSize = 1;
+    }
+
+    // Clamp the newRotation
+    newCircleSize = Math.max((0.1), Math.min(newCircleSize, 5));
   
     setCircleSize(newCircleSize);
   };
 
   const handleArrowSizeChange = (event) => {
-    let newArrowSize = parseInt(event.target.value, 10);
+    let newArrowSize = parseFloat(event.target.value);
 
     // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
     if (isNaN(newArrowSize)) {
-      newArrowSize = 50;
+      newArrowSize = 1;
     }
 
     // Clamp the newRotation
-    newArrowSize = Math.max((1), Math.min(newArrowSize, 100));
+    newArrowSize = Math.max((0.1), Math.min(newArrowSize, 5));
   
     setArrowSize(newArrowSize);
   };
 
   const handleMagnificationChange = (event) => {
-    let newMagnification = parseInt(event.target.value, 10);
+    let newMagnification = parseFloat(event.target.value);
 
     // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
     if (isNaN(newMagnification)) {
-      newMagnification = 50;
+      newMagnification = 1;
     }
 
     // Clamp the newRotation
-    newMagnification = Math.max((1), Math.min(newMagnification, 100));
+    newMagnification = Math.max((0.1), Math.min(newMagnification, 5));
   
     setMagnification(newMagnification);
   };
@@ -108,7 +125,7 @@ function App() {
     setColorU(event.target.value);
   };
   const handleGColorChange = (event) => {
-    setColorA(event.target.value);
+    setColorG(event.target.value);
   };
   const handleCColorChange = (event) => {
     setColorC(event.target.value);
@@ -172,6 +189,17 @@ function App() {
     formData.append('basePairAnnotation', basePairAnnotation);
     formData.append('loopBulging', loopBulging);
 
+    // advanced options
+    formData.append('arrowSize', arrowSize);
+    formData.append('circleSize', circleSize);
+    formData.append('circleLabelSize', circleLabelSize);
+    
+    // colors
+    formData.append('colorA', colorA);
+    formData.append('colorC', colorC);
+    formData.append('colorG', colorG);
+    formData.append('colorU', colorU);
+    formData.append('colorX', colorX);
 
     // Append additional file if it's required and provided
     if (basePairAnnotation === 'rnaview' && additionalFile) {
@@ -229,6 +257,18 @@ function App() {
         formData.append('basePairAnnotation', basePairAnnotation);
         formData.append('loopBulging', loopBulging);
         
+        // advanced options
+        formData.append('arrowSize', arrowSize);
+        formData.append('circleSize', circleSize);
+        formData.append('circleLabelSize', circleLabelSize);
+
+        // colors
+        formData.append('colorA', colorA);
+        formData.append('colorC', colorC);
+        formData.append('colorG', colorG);
+        formData.append('colorU', colorU);
+        formData.append('colorX', colorX);
+
         axios.post(url, formData, {
           headers: {
             'content-type': 'multipart/form-data',
@@ -648,38 +688,42 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               <option value="1">Conditional</option>
             </select>
 
-            <div className="slider-container">
+            {/* <div className="slider-container">
               <label>Magnification</label>
               <input
                 type="range"
-                min="1"
-                max="100"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
                 value={magnification}
                 onChange={handleMagnificationChange}
               />
               <input
                 type="number"
-                min="1"
-                max="100"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
                 value={magnification}
                 onChange={handleMagnificationChange}
                 style={{ width: '50px' }}
               />
-            </div>
+            </div> */}
 
             <div className="slider-container">
               <label>Arrow Size</label>
               <input
                 type="range"
-                min="1"
-                max="100"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
                 value={arrowSize}
                 onChange={handleArrowSizeChange}
               />
               <input
                 type="number"
-                min="1"
-                max="100"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
                 value={arrowSize}
                 onChange={handleArrowSizeChange}
                 style={{ width: '50px' }}
@@ -690,21 +734,45 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               <label>Circle Size</label>
               <input
                 type="range"
-                min="1"
-                max="100"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
                 value={circleSize}
                 onChange={handleCircleSizeChange}
               />
               <input
                 type="number"
-                min="1"
-                max="100"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
                 value={circleSize}
                 onChange={handleCircleSizeChange}
                 style={{ width: '50px' }}
               />
             </div>
-            <label>
+
+            <div className="slider-container">
+              <label>Circle Label Size</label>
+              <input
+                type="range"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
+                value={circleLabelSize}
+                onChange={handleCircleLabelSizeChange}
+              />
+              <input
+                type="number"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
+                value={circleLabelSize}
+                onChange={handleCircleLabelSizeChange}
+                style={{ width: '50px' }}
+              />
+            </div>
+
+            {/* <label>
               <input
                 type="checkbox"
                 checked={showNumberLabelsInput}
@@ -718,7 +786,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
                 placeholder="Every N residues"
                 // additional attributes like min, max, step can be added here
               />
-            )}
+            )} */}
         <div id="color-picker-div">
         <div className="color-container">
           <label htmlFor="color-picker">A: </label>

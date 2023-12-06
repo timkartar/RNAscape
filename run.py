@@ -15,10 +15,31 @@ prefix = sys.argv[2]
 prefix = prefix.split('.cif')[0].strip() # MUST INCLUDE CIF or breaks, error handle later!
 cond_bulging = bool(int(sys.argv[3]))
 bp_type = sys.argv[4]
+# rnaview file is 5,
+extra={'arrowsize':1, 'circlesize':1,
+            'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'] #A,C,G,U,X
+            } 
+if len(sys.argv) != 5: # append extra if length equals 5 (did not pass extra)
+    extra_string = sys.argv[5]
+    extra_list = extra_string.split(',')
+    extra={'arrowsize':float(extra_list[0]), 'circlesize':float(extra_list[1]),
+                'circle_labelsize':float(extra_list[2]), 'cols':[extra_list[3], extra_list[4], extra_list[5], extra_list[6], extra_list[7]]  #A,C,G,U,X
+                }
+
+# arrow_size = float(sys.argv[5])
+# circle_size = float(sys.argv[6])
+# circle_label_size = float(sys.argv[7])
+# colorA = sys.argv[8]
+# colorC = sys.argv[9]
+# colorG = sys.argv[10]
+# colorU = sys.argv[11]
+# colorX = sys.argv[12]
+
+
 
 out_path = ""
 if bp_type.strip() == "rnaview":
-    out_path = "{}/{}".format(MEDIA_PATH,sys.argv[5].strip())
+    out_path = "{}/{}".format(MEDIA_PATH,sys.argv[6].strip())
 
 # cif = "{}/{}-assembly1.cif".format(CIF_PATH, prefix)
 json_path = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
@@ -37,13 +58,15 @@ json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
 # Serialize and save dssrout as a JSON file
 with open(json_filepath, 'w') as json_file:
     json.dump(dssrout, json_file)
-    
-figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=sys.argv[4], out_path=out_path, time_string=time_string)
+
+
+
+figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, extra=extra, out_path=out_path, time_string=time_string)
 print(figpath +"," + time_string + "," + pngpath)
 
 # Save output of rnaView function to enable regeneration of labels!
 npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
 np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
-         chids=chids, prefix=prefix, bp_type=sys.argv[4], time_string=time_string,
+         chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,time_string=time_string,
          out_path=out_path, log=log)
 
