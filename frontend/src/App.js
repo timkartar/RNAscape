@@ -874,7 +874,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         </div>
       )}
       <footer className="app-footer">
-      <p>RNAScape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to use by anyone.</p>
+      <p>RNAScape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ USC. It is free to use by anyone.</p>
     </footer>
     </div>
   );
