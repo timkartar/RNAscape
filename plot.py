@@ -17,6 +17,7 @@ plt.gca().invert_xaxis()
 style_dict = {}
 arrow_dict = {}
 
+log = []
 
 chem_components = dict(np.load(CWD + "/modified_parents.npz",allow_pickle=True))
 #python /home/aricohen/Desktop/rnaview/run.py uploads/7vnv-assembly1.cif 7vnv 1 rnaview uploads/7vnv-assembly1.cif.out
@@ -371,6 +372,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
                 labels[i] = parent[-1].lower()
             else:
                 labels[i] = 'X'
+            log.append("Non standard residue {} assigned label {}.".format(dssrids[i][1], labels[i]))
         try:
             colors.append(cold[marker])
         except:
@@ -461,6 +463,6 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # plt.savefig('{}/{}/legend.svg'.format(MEDIA_PATH,FIG_PATH))
 
     # return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
-    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string), '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
+    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string),'{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string), "\n".join(log)
 
 
