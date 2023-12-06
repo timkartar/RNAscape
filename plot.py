@@ -324,7 +324,10 @@ def getBackBoneEdges(ids, chids, dssrids, dssrout):
     
     return edges
 
-def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR', out_path=None, time_string="ac1"):
+def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR',
+        out_path=None, time_string="ac1", extra={'arrowsize':1, 'circlesize':1,
+            'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF']
+            }):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
     dssrids = list(dssrids) # for npz
@@ -343,14 +346,14 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
 
     magnification = max(1, min(len(points)/40,10))
     G = nx.DiGraph()
-    cold = {'A': '#FF9896',#'#90cc84',
-    'C': '#DBDB8D',#'#AEC7E8',
-    'G': '#90cc84',#'#DBDB8D',
-    'U': '#AEC7E8',#'#FF9896',
-    'DA': '#FF9896',#'#90cc84',
-    'DC': '#DBDB8D',#'#AEC7E8',
-    'DG': '#90cc84',#'#DBDB8D',
-    'DT': '#AEC7E8'#'#FF9896'
+    cold = {'A': extra['cols'][0],#'#FF9896',#'#90cc84',
+    'C': extra['cols'][3],#'#DBDB8D',#'#AEC7E8',
+    'G': extra['cols'][2],#'#90cc84',#'#DBDB8D',
+    'U': extra['cols'][1],#AEC7E8',#'#FF9896',
+    'DA': extra['cols'][0],#'#FF9896',#'#90cc84',
+    'DC': extra['cols'][3],#'#DBDB8D',#'#AEC7E8',
+    'DG': extra['cols'][2],#'#90cc84',#'#DBDB8D',
+    'DT': extra['cols'][1],#'#AEC7E8'#'#FF9896'
     }
 
     colors = []
@@ -371,7 +374,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         try:
             colors.append(cold[marker])
         except:
-            colors.append('#ffffff')
+            colors.append(extra['cols'][4])
     
 
     fig, ax = plt.subplots(1, figsize=(8*magnification, 6*magnification))
@@ -401,12 +404,13 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
             #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
             G.remove_edge(item[0],item[1])
     style = [style_dict[item] for item in G.edges]
-    arrow = [arrow_dict[item] for item in G.edges]
-    nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False, node_size=160*magnification,
+    arrow = [arrow_dict[item]*extra['arrowsize'] for item in G.edges]
+    nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False,
+            node_size=160*magnification*extra['circlesize'],
             edgelist=[],
             node_color=colors, edgecolors='#000000')
     nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels,
-            font_size=10+(magnification))
+            font_size=(10+(magnification))*extra['circle_labelsize'])
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
             arrowsize=arrow, width=1*magnification)
     
