@@ -113,11 +113,7 @@ def run_rnaview(request):
             result = None
             if basePairAnnotation == "rnaview":
                 result = subprocess.run(
-                    [python_path, script_path, file_pDSSR_PATH="/srv/www/rnascape/rnaview/json/"
-CIF_PATH="/srv/www/rnascape/rnaview/vn/"
-MEDIA_PATH = "/srv/www/rnascape/rnaview/backend/media/"
-X3DNA_PATH = "/srv/www/rnascape/DeepPBS/dependencies/bin/x3dna-dssr"
-CWD = "/srv/www/rnascape/rnaview/"ath, file.name, loopBulging, basePairAnnotation, additional_file_path], 
+                    [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation, additional_file_path], 
                     capture_output=True, 
                     text=True,
                     check=True
