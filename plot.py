@@ -9,6 +9,8 @@ from get_helix_coords import process_resid
 import time
 import random
 from read_rnaview import readRnaview
+import os, sys
+from config import *
 
 plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
@@ -16,6 +18,7 @@ style_dict = {}
 arrow_dict = {}
 
 
+chem_components = dict(np.load(CWD + "/modified_parents.npz",allow_pickle=True))
 #python /home/aricohen/Desktop/rnaview/run.py uploads/7vnv-assembly1.cif 7vnv 1 rnaview uploads/7vnv-assembly1.cif.out
 
 """
@@ -359,7 +362,12 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         if marker in cold.keys():
             labels[i] = marker[-1]
         else:
-            labels[i] = 'X'
+            #print(chem_components['0MC'])
+            if marker in chem_components.keys():
+                parent = chem_components[marker].tolist()
+                labels[i] = parent[-1].lower()
+            else:
+                labels[i] = 'X'
         try:
             colors.append(cold[marker])
         except:
@@ -387,10 +395,6 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     for item in edges:
         G.add_edge(item[0],item[1])
 
-    
-
-    
-    
     d = deepcopy(G.edges)
     for item in d:
         if(points[item[0]][0] == points[item[1]][0]):
