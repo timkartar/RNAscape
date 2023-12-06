@@ -4,6 +4,10 @@ references.bib.sav
 presentations
 *.jaspar
 *.png
+*/saved_output/*.npz
+*/saved_output/*.json
+*.npy
+*.svg
 *.pdb
 *.pqr
 *.par
