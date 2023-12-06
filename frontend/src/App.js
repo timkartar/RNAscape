@@ -41,7 +41,7 @@ function App() {
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
-  //const baseUrl = 'http://10.136.113.92'
+  // const baseUrl = 'http://10.136.113.92'
 
   // Nucleotide colors
   const [colorG, setColorG] = useState("#90CC84");
