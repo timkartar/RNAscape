@@ -347,15 +347,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
 
     magnification = max(1, min(len(points)/40,10))
     G = nx.DiGraph()
-    cold = {'A': extra['cols'][0],#'#FF9896',#'#90cc84',
-    'C': extra['cols'][1],#'#DBDB8D',#'#AEC7E8',
-    'G': extra['cols'][2],#'#90cc84',#'#DBDB8D',
-    'U': extra['cols'][3],#AEC7E8',#'#FF9896',
-    'DA': extra['cols'][0],#'#FF9896',#'#90cc84',
-    'DC': extra['cols'][1],#'#DBDB8D',#'#AEC7E8',
-    'DG': extra['cols'][2],#'#90cc84',#'#DBDB8D',
-    'DT': extra['cols'][3],#'#AEC7E8'#'#FF9896'
-    }
+    cold = {'A': extra['cols'][0],
+    'C': extra['cols'][1],    'G': extra['cols'][2],
+    'U': extra['cols'][3],    'DA': extra['cols'][0],
+    'DC': extra['cols'][1],    'DG': extra['cols'][2],
+    'DT': extra['cols'][3],    }
 
     colors = []
     labels = {}

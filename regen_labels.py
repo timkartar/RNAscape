@@ -27,11 +27,10 @@ dssrids = npzfile['dssrids']
 bp_type = npzfile['bp_type']
 time_string = npzfile['time_string']
 out_path = str(npzfile['out_path'])
-extra = npzfile['extra']
-
+extra = json.loads(str(npzfile['extra']).replace("\'","\""))
 # Open and read the JSON file to get the object
 with open(json_filepath, 'r') as json_file:
     dssrout = json.load(json_file)
 
-figpath,pngpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, out_path=out_path, extra=extra,time_string=time_string, rotation=rotation)
+figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, out_path=out_path, extra=extra,time_string=time_string, rotation=rotation)
 print(figpath +"," + pngpath)
