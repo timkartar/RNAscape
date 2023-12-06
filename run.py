@@ -32,7 +32,7 @@ points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, jso
 # Otherwise no!
 time_string = str(int(time.time())) + str(random.randint(0,100))
 
- Generate the file path for the JSON file
+# Generate the file path for the JSON file
 json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
 # Serialize and save dssrout as a JSON file
 with open(json_filepath, 'w') as json_file:
@@ -46,4 +46,4 @@ npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
 np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
          chids=chids, prefix=prefix, bp_type=sys.argv[4], time_string=time_string,
          out_path=out_path, log=log)
-#
+
