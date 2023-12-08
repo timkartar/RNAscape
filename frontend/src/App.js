@@ -656,9 +656,9 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           onChange={(e) => setBasePairAnnotation(e.target.value)}
         >
           <option value="dssr">DSSR</option>
-          <option value="rnaview">RNAView</option>
           <option value="saenger">Saenger</option>
-          <option value="dssrLw">Leontis-Westhof</option>
+          <option value="dssrLw">Leontis-Westhof (DSSR)</option>
+          <option value="rnaview">Leontis-Westhof (RNAView)</option>
         </select>
         {basePairAnnotation === 'rnaview' && (
           <>
