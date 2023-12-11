@@ -47,6 +47,7 @@ if bp_type.strip() == "rnaview":
 # cif = "{}/{}-assembly1.cif".format(CIF_PATH, prefix)
 json_path = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
 
+subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json","--prefix={}".format(cif)], cwd=CWD)
 subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json","--prefix={}".format(cif),
     "--cleanup"], cwd=CWD)
 points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, json_path,
@@ -56,7 +57,6 @@ points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, jso
 # If just generating for the first time, call time string
 # Otherwise no!
 time_string = str(int(time.time())) + str(random.randint(0,100))
-
 # Generate the file path for the JSON file
 json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
 # Serialize and save dssrout as a JSON file

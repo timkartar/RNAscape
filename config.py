@@ -21,7 +21,7 @@ FIG_PATH="/processed_images/"
 #CWD = "/home/raktim/rnaview/"
 
 DSSR_PATH="/srv/www/rnascape/rnaview/json/"
-CIF_PATH="/srv/www/rnascape/rnaview/vn/"
+CIF_PATH="/srv/www/rnascape/rnaview/backend/media/uploads/"
 MEDIA_PATH = "/srv/www/rnascape/rnaview/backend/media/"
 X3DNA_PATH = "/srv/www/rnascape/DeepPBS/dependencies/bin/x3dna-dssr"
 CWD = "/srv/www/rnascape/rnaview/"
