@@ -44,7 +44,8 @@ if bp_type.strip() == "rnaview":
 # cif = "{}/{}-assembly1.cif".format(CIF_PATH, prefix)
 json_path = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
 
-subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json"], cwd=CWD)
+subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json","--prefix={}".format(cif),
+    "--cleanup"], cwd=CWD)
 points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, json_path,
         cond_bulging=cond_bulging)
 
