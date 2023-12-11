@@ -208,24 +208,38 @@ def orderData(points, markers, ids, chids, dssrids):
         d[k] = np.sort(d[k])
         d[k] = ["{}{}".format(i,k) for i in d[k]]
         sorted_nice += d[k]
-    
+
     resnumbers = []
+    icodes = {}
     for i in range(len(ids)):
-        resnumbers.append("{}{}".format(ids[i][1], chids[i]))
-            
+        resnumbers.append("{}{}".format(str(ids[i][1]), chids[i]))
+        #full_resnumbers.append("{}{}".format(str(ids[i][1]) + ids[i][2].replace(' ',''), chids[i]))
+
     argsorted = []
     
     done_indices = []
+
+    def find_all(l, k):
+        ret = []
+        for i in range(len(l)):
+            if l[i] == k:
+                ret.append(i)
+        return ret
+
     for item in sorted_nice:
-        idx = resnumbers.index(item)
-        while idx in done_indices:
-            idx+=1
+        indices = find_all(resnumbers, item)
+        #idx = resnumbers.index(item)
+        for idx in indices:
+            if idx not in done_indices:
+                break
+            
         done_indices.append(idx)
         argsorted.append(idx)
     points = points[argsorted,:]
     markers = np.array(markers)[argsorted].tolist()
     chids = np.array(chids)[argsorted].tolist()
     dssrids = np.array(dssrids)[argsorted].tolist()
+    #sys.exit()
     ids = np.array(ids)[argsorted].tolist()
     return points, markers, ids, chids, dssrids, d
 
@@ -248,11 +262,10 @@ def getTails(helix_dssrids, dssrids, chids, points):
                 starting=True
     
     ending = True
+    rev_dssrids = dssrids[::-1]
+    rev_chids = chids[::-1]
     for i in range(len(dssrids)-1):
-        rev_dssrids = dssrids[::-1]
-        rev_chids = chids[::-1]
         chid = rev_chids[i]
-        
         if rev_dssrids[i] not in helix_dssrids:
             if(ending):
                 enders[chid].append(len(dssrids) -1 - i)
@@ -260,18 +273,15 @@ def getTails(helix_dssrids, dssrids, chids, points):
             ending = False
             if rev_chids[i+1] != chid:
                 ending=True
-    #print(starters, enders)
     
     for k in starters.keys():
         if len(starters[k]) == 0:
             continue
         ip1 = starters[k][-1] + 1
         ip2 = starters[k][-1] + 2
-
         v = points[ip1] - points[ip2]
         n = len(starters[k])
         for i in range(len(starters[k])):
-            #print(dssrids[ip1], dssrids[ip2], dssrids[starters[k][n-i-1]])
             points[starters[k][n-i-1]] = points[ip1] + v*(i+1)
             #print(points[ip1],points[ip2], points[starters[k][n-i-1]])
 
@@ -279,6 +289,8 @@ def getTails(helix_dssrids, dssrids, chids, points):
         if len(enders[k]) == 0:
             continue
         enders[k] = enders[k][::-1]
+        
+
         ip1 = enders[k][0] - 1
         ip2 = enders[k][0] - 2
 
@@ -358,6 +370,7 @@ def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
         points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
         #points = updateLoopPoints(points, dssrids, dssrout)
         
+        '''
         idx = (np.argsort(chids, kind='mergesort'))
         chids = np.array(chids)[idx].tolist()
 
@@ -366,8 +379,9 @@ def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
         markers = np.array(markers)[idx].tolist()
 
         dssrids = np.array(dssrids)[idx].tolist()
+
         points= points[idx,:]
-        
+        '''
 
         starters, enders, points = getTails(helix_dssrids, dssrids, chids, points)
         #figpath = Plot(points, markers, ids, chids, dssrids, dssrout, prefix)

@@ -59,6 +59,7 @@ def process_resid(nt1):
         chid = spl1[2]
         
     return spl1, (het1.strip("/"), int(res1), icode), rest1_n.strip("/"), chid
+    #return spl1, (het1.strip("/"), int(res1), icode), rest1.strip("/"), chid
 
 
 def get_helix_coords(dssrout, model):
