@@ -41,7 +41,7 @@ function App() {
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
-  // const baseUrl = 'http://10.136.113.92'
+  //const baseUrl = 'http://10.136.113.92'
 
   // Nucleotide colors
   const [colorG, setColorG] = useState("#90CC84");
@@ -640,6 +640,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
   };
   
 
+  //<option value="rnaview">Leontis-Westhof (RNAView)</option>
   return (
     <div className="App">
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
@@ -657,8 +658,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         >
           <option value="dssr">DSSR</option>
           <option value="saenger">Saenger</option>
-          <option value="dssrLw">Leontis-Westhof (DSSR)</option>
-          <option value="rnaview">Leontis-Westhof (RNAView)</option>
+          <option value="dssrLw">Leontis-Westhof</option>
         </select>
         {basePairAnnotation === 'rnaview' && (
           <>

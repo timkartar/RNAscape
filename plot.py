@@ -408,7 +408,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
             edgelist=[],
             node_color=colors, edgecolors='#000000')
     nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels,
-            font_size=(10+(magnification))*extra['circle_labelsize'])
+            font_size=(10+(magnification))*extra['circle_labelsize'], font_family='monospace',
+            verticalalignment='center_baseline')
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
             arrowsize=arrow, width=1*magnification)
     
