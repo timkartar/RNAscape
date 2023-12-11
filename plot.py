@@ -325,9 +325,33 @@ def getBackBoneEdges(ids, chids, dssrids, dssrout):
     
     return edges
 
+def getResNumPoints(points, ids, G, k=10, separation=1):
+    from sklearn.neighbors import KDTree
+    tree = KDTree(points)
+    SCALAR = 2*separation
+    rett = []
+    labels = []
+    for i in range(0,len(points), k):
+        p = points[i]
+        l = str(ids[i][1]) + ids[i][2].replace(" ","")
+        out = tree.query_radius([p], r=10)[0][1:].tolist()
+        if len(out) > 20:
+            continue ## too congested
+        out += [item[1] for item in G.edges(i)]
+        neighbors = (np.array(points)[out])
+        c = neighbors.mean(axis=0)
+        try:
+            ret = p + SCALAR*(p-c)/np.linalg.norm(p - c)
+        except:
+            continue
+        rett.append(ret)
+        labels.append(l)
+    return rett, labels
+
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR',
         out_path=None, time_string="ac1", extra={'arrowsize':1, 'circlesize':1,
-            'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF']
+            'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'],
+            'number_separation':1 
             }):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
@@ -409,7 +433,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
             node_color=colors, edgecolors='#000000')
     nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels,
             font_size=(10+(magnification))*extra['circle_labelsize'], font_family='monospace',
-            verticalalignment='center_baseline')
+            verticalalignment='center')
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
             arrowsize=arrow, width=1*magnification, arrowstyle='->')
     
@@ -440,6 +464,9 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), title="non-WC bps")
     '''
+    poses, texts = getResNumPoints(points, ids, G, separation=extra['number_separation'])
+    for i in range(len(poses)):
+        plt.text(poses[i][0],poses[i][1], texts[i], color='saddlebrown',  fontsize=(10+(magnification))*extra['circle_labelsize'])
     plt.tight_layout()
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))
