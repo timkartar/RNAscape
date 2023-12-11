@@ -411,7 +411,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
             font_size=(10+(magnification))*extra['circle_labelsize'], font_family='monospace',
             verticalalignment='center_baseline')
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
-            arrowsize=arrow, width=1*magnification)
+            arrowsize=arrow, width=1*magnification, arrowstyle='->')
     
     if bp_type == "dssr":
         for item in bp_markers:
