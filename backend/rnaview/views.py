@@ -9,14 +9,14 @@ import requests
 import time
 
 
-base_script_path = '/srv/www/rnascape/rnaview/'
-python_path = '/home/aricohen/.conda/envs/rnascape/bin/python'
+#base_script_path = '/srv/www/rnascape/rnaview/'
+#python_path = '/home/aricohen/.conda/envs/rnascape/bin/python'
 
 # base_script_path = '/home/aricohen/Desktop/rnaview/'
 # python_path = '/home/aricohen/anaconda3/envs/RNAproDB/bin/python'
 
-#base_script_path = '/home/raktim/rnaview/'
-#python_path = '/home/raktim/anaconda3/bin/python'
+base_script_path = '/home/raktim/rnaview/'
+python_path = '/home/raktim/anaconda3/bin/python'
 
 
 def is_file_served(url):
