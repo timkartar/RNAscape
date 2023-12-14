@@ -31,17 +31,17 @@ function App() {
   const [imagePngUrl, setImagePngUrl] = useState(''); // State to store the image SVG URL
   const transformWrapperRef = useRef(null); // Ref to access TransformWrapper
   const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
-  const [basePairAnnotation, setBasePairAnnotation] = useState('dssr');
+  const [basePairAnnotation, setBasePairAnnotation] = useState('dssrLW');
   const [uploadBasePairAnnotation, setUploadBasePairAnnotation] = useState(''); // used to set the legend
   const [loopBulging, setLoopBulging] = useState('0');
   const [additionalFile, setAdditionalFile] = useState(null);
   const [timeString, setTimeString] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showDocumentation, setShowDocumentation] = useState(false);
+  const [showDocumentation, setShowDocumentation] = useState(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
-  //const baseUrl = 'https://rohslab.usc.edu'
+  const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
-  const baseUrl = 'http://10.136.113.92'
+  //const baseUrl = 'http://10.136.113.92'
 
   // Nucleotide colors
   const [colorG, setColorG] = useState("#90CC84");
@@ -645,9 +645,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     <div className="App">
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
-        <button type="button" onClick={toggleAdvancedSettings}>
-          {showAdvancedSettings ? 'Hide Advanced Settings' : 'Show Advanced Settings'}
-        </button>
+        <label>mmCIF/PDB format file: </label>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -656,9 +654,9 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           value={basePairAnnotation}
           onChange={(e) => setBasePairAnnotation(e.target.value)}
         >
+          <option value="dssrLw">Leontis-Westhof</option>
           <option value="dssr">DSSR</option>
           <option value="saenger">Saenger</option>
-          <option value="dssrLw">Leontis-Westhof</option>
         </select>
         {basePairAnnotation === 'rnaview' && (
           <>
@@ -671,11 +669,13 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             />
           </>
         )}
+        <br/>
+        <button type="button" onClick={toggleAdvancedSettings}>
+          {showAdvancedSettings ? 'Hide Advanced Settings' : 'Show Advanced Settings'}
+        </button>
   
 
   
-        <button type="submit">Run</button>
-        <button id="run-example-button" type="button" onClick={loadExampleData}>Run Example</button>
         {showAdvancedSettings && (
           <div className="advanced-settings">
             <label>Loop Bulging:</label>
@@ -876,6 +876,10 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
 
           </div>   
       )}
+      <br/>
+      <button type="submit">Run</button>
+      <button id="run-example-button" type="button" onClick={loadExampleData}>Run Example</button>
+
       </form>
         {isLoading && (
         <div className="loading-container">
@@ -942,7 +946,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         </div>
       )}
       <footer className="app-footer">
-      <p>RNAScape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to use by anyone.</p>
+      <p>RNAscape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to use by anyone.</p>
     </footer>
     </div>
   );

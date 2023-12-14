@@ -4,7 +4,7 @@ import './TopRow.css';
 function TopRow({ onToggleDocumentation, showDocumentation }) {
   return (
     <div className="top-row">
-      <h2>RNAScape</h2>
+      <h2>RNAscape</h2>
       <div className="right-section">
         <a href="/rnascape/3zp8-assembly1.cif" download className="download-link">
           Example Input

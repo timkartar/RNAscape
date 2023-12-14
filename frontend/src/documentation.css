@@ -29,3 +29,8 @@
 .documentation b {
   color: #3498db;
 }
+
+.documentation img {
+  width: 800px; 
+  height:400px;
+}
