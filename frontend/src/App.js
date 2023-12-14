@@ -31,7 +31,7 @@ function App() {
   const [imagePngUrl, setImagePngUrl] = useState(''); // State to store the image SVG URL
   const transformWrapperRef = useRef(null); // Ref to access TransformWrapper
   const [bounds, setBounds] = useState({ boundX: 0, boundY: 0 });
-  const [basePairAnnotation, setBasePairAnnotation] = useState('dssrLW');
+  const [basePairAnnotation, setBasePairAnnotation] = useState('dssrLw');
   const [uploadBasePairAnnotation, setUploadBasePairAnnotation] = useState(''); // used to set the legend
   const [loopBulging, setLoopBulging] = useState('0');
   const [additionalFile, setAdditionalFile] = useState(null);
