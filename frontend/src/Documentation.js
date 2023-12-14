@@ -12,7 +12,7 @@ function Documentation() {
       <h2>Documentation</h2>
       <h3>Quickstart</h3>
       <p>To get started, click <b>Run Example</b>. This runs RNAscape on PDB structure <a href="https://www.rcsb.org/structure/3ZP8">3zp8</a> using the selected settings.</p>
-      <p>You can also click <b>Example Input</b> above to see an example input data file. Note RNAscape requires the <b>biological assembly</b>.</p>
+      <p>You can also click <b>Example Input</b> above to see an example input data file.</p>
       <h3>Uploading Data</h3>
       <p>RNAscape supports <b>mmCIF or PDF format file uploads</b>, which should contain nucleic acids with at least one helical segment.</p>
       <p>To upload a file for processing, click <b>Browse</b> or drag the file into the browse input box.</p>
