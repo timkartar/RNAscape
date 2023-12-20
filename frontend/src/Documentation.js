@@ -8,7 +8,7 @@ function Documentation() {
   return (
     <div className="documentation">
       <h3><b>RNAscape</b> is a tool for <b>Gemometry faithful RNA 2D visualization</b>. It outputs highly customizable images that provide insight into RNA tertiary structure.</h3>
-      <img src = "/rnascape/3zp8.svg" alt="My Happy SVG"/>
+      <img src = "/rnascape/3zp8.svg" alt="3ZP8 Example Output"/>
       <h2>Documentation</h2>
       <h3>Quickstart</h3>
       <p>To get started, click <b>Run Example</b>. This runs RNAscape on PDB structure <a href="https://www.rcsb.org/structure/3ZP8">3zp8</a> using the selected settings.</p>
