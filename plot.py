@@ -78,10 +78,10 @@ def getCustomMarker(pos, item):
 
 def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
     dssr_lw_bp_types = list(sre_yield.AllStrings('[WHS][WHS]'))
-    dssr_lw_bp_types.remove("WW")
+    # dssr_lw_bp_types.remove("WW")
     # ['HW', 'SW', 'WH', 'HH', 'SH', 'WS', 'HS', 'SS']
     #dssr_lw_markers = ['so', '<o', 'os', 'ss', '<s', 'o>', 's>', '<>']
-    dssr_lw_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
+    dssr_lw_markers = ['oo','so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
     bp_map = {}
     for item in dssr_lw_bp_types:
         bp_map[item] = dssr_lw_markers[dssr_lw_bp_types.index(item)]
@@ -115,7 +115,7 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
 
         if "." in typ: # DSSR couldn't determine properly
             continue
-        if typ == "WW": #do not show watson crick pairs
+        if typ == "WW" and item['LW'][0] == 'c': #do not show cis watson crick pairs
             continue
         if item['LW'][0] == 'c':
             orient = 'k'
@@ -263,8 +263,7 @@ def getBasePairingEdges(dssrout, dssrids, points):
     
     #bp types: DSSR [ct][MWm][+-][MWm]
     dssr_bp_types = list(sre_yield.AllStrings('[MWm][MWm]'))
-    dssr_bp_types.remove("WW")
-    bp_marker_types = '[o^pdshP*]'
+    bp_marker_types = '[o^pdDshP*]'
     marker_bp_types = list(sre_yield.AllStrings(bp_marker_types))
     
     bp_map = {}
@@ -294,7 +293,7 @@ def getBasePairingEdges(dssrout, dssrids, points):
         
         if "." in typ: # DSSR couldn't determine properly
             continue
-        if typ == "WW": #do not show watson crick pairs
+        if typ == "WW" and item['LW'][0] == 'c': #do not show cis watson crick pairs
             continue
         if item['DSSR'][0] == 'c':
             orient = 'k'
@@ -351,7 +350,7 @@ def getResNumPoints(points, ids, G, k=10, separation=1):
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR',
         out_path=None, time_string="ac1", extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'],
-            'number_separation':1 
+            'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1
             }):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
@@ -447,7 +446,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     
     elif bp_type == "rnaview" or bp_type == "dssrLw":
         for item in bp_markers:
-            if(item[1] == "ss" or item[1] == ">>"): # just need one shape for these
+            if(item[1] == "ss" or item[1] == ">>" or item[1] == 'oo'): # just need one shape for these
                 plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification,
                     linewidth=1*magnification, edgecolor='k', label=item[3] )
             else:
@@ -461,12 +460,14 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
 
     '''
     handles, labels = plt.gca().get_legend_handles_labels()
-    by_label = dict(zip(labels, handles))
+    by_label = dict(zip(labels, handles))True
     plt.legend(by_label.values(), by_label.keys(), title="non-WC bps")
     '''
-    poses, texts = getResNumPoints(points, ids, G, separation=extra['number_separation'])
-    for i in range(len(poses)):
-        plt.text(poses[i][0],poses[i][1], texts[i], color='saddlebrown',  fontsize=(10+(magnification))*extra['circle_labelsize'])
+    if bool(int(extra['showNumberLabels'])): # if user wants to show number labels
+        poses, texts = getResNumPoints(points, ids, G, separation=float(extra['numberSeparation']))
+        for i in range(len(poses)):
+            plt.text(poses[i][0],poses[i][1], texts[i], color='saddlebrown',  fontsize=(10+(magnification))*float(extra['numberSize']))
+    
     plt.tight_layout()
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))

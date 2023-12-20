@@ -294,10 +294,12 @@
 .slider-container {
   display: flex;
   align-items: center;
+  margin-right: 10px; /* Adjust spacing between sliders as needed */
   gap: 10px; /* Space between label, slider, and input */
 }
 
 .slider-container label {
+  margin-right: 5px;
   white-space: nowrap; /* Prevents label from wrapping */
 }
 
@@ -317,4 +319,19 @@
 
 .color-container label {
   white-space: nowrap; /* Prevent label from wrapping */
+}
+
+.number-settings-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  margin-right: 10px; /* Adjust spacing as needed */
+}
+
+.slider-group {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
 }

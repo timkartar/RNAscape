@@ -56,10 +56,41 @@ function App() {
   const [circleLabelSize, setCircleLabelSize] = useState(1);
 
   // For showing residue numbers on the output image, at a specified interval
-  const [showNumberLabelsInput, setShowNumberLabelsInput] = useState(false);
+  const [showNumberLabels, setShowNumberLabels] = useState(true);
   const handleCheckboxChange = (event) => {
-    setShowNumberLabelsInput(event.target.checked);
+    setShowNumberLabels(event.target.checked);
   };
+  const [numberSeparation, setNumberSeparation] = useState(1);
+  const [numberSize, setNumberSize] = useState(1);
+
+  const handleNumberSizeChange = (event) => {
+    let newNumberSize = parseFloat(event.target.value);
+
+    // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
+    if (isNaN(newNumberSize)) {
+      newNumberSize = 1;
+    }
+
+    // Clamp the newRotation
+    newNumberSize = Math.max((0.1), Math.min(newNumberSize, 5));
+  
+    setNumberSize(newNumberSize);
+  };
+
+  const handleNumberSeparationChange = (event) => {
+    let newNumberSeparation = parseFloat(event.target.value);
+
+    // Check if the number is NaN (not a number), if so, set it to the default (e.g., 0)
+    if (isNaN(newNumberSeparation)) {
+      newNumberSeparation = 1;
+    }
+
+    // Clamp the newRotation
+    newNumberSeparation = Math.max((0.1), Math.min(newNumberSeparation, 5));
+  
+    setNumberSeparation(newNumberSeparation);
+  };
+
 
   const handleCircleLabelSizeChange = (event) => {
     let newCircleLabelSize = parseFloat(event.target.value);
@@ -201,6 +232,15 @@ function App() {
     formData.append('colorU', colorU);
     formData.append('colorX', colorX);
 
+    // number labels
+    if(showNumberLabels){
+      formData.append('showNumberLabels', "1");
+    }else{
+      formData.append('showNumberLabels', "0");
+    }
+    formData.append('numberSeparation', numberSeparation);
+    formData.append('numberSize', numberSize);
+
     // Append additional file if it's required and provided
     if (basePairAnnotation === 'rnaview' && additionalFile) {
       formData.append('additionalFile', additionalFile);
@@ -268,6 +308,15 @@ function App() {
         formData.append('colorG', colorG);
         formData.append('colorU', colorU);
         formData.append('colorX', colorX);
+
+        // number labels
+        if(showNumberLabels){
+          formData.append('showNumberLabels', "1");
+        }else{
+          formData.append('showNumberLabels', "0");
+        }
+        formData.append('numberSeparation', numberSeparation);
+        formData.append('numberSize', numberSize);
 
         axios.post(url, formData, {
           headers: {
@@ -772,21 +821,62 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               />
             </div>
 
-            {/* <label>
+
+        <div id="number-settings-div" className="number-settings-container">
+                  <label classname="checkbox-label">
               <input
                 type="checkbox"
-                checked={showNumberLabelsInput}
+                checked={showNumberLabels}
                 onChange={handleCheckboxChange}
               />
-              Residue Numbers
+              Show Residue Numbers
             </label>
-            {showNumberLabelsInput && (
+            {showNumberLabels && (
+        <div className="slider-group">
+        <div className="slider-container">
+              <label>Number Label Size</label>
+              <input
+                type="range"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
+                value={numberSize}
+                onChange={handleNumberSizeChange}
+              />
               <input
                 type="number"
-                placeholder="Every N residues"
-                // additional attributes like min, max, step can be added here
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
+                value={numberSize}
+                onChange={handleNumberSizeChange}
+                style={{ width: '50px' }}
               />
-            )} */}
+          </div>
+          <div className="slider-container">
+              <label>Number Distance</label>
+              <input
+                type="range"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
+                value={numberSeparation}
+                onChange={handleNumberSeparationChange}
+              />
+              <input
+                type="number"
+                min="0.1"
+                max="5"
+                step="0.01" // Step value to allow decimals
+                value={numberSeparation}
+                onChange={handleNumberSeparationChange}
+                style={{ width: '50px' }}
+              />
+          </div>
+        </div>
+            )}
+        </div>
+  
         <div id="color-picker-div">
         <div className="color-container">
           <label htmlFor="color-picker">A: </label>
@@ -878,7 +968,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       )}
       <br/>
       <button type="submit">Run</button>
-      <button id="run-example-button" type="button" onClick={loadExampleData}>Run Example</button>
+      <button id="run-example-button" type="button" onClick={loadExampleData}>Run on Example Data</button>
 
       </form>
         {isLoading && (
