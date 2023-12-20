@@ -318,7 +318,3 @@
 .color-container label {
   white-space: nowrap; /* Prevent label from wrapping */
 }
-
-.padded-label {
-  margin-right: 10px;
-}
