@@ -8,7 +8,7 @@ import json
 import numpy as np
 import json
 
-#python run.py uploads/3zp8-assembly1.cif 3zp8 1 dssr
+#python run.py uploads/1ivs-assembly1.cif 1ivs 1 dssr
 
 cif = "{}/{}".format(MEDIA_PATH,sys.argv[1].strip())
 prefix = sys.argv[2]
@@ -49,7 +49,7 @@ json_path = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
 
 subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json","--prefix={}".format(cif)], cwd=CWD)
 subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json","--prefix={}".format(cif),
-    "--cleanup"], cwd=CWD) # cleans output of previous line
+    "--cleanup"], cwd=CWD)
 points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, json_path,
         cond_bulging=cond_bulging)
 
