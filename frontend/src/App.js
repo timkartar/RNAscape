@@ -38,10 +38,18 @@ function App() {
   const [timeString, setTimeString] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(true);
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(true);
   const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
   //const baseUrl = 'http://10.136.113.92'
+
+  // number settings
+  const [showNumberLabels, setShowNumberLabels] = useState(true);
+  const handleCheckboxChange = (event) => {
+    setShowNumberLabels(event.target.checked);
+  };
+  const [numberLabelSeparation, setNumberLabelSeparation] = useState(1);
+  const [numberLabelSize, setNumberLabelSize] = useState(1);
 
   // Nucleotide colors
   const [colorG, setColorG] = useState("#90CC84");
@@ -55,11 +63,7 @@ function App() {
   const [circleSize, setCircleSize] = useState(1);
   const [circleLabelSize, setCircleLabelSize] = useState(1);
 
-  // For showing residue numbers on the output image, at a specified interval
-  const [showNumberLabelsInput, setShowNumberLabelsInput] = useState(false);
-  const handleCheckboxChange = (event) => {
-    setShowNumberLabelsInput(event.target.checked);
-  };
+
 
   const handleCircleLabelSizeChange = (event) => {
     let newCircleLabelSize = parseFloat(event.target.value);
@@ -645,7 +649,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     <div className="App">
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
-        <label>mmCIF/PDB format file: </label>
+        <label className="padded-label">mmCIF/PDB format file:</label>
         <input type="file" onChange={handleChange} required />
   
         <label>Base Pair Annotation:</label>
@@ -943,10 +947,15 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
                 alt="Legend"
                 className="img-legend"
                 />}
+          {uploadBasePairAnnotation !== "saenger" && <div> 
+                <div>
+
+                </div>
+                </div>}
         </div>
       )}
       <footer className="app-footer">
-      <p>RNAscape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to use by anyone.</p>
+      <p>RNAscape is maintained by <a href="https://www.rohslab.org/">The Rohs Lab</a> @ University of Southern California. It is free to use by anyone, including commercial users.</p>
     </footer>
     </div>
   );

@@ -84,6 +84,9 @@ def run_rnaview(request):
     colorG = request.POST.get('colorG')
     colorU = request.POST.get('colorU')
     colorX = request.POST.get('colorX')
+
+    # numbers
+
     extra_list=[circleSize, circleLabelSize, arrowSize, colorA, colorC, colorG, colorU, colorX]
     extra_string = ','.join(extra_list)
 
@@ -97,7 +100,7 @@ def run_rnaview(request):
         file_path = os.path.join('uploads', file.name)
 
         # CHECK FILE SIZE
-        max_file_size = 51 * 1024 * 1024  # 10MB
+        max_file_size = 51 * 1024 * 1024  # 51MB
         if file.size > max_file_size:
             return JsonResponse({'error': 'File size exceeds the allowed limit'}, status=400)
 

@@ -78,10 +78,10 @@ def getCustomMarker(pos, item):
 
 def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
     dssr_lw_bp_types = list(sre_yield.AllStrings('[WHS][WHS]'))
-    dssr_lw_bp_types.remove("WW")
-    # ['HW', 'SW', 'WH', 'HH', 'SH', 'WS', 'HS', 'SS']
+    # dssr_lw_bp_types.remove("WW")
+    # ['WW', 'HW', 'SW', 'WH', 'HH', 'SH', 'WS', 'HS', 'SS']
     #dssr_lw_markers = ['so', '<o', 'os', 'ss', '<s', 'o>', 's>', '<>']
-    dssr_lw_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
+    dssr_lw_markers = ['oo','so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
     bp_map = {}
     for item in dssr_lw_bp_types:
         bp_map[item] = dssr_lw_markers[dssr_lw_bp_types.index(item)]
@@ -115,7 +115,7 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
 
         if "." in typ: # DSSR couldn't determine properly
             continue
-        if typ == "WW": #do not show watson crick pairs
+        if typ == "WW" and item['LW'][0] == 'c': #do not show cis watson crick pairs
             continue
         if item['LW'][0] == 'c':
             orient = 'k'
@@ -124,6 +124,7 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
         bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ])
     return edges, bp_markers, bp_map
 
+"""
 def getBasePairingEdgesRnaview(points, ids, chids, out_path):
     rnaview_bp_types= ["{}/{}".format(e[0], e[1]) for e in list(sre_yield.AllStrings('[WHS][WHS]'))]
     rnaview_bp_types.remove("W/W")
@@ -211,7 +212,7 @@ def getBasePairingEdgesRnaview(points, ids, chids, out_path):
     #     else:
     #         orient = 'w'
     #     bp_markers.append([p, bp_map[typ], orient, item['DSSR'][0]+typ])
-
+"""
 
 def getBasePairingEdgesSaenger(dssrout, dssrids, points):
     #bp types: DSSR [ct][MWm][+-][MWm]
@@ -263,8 +264,10 @@ def getBasePairingEdges(dssrout, dssrids, points):
     
     #bp types: DSSR [ct][MWm][+-][MWm]
     dssr_bp_types = list(sre_yield.AllStrings('[MWm][MWm]'))
-    dssr_bp_types.remove("WW")
-    bp_marker_types = '[o^pdshP*]'
+    # print(dssr_bp_types)
+    # dssr_bp_types.remove("WW")
+    # print(dssr_bp_types)
+    bp_marker_types = '[o^pdDshP*]'
     marker_bp_types = list(sre_yield.AllStrings(bp_marker_types))
     
     bp_map = {}
@@ -294,7 +297,7 @@ def getBasePairingEdges(dssrout, dssrids, points):
         
         if "." in typ: # DSSR couldn't determine properly
             continue
-        if typ == "WW": #do not show watson crick pairs
+        if typ == "WW" and item['LW'][0] == 'c': #do not show cis watson crick pairs
             continue
         if item['DSSR'][0] == 'c':
             orient = 'k'
@@ -351,7 +354,7 @@ def getResNumPoints(points, ids, G, k=10, separation=1):
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR',
         out_path=None, time_string="ac1", extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'],
-            'number_separation':1 
+            'number_separation':1, 'showNumberLabels':True, 'numberLabelSize':1, 'numberLabelSeparation':1
             }):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
@@ -407,8 +410,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
     elif bp_type == "saenger":
         pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
-    elif bp_type == "rnaview":
-        pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
+    # elif bp_type == "rnaview":
+    #     pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
     elif bp_type == "dssrLw":
         pairings, bp_markers, bp_map = getBasePairingEdgesDssrLw(dssrout, dssrids, points)
 
@@ -440,14 +443,14 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     if bp_type == "dssr":
         for item in bp_markers:
             plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,
-                    linewidth=1*magnification, edgecolor='k', label=item[3] )
+                    linewidth=1*magnification, edgecolor='k', label=item[3])
     elif bp_type == "saenger":
         for item in bp_markers:
             plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification))
     
     elif bp_type == "rnaview" or bp_type == "dssrLw":
         for item in bp_markers:
-            if(item[1] == "ss" or item[1] == ">>"): # just need one shape for these
+            if(item[1] == "ss" or item[1] == ">>" or item[1] == 'oo'): # just need one shape for these
                 plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification,
                     linewidth=1*magnification, edgecolor='k', label=item[3] )
             else:
@@ -464,9 +467,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), title="non-WC bps")
     '''
+    # START IF
     poses, texts = getResNumPoints(points, ids, G, separation=extra['number_separation'])
     for i in range(len(poses)):
         plt.text(poses[i][0],poses[i][1], texts[i], color='saddlebrown',  fontsize=(10+(magnification))*extra['circle_labelsize'])
+        # END IF NUMBERING
     plt.tight_layout()
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))
@@ -478,13 +483,14 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # SAVE JSON of pertinent information to call regenerate labels!
     # maybe also print time string
 
+    # plt.figure(figsize=(10, 5.15)) 
     # for item in bp_map.keys():
-    #     plt.scatter(0,0,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
+    #     plt.scatter(0,100,marker=bp_map[item], color='k', label = 'c'+item, linewidth=1,
     #             edgecolor='k')
-    #     plt.scatter(0,0,marker=bp_map[item], color='w', label = 't'+item, edgecolor='k',
+    #     plt.scatter(0,-100,marker=bp_map[item], color='w', label = 't'+item, edgecolor='k',
     #             linewidth=1)
-    # plt.legend()
-    # plt.savefig('{}/{}/legend.svg'.format(MEDIA_PATH,FIG_PATH))
+    # plt.legend() # look up options
+    # plt.savefig('{}/{}/legend.png'.format(MEDIA_PATH,FIG_PATH), dpi=300)
 
     # return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
     return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string),'{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string), "\n".join(log)
