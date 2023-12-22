@@ -726,158 +726,155 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
 
   
         {showAdvancedSettings && (
-          <div className="advanced-settings">
-            <label>Loop Bulging:</label>
-            <select 
-              className="options-dropdown"
-              value={loopBulging}
-              onChange={(e) => setLoopBulging(e.target.value)}
-            >
-              <option value="0">Always</option>
-              <option value="1">Conditional</option>
-            </select>
+           <div className="advanced-settings">
+           <div className="nucleotide-settings-container">
+             <div className="nucleotide-settings-header">
+               <h3>Nucleotide Settings</h3>
+             </div>
+             <div className="nucleotide-settings-content">
+               <div className="select-container">
+                 <label>Loop Bulging:</label>
+                 <select 
+                   className="options-dropdown"
+                   value={loopBulging}
+                   onChange={(e) => setLoopBulging(e.target.value)}>
+                   <option value="0">Always</option>
+                   <option value="1">Conditional</option>
+                 </select>
+               </div>
 
-            {/* <div className="slider-container">
-              <label>Magnification</label>
-              <input
-                type="range"
-                min="0.1"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={magnification}
-                onChange={handleMagnificationChange}
-              />
-              <input
-                type="number"
-                min="0.1"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={magnification}
-                onChange={handleMagnificationChange}
-                style={{ width: '50px' }}
-              />
-            </div> */}
+              <div className="slider-container">
+                <label>Arrow Size</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="5"
+                  step="0.01" // Step value to allow decimals
+                  value={arrowSize}
+                  onChange={handleArrowSizeChange}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.01" // Step value to allow decimals
+                  value={arrowSize}
+                  onChange={handleArrowSizeChange}
+                  style={{ width: '50px' }}
+                />
+              </div>
 
-            <div className="slider-container">
-              <label>Arrow Size</label>
-              <input
-                type="range"
-                min="0"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={arrowSize}
-                onChange={handleArrowSizeChange}
-              />
-              <input
-                type="number"
-                min="0"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={arrowSize}
-                onChange={handleArrowSizeChange}
-                style={{ width: '50px' }}
-              />
+              <div className="slider-container">
+                <label>Circle Size</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="5"
+                  step="0.01" // Step value to allow decimals
+                  value={circleSize}
+                  onChange={handleCircleSizeChange}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.01" // Step value to allow decimals
+                  value={circleSize}
+                  onChange={handleCircleSizeChange}
+                  style={{ width: '50px' }}
+                />
+              </div>
+
+              <div className="slider-container">
+                <label>Circle Label Size</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="5"
+                  step="0.01" // Step value to allow decimals
+                  value={circleLabelSize}
+                  onChange={handleCircleLabelSizeChange}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.01" // Step value to allow decimals
+                  value={circleLabelSize}
+                  onChange={handleCircleLabelSizeChange}
+                  style={{ width: '50px' }}
+                />
+              </div>
+            </div>
             </div>
 
-            <div className="slider-container">
-              <label>Circle Size</label>
-              <input
-                type="range"
-                min="0"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={circleSize}
-                onChange={handleCircleSizeChange}
-              />
-              <input
-                type="number"
-                min="0"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={circleSize}
-                onChange={handleCircleSizeChange}
-                style={{ width: '50px' }}
-              />
-            </div>
-
-            <div className="slider-container">
-              <label>Circle Label Size</label>
-              <input
-                type="range"
-                min="0"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={circleLabelSize}
-                onChange={handleCircleLabelSizeChange}
-              />
-              <input
-                type="number"
-                min="0"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={circleLabelSize}
-                onChange={handleCircleLabelSizeChange}
-                style={{ width: '50px' }}
-              />
-            </div>
-
-
-        <div id="number-settings-div" className="number-settings-container">
-                  <label classname="checkbox-label">
-              <input
+    <div id="number-settings-div" className="number-settings-container">
+    <div className="number-settings-header">
+        <h3>Number Settings</h3>
+    </div>
+    <div className="number-settings-content">
+        <label className="checkbox-label">
+            <input
                 type="checkbox"
                 checked={showNumberLabels}
                 onChange={handleCheckboxChange}
-              />
-              Show Residue Numbers
-            </label>
-            {showNumberLabels && (
-        <div className="slider-group">
-        <div className="slider-container">
-              <label>Number Label Size</label>
-              <input
-                type="range"
-                min="0.1"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={numberSize}
-                onChange={handleNumberSizeChange}
-              />
-              <input
-                type="number"
-                min="0.1"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={numberSize}
-                onChange={handleNumberSizeChange}
-                style={{ width: '50px' }}
-              />
-          </div>
-          <div className="slider-container">
-              <label>Number Distance</label>
-              <input
-                type="range"
-                min="0.1"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={numberSeparation}
-                onChange={handleNumberSeparationChange}
-              />
-              <input
-                type="number"
-                min="0.1"
-                max="5"
-                step="0.01" // Step value to allow decimals
-                value={numberSeparation}
-                onChange={handleNumberSeparationChange}
-                style={{ width: '50px' }}
-              />
-          </div>
-        </div>
-            )}
-        </div>
+            />
+            Show Residue Numbers
+        </label>
+        {showNumberLabels && (
+            <div className="slider-group">
+                <div className="slider-container">
+                    <label>Number Label Size</label>
+                    <input
+                        type="range"
+                        min="0.1"
+                        max="5"
+                        step="0.01"
+                        value={numberSize}
+                        onChange={handleNumberSizeChange}
+                    />
+                    <input
+                        type="number"
+                        min="0.1"
+                        max="5"
+                        step="0.01"
+                        value={numberSize}
+                        onChange={handleNumberSizeChange}
+                        style={{ width: '50px' }}
+                    />
+                </div>
+                <div className="slider-container">
+                    <label>Number Distance</label>
+                    <input
+                        type="range"
+                        min="0.1"
+                        max="5"
+                        step="0.01"
+                        value={numberSeparation}
+                        onChange={handleNumberSeparationChange}
+                    />
+                    <input
+                        type="number"
+                        min="0.1"
+                        max="5"
+                        step="0.01"
+                        value={numberSeparation}
+                        onChange={handleNumberSeparationChange}
+                        style={{ width: '50px' }}
+                    />
+                </div>
+            </div>
+        )}
+    </div>
+</div>
+
   
         <div id="color-picker-div">
+        <div className="color-settings-container">
+          <div className="color-settings-header">
+            <h3>Color Settings</h3>
+          </div>
+        <div className="color-settings-content">
         <div className="color-container">
           <label htmlFor="color-picker">A: </label>
           <input
@@ -893,7 +890,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
             title="Enter a valid hex color code"
           />
-        </div>
+          </div>
         <div className="color-container">
           <label htmlFor="color-picker">U: </label>
           <input
@@ -963,7 +960,8 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           />
         </div>
         </div>
-
+        </div>
+        </div>
           </div>   
       )}
       <br/>

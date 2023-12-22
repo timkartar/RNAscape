@@ -283,71 +283,194 @@
   background-color: #d0d3d7;
 }
 
+/* .advanced-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+} */
+
 .advanced-settings {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap onto the next line if needed */
-  align-items: center; /* Aligns items vertically */
-  justify-content: center; /* Centers items horizontally */
-  gap: 10px; /* Space between items */
+  flex-direction: row; /* Aligns children in a row */
+  /* justify-content: space-around;  */
+  justify-content: center;
+  align-items: flex-start; /* Aligns children at the top */
+  gap: 20px; /* Adjust this value for spacing between each settings container */
 }
 
 .slider-container {
   display: flex;
-  align-items: center;
-  margin-right: 10px; /* Adjust spacing between sliders as needed */
-  gap: 10px; /* Space between label, slider, and input */
+  align-items: center; /* Aligns items vertically in the center */
+  gap: 10px; /* Space between elements */
+  margin-bottom: 10px; /* Space below each slider container */
+  padding: 5px 0; /* Vertical padding */
 }
 
 .slider-container label {
   margin-right: 5px;
+  display: block; /* Ensures label is on its own line */
   white-space: nowrap; /* Prevents label from wrapping */
 }
 
-#color-picker-div {
-  display: flex;
-  justify-content: center; /* Center items horizontally */
-  align-items: center; /* Center items vertically */
-  flex-wrap: wrap; /* Wrap items to the next line if they don't fit */
-  gap: 10px; /* Space between color containers */
+/* Specific styles for range and number inputs */
+.slider-container input[type="range"],
+.slider-container input[type="number"] {
+  align-self: center; /* Align these items in the center vertically */
 }
 
-.color-container {
+/* Styles for the number input to adjust its appearance */
+.slider-container input[type="number"] {
+  width: 50px; /* Fixed width for number input */
+  height: calc(1.5em + 2px); /* Adjust height to match the range input */
+  padding: 4px 8px; /* Internal spacing */
+  border: 1px solid #ccc; /* Border for number input */
+  border-radius: 4px; /* Rounded corners */
+  text-align: center; /* Center the text inside the number input */
+}
+
+
+
+
+/* .color-container {
   display: flex;
-  align-items: center; /* Align items vertically in each container */
-  gap: 5px; /* Space between label and input */
+  align-items: center;
+  gap: 5px;
+} */
+
+
+
+/* .number-settings-container {
+  display: flex;
+  align-items: center;
+} */
+
+/* .checkbox-label {
+  margin-right: 10px;
+} */
+
+.slider-group {
+  display: block; /* Each slider group takes up its own line */
+  margin-bottom: 10px; /* Space between each slider group */
+  text-align: center; /* Centers the content within each slider group */
+}
+
+.number-settings-container {
+  background-color: #f0f0f0; /* Light grey background */
+  padding: 15px 20px; /* Added horizontal padding */
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block; /* Makes the container only as wide as its content */
+}
+
+.number-settings-header h3 {
+  margin: 0;
+  color: #333; /* Dark text color for the header */
+}
+
+.number-settings-header {
+  margin-bottom: 10px; /* Space between header and sliders */
+  text-align: center; /* Centers the header text */
+}
+
+/* .number-settings-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
+} */
+
+.checkbox-label {
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nucleotide-settings-container {
+  background-color: #f0f0f0; /* Light grey background */
+  padding: 15px 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block; /* Makes the container only as wide as its content */
+  width: auto; /* Auto width for the minimum necessary width */
+}
+
+.nucleotide-settings-header {
+  margin-bottom: 10px; /* Space between header and sliders */
+  text-align: center; /* Centers the header text */
+}
+
+.nucleotide-settings-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+/* .nucleotide-settings-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+} */
+
+#color-picker-div {
+  display: flex;
+  flex-direction: column; /* Align children vertically in a column */
+  align-items: center; /* Center children horizontally */
+  gap: 10px; /* Space between each color container */
+}
+
+/* Styles for Color Settings Section */
+.color-settings-container {
+  background-color: #f0f0f0; /* Light grey background */
+  padding: 15px; /* Add padding inside the container */
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 90%; /* Increase the width to 90% */
+  margin-left: auto; /* Centers the container */
+  margin-right: auto; /* Centers the container */
 }
 
 .color-container label {
   white-space: nowrap; /* Prevent label from wrapping */
 }
 
-.number-settings-container {
-  display: flex;
-  align-items: center;
+.color-settings-header {
+  margin-bottom: 10px; /* Space between header and color pickers */
 }
 
-.checkbox-label {
-  margin-right: 10px; /* Adjust spacing as needed */
+.color-settings-content {
+  display: flex;
+  flex-direction: column; /* Align items in a column */
+  align-items: center; /* Center items vertically */
+  gap: 10px; /* Space between items */
+  padding: 0 20px; /* Horizontal padding inside the container */
 }
 
-.slider-group {
+.color-container {
   display: flex;
-  align-items: center;
-  margin-left: 10px;
+  flex-direction: row; /* Align items in a row */
+  align-items: center; /* Vertically align items within each color container */
+  gap: 10px; /* Space between label and input */
+  padding: 5px 0; /* Vertical padding inside each color container */
 }
 
-/* File Drop overlay */
-.drag-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 24px;
-  z-index: 1000; /* Ensure it's above other elements */
+.color-container input[type="color"],
+.color-container input[type="text"] {
+  align-self: center; /* Align inputs in the center vertically */
+}
+
+.nucleotide-settings-content{
+  display: block; /* Ensures each option is on its own line */
+  margin-bottom: 20px; /* Increase space between each option */
+  text-align: center;
 }
