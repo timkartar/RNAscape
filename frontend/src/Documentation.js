@@ -16,13 +16,13 @@ function Documentation() {
       <p>You can also click <b>Example Input</b> in the above header to download an example input data file.</p>
       <h3>Uploading Data</h3>
       <p>RNAscape supports <b>mmCIF or PDF format file uploads</b>, which should contain nucleic acids with at least one helical segment.</p>
-      <img class="doc-image" src="/rnascape/upload_file.png" alt="Upload file box"/>
+      <img class="doc-image" src="/rnascape/upload_file_edited.png" alt="Upload file box"/>
       <p>To load a file for processing, click <b>Browse</b> or drag the file into the browse input box. This may appear different depending on your operating system and web browser.</p>
       <p>You can select a specific <b>Base Pair Annotation</b>, including Leontis-Westhof, Saenger, and DSSR.</p>
       <p>Click <b>Run</b> to generate the 2D visualization for a loaded file.</p>
       <h3>Visualizing Data</h3>
-      <p><b>5'</b> to <b>3'</b> polarity is indicated by the standard black arrows between nucleotides.</p>
-      <img class="doc-image" src = "/rnascape/zoom_controls.png" alt="Zoom Controls"/>
+      <p><b>5'</b> to <b>3'</b> polarity is indicated by the standard black arrows (→) between nucleotides.</p>
+      <img class="doc-image" src = "/rnascape/zoom_controls_edited.png" alt="Zoom Controls"/>
       <p>After a structure is visualized, you can manipulate the visualization using:</p>
       <p className="indented">The <b>Rotate Image</b> slider, which alters the rotation of the structure. Simply click <b>Regenerate Labels</b> afterwards to regenerate residue labels in the new orientation.</p>
       <p className="indented">The zoom tools, which allow a user to <b>Zoom In</b>, <b>Zoom Out</b>, <b>Center</b> the graph, and to <b>Reset</b> any previous Zooming/Panning.</p>
@@ -40,16 +40,16 @@ function Documentation() {
       </div>
       <p>The left image depicts <b>Always Bulging</b>. Notice the additional space near residues 18 and 31.</p>
       <p> The right image depicts <b>Conditional Bulging</b>. We recommend experimenting to see what looks best for a given structure.</p>
-      <img class="doc-image" src = "/rnascape/circle_arrow_settings.png" alt="Marker Settings"/>
+      <img class="doc-image" src = "/rnascape/circle_arrow_settings_edited.png" alt="Marker Settings"/>
       <p><b>Arrow Size</b> modifies how large the arrows are between nucleotides. They can be turned off altogether by setting it to 0, and the default is 1.</p>
       <p><b>Circle Size</b> modifies how large the circles are surrounding each nucleotide. They can be turned off altogether by setting it to 0 (seen below). The default is 1.</p>
       <img class="doc-image" src="/rnascape/no_circle_output.svg" alt="No Circle Output"/>
       <p><b>Circle Label Size</b> modifies how large the text is for each nucleotide. The default is 1.</p>
-      <img class="doc-image" src="/rnascape/residue_numbers.png" alt="Residue Numbers Checkbox and Settings"/>
+      <img class="doc-image" src="/rnascape/residue_numbers_edited.png" alt="Residue Numbers Checkbox and Settings"/>
       <p>Check/Uncheck <b>Show Residue Numbers</b> to turn on/off residue numbers. If checked, two additional options are shown:</p>
       <p className="indented"><b>Number Label Size</b> modifies how large the number labels are. The default is 1.</p>
       <p className="indented"><b>Number Distance</b> which changes how far away the number labels are from their corresponding nucleotides. The default is 1.</p>
-      <img class="doc-image" src = "/rnascape/select_color.png" alt="Select Color Input"/>
+      <img class="doc-image" src = "/rnascape/select_color_edited.png" alt="Select Color Input"/>
       <p>In Advanced Settings, you can also <b>customize the color</b> of each nucleotide type, either by clicking on the color box, or by inputting a custom hex value. X refers to a non-standard nucleotide.</p>
       <p>Depending on your operating system and web browser, the color selector box may appear different than the one depicted above.</p>
       <h3>Base Pair Annotation</h3>
