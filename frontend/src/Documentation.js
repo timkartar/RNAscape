@@ -17,6 +17,7 @@ function Documentation() {
   return (
   <div className="documentation-container">
       <div className="sidebar">
+          <h3>Documentation</h3>
           <a href="#quickstart" onClick={scrollToSection}>Quickstart</a>
           <a href="#uploading-data" onClick={scrollToSection}> Uploading Data</a>
           <a href="#visualizing-data" onClick={scrollToSection}>Visualizing Data</a>
@@ -72,12 +73,13 @@ function Documentation() {
         <h3 id="bp-annotation" class="left-h3">Base Pair Annotation</h3>
         <p>The definitions surrounding base pairing can be ambiguous in some cases. All base pairing is calculated via X3DNA-DSSR, which can differ from other methods.</p>
         <p>For the Saenger Base Pair Annotation, there are 28 possible base pair types. For this reason, no legend is provided.</p>
-        <p>For the Leontis-Westhof Base Pair Annotation, bonds are delineated by both bond orientation and interacting edges. For example, cWH would refer to a cis bond orientation, between a Watson-Crick and Hoogsteen base respectively.</p>
+        <p>The Leontis-Westhof Base Pair Annotation Legend has two main parameters</p>
+        <p className="indented"><b>c/t</b> refer to a cis or trans bond orientation respectively.</p>
+        <p className="indented"><b>W/H/S</b> refer to a Watson-Crick, Hoogsteen, or Sugar edge respectively.</p>
         <p>You can find more information regarding Saenger and Leontis-Westhof Base Pair annotations <a href="https://beta.nakb.org/basics/bases.html">here</a>.</p>
-        <p>The DSSR Base Pair Annotation has two parameters: bond orientation and major/minor groove contact.</p>
-        <p className="indented"><b>c/t</b> refer to cis and trans bond orientations respectively.</p>
-        <p className="indented"><b>M/m</b> refer to major and minor groove contacts respectively.</p>
-        <p className="indented"><b>W</b> refers to a Watson-Crick base pairing.</p>
+        <p>The DSSR Base Pair Annotation Legend has two main parameters:</p>
+        <p className="indented"><b>c/t</b> refer to a cis or trans bond orientation respectively.</p>
+        <p className="indented"><b>M/m/W</b> refer to major groove, minor groove, or Watson-Crick edge respectively.</p>
       </div>
   </div>
   );

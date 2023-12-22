@@ -10,14 +10,21 @@
 }
 
 .sidebar {
+  font-family: 'Arial', sans-serif;
   position: sticky;
   top: 0; /* Adjust as necessary, depending on your page's header size */
   max-width: 200px; /* Adjust as needed */
   padding: 20px;
   margin: 20px 0;
-  background-color: #f9f9f9; /* Light grey background */
+  background-color: #e4e4e4; /* Light grey background */
   height: 100vh; /* Optional: Makes the sidebar take up the full height of the viewport */
   overflow-y: auto; /* Optional: Adds a scrollbar if the sidebar content is too long */
+  text-align: left;
+  padding-left: 14px;
+  padding-right: 14px;
+  font-size: 14px;
+  /* border-right: 2px solid black;
+  border-top: 2px solid black; */
 }
 
 .documentation-container {
