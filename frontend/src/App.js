@@ -7,6 +7,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Documentation from './Documentation'; // Adjust the path as necessary
 import TopRow from './TopRow';
 import './TopRow.css';
+import SplashScreen from './SplashScreen';
 
 function getCookie(name) {
   let cookieValue = null;
@@ -692,6 +693,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
   //<option value="rnaview">Leontis-Westhof (RNAView)</option>
   return (
     <div className="App">
+      <SplashScreen />
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
         <label>mmCIF/PDB format file: </label>
