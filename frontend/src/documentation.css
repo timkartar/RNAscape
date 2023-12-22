@@ -30,7 +30,26 @@
   color: #3498db;
 }
 
-.documentation img {
+.full {
   width: 800px; 
   height:400px;
+}
+
+.doc-image {
+  max-width: 100%;
+  height: auto;
+  display: block; /* Optional, to remove any extra space below the image */
+  margin: 0 auto; /* Center the image within its container */
+}
+
+.side-by-side-images {
+  display: flex; /* Apply Flexbox */
+  justify-content: center; /* Center the images horizontally */
+  align-items: center; /* Align the images vertically */
+}
+
+.side-image {
+  max-width: 48%; /* Adjust the max-width to fit side by side */
+  height: auto; /* Maintain the aspect ratio */
+  margin: 0.5%; /* Provide a small space between the images */
 }

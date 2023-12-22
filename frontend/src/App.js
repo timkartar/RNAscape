@@ -101,7 +101,7 @@ function App() {
     }
 
     // Clamp the newRotation
-    newCircleLabelSize = Math.max((0.1), Math.min(newCircleLabelSize, 5));
+    newCircleLabelSize = Math.max((0), Math.min(newCircleLabelSize, 5));
   
     setCircleLabelSize(newCircleLabelSize);
   };
@@ -130,7 +130,7 @@ function App() {
     }
 
     // Clamp the newRotation
-    newArrowSize = Math.max((0.1), Math.min(newArrowSize, 5));
+    newArrowSize = Math.max((0), Math.min(newArrowSize, 5));
   
     setArrowSize(newArrowSize);
   };
@@ -762,7 +762,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               <label>Arrow Size</label>
               <input
                 type="range"
-                min="0.1"
+                min="0"
                 max="5"
                 step="0.01" // Step value to allow decimals
                 value={arrowSize}
@@ -770,7 +770,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               />
               <input
                 type="number"
-                min="0.1"
+                min="0"
                 max="5"
                 step="0.01" // Step value to allow decimals
                 value={arrowSize}
@@ -804,7 +804,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               <label>Circle Label Size</label>
               <input
                 type="range"
-                min="0.1"
+                min="0"
                 max="5"
                 step="0.01" // Step value to allow decimals
                 value={circleLabelSize}
@@ -812,7 +812,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               />
               <input
                 type="number"
-                min="0.1"
+                min="0"
                 max="5"
                 step="0.01" // Step value to allow decimals
                 value={circleLabelSize}
@@ -938,7 +938,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             onChange={handleCColorChange}
           />
           <input
-          type="text"
+          type="text"rnascape
           value={colorC}
           onChange={handleCColorChange}
           pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
