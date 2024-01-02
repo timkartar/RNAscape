@@ -1,13 +1,14 @@
 import os
 import subprocess
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.utils.encoding import smart_str
 import requests
 import time
-
+import re
 
 base_script_path = '/srv/www/rnascape/rnaview/'
 python_path = '/home/aricohen/.conda/envs/rnascape/bin/python'
@@ -31,12 +32,29 @@ def test_get(request):
     if request.method == "GET":
         return JsonResponse({'success': 'eskeetit'}, status=200)
 
+def get_npz_file(request):
+    if request.method == "GET":
+        time_string = request.GET.get('timeString')
+        re.sub(r'\W+', '', time_string)
+
+        file_location = os.path.join(base_script_path, "backend/media/saved_output", "{}.npz".format(time_string))
+
+        if os.path.exists(file_location):
+            with open(file_location, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/npz")
+                response['Content-Disposition'] = 'attachment; filename="{}"'.format(smart_str(os.path.basename(file_location)))
+                response['Content-Length'] = os.path.getsize(file_location)
+                return response
+        else:
+            return HttpResponse("File not found", status=404)
+
 
 def run_regen_labels(request):
     if request.method == "GET":
         # Define the path to your script
         rotation = request.GET.get('rotation')
         time_string = request.GET.get('timeString')
+        re.sub(r'\W+', '', time_string)
 
         script_path = f'{base_script_path}/regen_labels.py'
 

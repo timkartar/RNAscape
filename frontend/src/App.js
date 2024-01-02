@@ -199,6 +199,48 @@ function App() {
     setAdditionalFile(event.target.files[0]);
   }  
 
+  // Handle downloading an NPZ file. Call the endpoint and return the file
+  // based on user time string
+  function handleDownloadNpz(event) {
+    event.preventDefault();
+    const url = baseUrl + '/rnaview/rnaview/get-npz-file/';
+    setIsLoading(true); // Start loading
+  
+    axios({
+      url: url,
+      method: 'GET',
+      responseType: 'blob', // Important
+      params: {
+        timeString: timeString, // Assuming timeString is stored in state
+      }
+    })
+    .then((response) => {
+      // Create a new Blob object using the response data of the file
+      const file = new Blob([response.data], { type: 'application/npz' });
+  
+      // Create a link element, set the href to the blob URL, and trigger the download
+      const fileURL = URL.createObjectURL(file);
+      const fileLink = document.createElement('a');
+      fileLink.href = fileURL;
+      fileLink.setAttribute('download', `${timeString}.npz`); // Set the download attribute (will be saved as this name)
+      document.body.appendChild(fileLink);
+  
+      fileLink.click();
+  
+      // Clean up and revoke the Object URL after download
+      document.body.removeChild(fileLink);
+      URL.revokeObjectURL(fileURL);
+    })
+    .catch((error) => {
+      alert('Error downloading NPZ!');
+      console.error('Error downloading NPZ!', error);
+    })
+    .finally(() => {
+      setIsLoading(false); // Stop loading
+    });
+  }
+  
+
   // Main function to handle uploading a file!
   function handleSubmit(event) {
     const url = baseUrl + '/rnaview/rnaview/run-rnaview/';
@@ -1008,6 +1050,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             <div className="dropdown-content">
               <a href="#" onClick={() => handleDownloadAndRegenerate('SVG')}>SVG</a>
               <a href="#" onClick={() => handleDownloadAndRegenerate('PNG')}>PNG</a>
+              <a href="#" onClick={(e) => handleDownloadNpz(e)}>NPZ</a>
             </div>
           </div>
         </div>
