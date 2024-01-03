@@ -350,7 +350,7 @@ def getResNumPoints(points, ids, G, k=10, separation=1):
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR',
         out_path=None, time_string="ac1", extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'],
-            'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1
+            'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1,
             }):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
@@ -410,6 +410,9 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
     elif bp_type == "dssrLw":
         pairings, bp_markers, bp_map = getBasePairingEdgesDssrLw(dssrout, dssrids, points)
+    elif bp_type == "none":
+        pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
+
 
     for item in pairings:
         G.add_edge(item[0],item[1])
@@ -436,6 +439,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
             arrowsize=arrow, width=1*magnification, arrowstyle='->')
     
+    # If user does not want base pair annotations, turn these off
+
     if bp_type == "dssr":
         for item in bp_markers:
             plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,

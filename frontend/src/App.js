@@ -40,8 +40,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
-  const baseUrl = 'https://rohslab.usc.edu'
-  // const baseUrl = 'http://10.136.114.14'
+  // const baseUrl = 'https://rohslab.usc.edu'
+  const baseUrl = 'http://10.136.114.14'
   //const baseUrl = 'http://10.136.113.92'
 
   // Nucleotide colors
@@ -750,6 +750,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           <option value="dssrLw">Leontis-Westhof</option>
           <option value="dssr">DSSR</option>
           <option value="saenger">Saenger</option>
+          <option value="none">None</option>
         </select>
         {basePairAnnotation === 'rnaview' && (
           <>
@@ -1071,7 +1072,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       )}
           </TransformWrapper>
           </div>
-          {uploadBasePairAnnotation !== "saenger" && <img 
+          {uploadBasePairAnnotation !== "saenger" && uploadBasePairAnnotation !== "none" && <img 
                 src={getImageSrc()}
                 alt="Legend"
                 className="img-legend"
