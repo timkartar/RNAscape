@@ -49,18 +49,46 @@ def get_npz_file(request):
             return HttpResponse("File not found", status=404)
 
 
-def run_regen_labels(request):
+def run_regen_plot(request):
     if request.method == "GET":
         # Define the path to your script
         rotation = request.GET.get('rotation')
         time_string = request.GET.get('timeString')
+
         re.sub(r'\W+', '', time_string)
 
-        script_path = f'{base_script_path}/regen_labels.py'
+        script_path = f'{base_script_path}/regen_plot.py'
+
+        basePairAnnotation = request.GET.get('basePairAnnotation')
+        circleSize = request.GET.get('circleSize')
+        circleLabelSize = request.GET.get('circleLabelSize')
+        arrowSize = request.GET.get('arrowSize')
+
+        # colors
+        colorA = request.GET.get('colorA')
+        colorC = request.GET.get('colorC')
+        colorG = request.GET.get('colorG')
+        colorU = request.GET.get('colorU')
+        colorX = request.GET.get('colorX')
+
+        counter = str(request.GET.get('counter'))
+
+        # numbers
+        showNumberLabels = request.GET.get('showNumberLabels')
+        if showNumberLabels:
+            showNumberLabels = "1"
+        else:
+            showNumberLabels = "0"
+        numberSeparation = request.GET.get('numberSeparation')
+        numberSize = request.GET.get('numberSize')
+
+        extra_list=[circleSize, circleLabelSize, arrowSize, colorA, colorC, colorG, colorU, colorX,
+                showNumberLabels, numberSeparation, numberSize, counter]
+        extra_string = ','.join(extra_list)
 
         try:
             result = subprocess.run(
-                        [python_path, script_path, time_string, rotation], 
+                        [python_path, script_path, time_string, rotation, basePairAnnotation, extra_string], 
                         capture_output=True, 
                         text=True,
                         check=True
@@ -86,6 +114,7 @@ def run_regen_labels(request):
 @require_POST
 def run_rnaview(request):
     # Get the file from the request
+    counter = str(request.POST.get('counter'))
 
     file = request.FILES.get('file')
     additionalFile = request.FILES.get('additionalFile')
@@ -109,7 +138,7 @@ def run_rnaview(request):
     numberSize = request.POST.get('numberSize')
 
     extra_list=[circleSize, circleLabelSize, arrowSize, colorA, colorC, colorG, colorU, colorX,
-                showNumberLabels, numberSeparation, numberSize]
+                showNumberLabels, numberSeparation, numberSize, counter]
     extra_string = ','.join(extra_list)
 
     additional_file_path=""

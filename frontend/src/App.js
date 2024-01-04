@@ -25,6 +25,7 @@ function getCookie(name) {
 }
 
 function App() {
+  const [counter, setCounter] = useState(0); // Counter for regenerating graph
   const [sumRotation, setSumRotation] = useState(0); // New state for rotation
   const [rotation, setRotation] = useState(0); // New state for rotation
   const [file, setFile] = useState(null);
@@ -262,6 +263,7 @@ function App() {
     formData.append('fileName', file.name);
     formData.append('basePairAnnotation', basePairAnnotation);
     formData.append('loopBulging', loopBulging);
+    formData.append('counter', counter);
 
     // advanced options
     formData.append('arrowSize', arrowSize);
@@ -339,7 +341,8 @@ function App() {
         formData.append('fileName', file.name);
         formData.append('basePairAnnotation', basePairAnnotation);
         formData.append('loopBulging', loopBulging);
-        
+        formData.append('counter', counter);
+
         // advanced options
         formData.append('arrowSize', arrowSize);
         formData.append('circleSize', circleSize);
@@ -423,18 +426,28 @@ function App() {
 
 
   // Send timeString and rotation via axios get request to run_regen_labels
-  function handleRegenLabels(event) {
+  function handleRegenPlot(event) {
     setIsLoading(true); // Start loading
     // Define the URL for the GET request
-    const url = baseUrl + `/rnaview/rnaview/run-regen_labels`;
-  
-    // do something to sum rotation here!
-    // say I rotated 30 degrees already
+    const url = baseUrl + `/rnaview/rnaview/run-regen_plot`;
 
     // Set up the query parameters
     const params = {
       timeString: timeString,  // Assuming timeString is stored in state
-      rotation: parseInt(rotation) + parseInt(sumRotation)       // Assuming rotation is stored in state
+      rotation: parseInt(rotation) + parseInt(sumRotation),       // Assuming rotation is stored in state
+      basePairAnnotation: basePairAnnotation,
+      colorA: colorA,
+      colorC: colorC,
+      colorG: colorG,
+      colorU: colorU,
+      colorX: colorX,
+      circleSize: circleSize,
+      circleLabelSize: circleLabelSize,
+      arrowSize: arrowSize,
+      showNumberLabels: showNumberLabels,
+      numberSeparation: numberSeparation,
+      numberSize: numberSize,
+      counter:counter,
     };
     // Send the GET request with the query parameters
     return axios.get(url, { params })
@@ -455,6 +468,7 @@ function App() {
       })
       .finally(() => {
         setIsLoading(false); // Stop loading
+        setCounter(counter + 1);
       });
   }
   const downloadImage = (url, isPng) => {
@@ -1044,7 +1058,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               onChange={handleRotationChange}
               style={{ marginLeft: '0px', width: '50px' }} // Adjust style as needed
             />
-          <button onClick={handleRegenLabels}>Regenerate Labels</button>
+          <button onClick={handleRegenPlot}>Regenerate Plot</button>
 
           <div className="dropdown">
             <button type="button" className="dropbtn">Download</button>

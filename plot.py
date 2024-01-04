@@ -475,8 +475,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     
     plt.tight_layout()
     plt.gca().set_aspect('equal')
-    plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))
-    plt.savefig('{}/{}/{}{}{}.svg'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, rotation_string))
+    plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, int(extra['counter'])))
+    plt.savefig('{}/{}/{}{}{}.svg'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, int(extra['counter'])))
 
     plt.close()
 
@@ -493,6 +493,6 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # plt.savefig('{}/{}/legend.svg'.format(MEDIA_PATH,FIG_PATH))
 
     # return '{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string)
-    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,rotation_string),'{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,rotation_string), "\n".join(log)
+    return '{}/{}{}{}.svg'.format(FIG_PATH,prefix,time_string,int(extra['counter'])),'{}/{}{}{}.png'.format(FIG_PATH,prefix,time_string,int(extra['counter'])), "\n".join(log)
 
 
