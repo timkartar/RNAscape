@@ -302,12 +302,19 @@ def getTails(helix_dssrids, dssrids, chids, points):
 
 
 #if __name__ == "__main__":
+"""
+cond_bulging: True = attempt to condense non-base-pairing nucleotides. False = always bulge them out as loop
+prefix: everything before .cif or .pdb in the file
+cif_file: cif or pdb file path
+"""
 def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
     global tree, dssrout, conditional_bulging
     conditional_bulging = cond_bulging
     #prefix = sys.argv[1]
     #if os.path.exists("{}/{}.png".format(FIG_PATH, prefix)):
     #    sys.exit()
+
+    # support both CIF and PDB files
     if cif_file.endswith(".cif"):
         parser = MMCIFParser()
     elif cif_file.endswith(".pdb"):

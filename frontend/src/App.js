@@ -8,6 +8,7 @@ import Documentation from './Documentation'; // Adjust the path as necessary
 import TopRow from './TopRow';
 import './TopRow.css';
 import SplashScreen from './SplashScreen';
+import LogPopup from './LogPopup';
 
 function getCookie(name) {
   let cookieValue = null;
@@ -44,6 +45,9 @@ function App() {
   const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
   //const baseUrl = 'http://10.136.113.92'
+
+  const [showLogPopup, setShowLogPopup] = useState(false);
+  const [logText, setLogText] = useState('');
 
   // Nucleotide colors
   const [colorG, setColorG] = useState("#90CC84");
@@ -200,6 +204,78 @@ function App() {
     setAdditionalFile(event.target.files[0]);
   }  
 
+  function handleDownloadLog(event) {
+    event.preventDefault();
+    getLog(); // download and set the log text variable
+
+     // Wait for the logText to be set
+    const waitForLogText = setInterval(() => {
+    if (logText !== "") {
+      clearInterval(waitForLogText);
+
+      // Create a new Blob object from the log text
+      const file = new Blob([logText], { type: 'text/plain' });
+
+      // Create a link element, set the href to the blob URL, and trigger the download
+      const fileURL = URL.createObjectURL(file);
+      const fileLink = document.createElement('a');
+      fileLink.href = fileURL;
+      fileLink.setAttribute('download', 'structure.log'); // Set the download attribute
+      document.body.appendChild(fileLink);
+      
+      fileLink.click();
+      
+      // Clean up and revoke the Object URL after download
+      document.body.removeChild(fileLink);
+      URL.revokeObjectURL(fileURL);
+    }
+  }, 500); // Checks every 500ms
+}
+
+  // Handle downloading a log file. Call the endpoint and return the file
+  // based on user time string
+  function getLog() {
+    const url = baseUrl + '/rnaview/rnaview/get-log-file/';
+    setIsLoading(true); // Start loading
+  
+    axios({
+      url: url,
+      method: 'GET',
+      responseType: 'blob', // Important
+      params: {
+        timeString: timeString, // Assuming timeString is stored in state
+      }
+    })
+    .then((response) => {
+      // Create a new Blob object using the response data of the file
+      const file = new Blob([response.data], { type: 'text/plain' });
+
+      // Use FileReader to read the file's text
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        setLogText(text);
+      };
+      reader.readAsText(file);
+    })
+    .catch((error) => {
+      alert('Error downloading log!');
+      console.error('Error downloading log!', error);
+    })
+    .finally(() => {
+      setIsLoading(false); // Stop loading
+    });
+  }
+
+
+  const handleShowLog = () => {
+    // Set the log text and show the popup
+    getLog();
+    setShowLogPopup(true);
+  };
+
+
+
   // Handle downloading an NPZ file. Call the endpoint and return the file
   // based on user time string
   function handleDownloadNpz(event) {
@@ -223,7 +299,7 @@ function App() {
       const fileURL = URL.createObjectURL(file);
       const fileLink = document.createElement('a');
       fileLink.href = fileURL;
-      fileLink.setAttribute('download', `${timeString}.npz`); // Set the download attribute (will be saved as this name)
+      fileLink.setAttribute('download', `processed_structure.npz`); // Set the download attribute (will be saved as this name)
       document.body.appendChild(fileLink);
   
       fileLink.click();
@@ -1059,16 +1135,22 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               style={{ marginLeft: '0px', width: '50px' }} // Adjust style as needed
             />
           <button onClick={handleRegenPlot}>Regenerate Plot</button>
-
+          <button onClick={handleShowLog}>Show Log</button>
           <div className="dropdown">
             <button type="button" className="dropbtn">Download</button>
             <div className="dropdown-content">
               <a href="#" onClick={() => handleDownloadAndRegenerate('SVG')}>SVG</a>
               <a href="#" onClick={() => handleDownloadAndRegenerate('PNG')}>PNG</a>
               <a href="#" onClick={(e) => handleDownloadNpz(e)}>NPZ</a>
+              <a href="#" onClick={(e) => handleDownloadLog(e)}>Logfile</a>
             </div>
           </div>
         </div>
+        <LogPopup 
+        isVisible={showLogPopup} 
+        text={logText} 
+        onClose={() => setShowLogPopup(false)} 
+      />
           <TransformWrapper 
             ref={transformWrapperRef} 
             minScale={0.1}

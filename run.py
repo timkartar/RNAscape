@@ -60,7 +60,10 @@ print(figpath +"," + time_string + "," + pngpath)
 
 # Save output of rnaView function to enable regeneration of labels!
 npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
+
+with open("{}/saved_output/{}.log".format(MEDIA_PATH,time_string), 'w') as log_file:
+    log_file.write(log)
+
 np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
          chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,time_string=time_string,
          out_path=out_path, log=log)
-

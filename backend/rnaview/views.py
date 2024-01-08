@@ -48,6 +48,23 @@ def get_npz_file(request):
         else:
             return HttpResponse("File not found", status=404)
 
+def get_log_file(request):
+    if request.method == "GET":
+        time_string = request.GET.get('timeString')
+        time_string = re.sub(r'\W+', '', time_string)  # remove unwanted characters
+
+        file_location = os.path.join(base_script_path, "backend/media/saved_output", "{}.log".format(time_string))
+
+        if os.path.exists(file_location):
+            with open(file_location, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="text/plain")
+                response['Content-Disposition'] = 'attachment; filename="{}"'.format(smart_str(os.path.basename(file_location)))
+                response['Content-Length'] = os.path.getsize(file_location)
+                return response
+        else:
+            return HttpResponse("File not found", status=404)
+
+
 
 def run_regen_plot(request):
     if request.method == "GET":
