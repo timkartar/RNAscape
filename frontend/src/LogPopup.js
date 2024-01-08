@@ -8,7 +8,6 @@ const LogPopup = ({ isVisible, text, onClose }) => {
     <div className="log-popup-overlay">
       <div className="log-popup">
         <button className="close-btn" onClick={onClose}>×</button>
-        <h2>Log</h2>
         <div className="log-content">
           <pre>{text}</pre>
         </div>
