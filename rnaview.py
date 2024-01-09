@@ -329,20 +329,25 @@ def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
 
     helices = get_helix_coords(dssrout, model)
     if helices == None:
-        print("no helices in this structure")
-        from PIL import Image, ImageFont
-
-        text = "No helices in this structure"
-        font_size = 36
-        font_filepath = "/home/raktim/anaconda3/lib/python3.9/site-packages/matplotlib/mpl-data/fonts/ttf/Helvetica.ttf"
-        color = (67, 33, 116)
-
-        font = ImageFont.truetype(font_filepath, size=font_size)
-        mask_image = font.getmask(text, "L")
-        img = Image.new("RGBA", mask_image.size)
-        img.im.paste(color, (0, 0) + mask_image.size, mask_image)  # need to use the inner `img.im.paste` due to `getmask` returning a core
-        img.save('{}/{}.png'.format(FIG_PATH, prefix))
-
+        from get_helix_coords import get_cetroid
+        coords = []
+        markers = []
+        ids = []
+        chids = []
+        dssrids = []
+        for item in dssrout['nts']:
+            spl1, nt_id, rest, chid = process_resid(item['nt_id'])
+            ntc = get_cetroid(model[chid][nt_id])
+            coords.append(ntc)
+            markers.append('${}$'.format(rest))
+            ids.append(nt_id)
+            chids.append(chid)
+            dssrids.append(item['nt_id'])
+        pca = PCA(n_components=2)
+        points = pca.fit_transform(np.array(coords))
+    #   V  Don’t know whether to include this line  V
+    #   points, markers, ids, chids, dssrids, dic = orderData(points, markers, ids, chids, dssrids)
+        
 
     else:
         helix_points, helix_ids, helix_markers, helix_chids, helix_dssrids = get_helix_coords(dssrout, model)

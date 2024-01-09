@@ -389,6 +389,7 @@ function App() {
       console.error('Error uploading file:', error);
     }).finally(() => {
       setIsLoading(false); // Stop loading
+      setCounter(counter+1);
     });
   }
 
@@ -460,6 +461,7 @@ function App() {
           console.error('Error uploading file:', error);
         }).finally(() => {
           setIsLoading(false); // Stop loading
+          setCounter(counter+1);
         });
       })
       .catch(error => console.error('Error loading example data:', error))

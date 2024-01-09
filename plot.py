@@ -402,20 +402,26 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     
     
     #### draw edges #######
-    if bp_type == "dssr":
-        pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
-    elif bp_type == "saenger":
-        pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
-    elif bp_type == "rnaview":
-        pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
-    elif bp_type == "dssrLw":
-        pairings, bp_markers, bp_map = getBasePairingEdgesDssrLw(dssrout, dssrids, points)
-    elif bp_type == "none":
-        pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
+    # if no pairs do not get base pairing edges:
+    pairings = None
+    bp_markers = None
+    bp_map = None
+    if 'pairs' in dssrout.keys():
+        if bp_type == "dssr":
+            pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
+        elif bp_type == "saenger":
+            pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
+        elif bp_type == "rnaview":
+            pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
+        elif bp_type == "dssrLw":
+            pairings, bp_markers, bp_map = getBasePairingEdgesDssrLw(dssrout, dssrids, points)
+        elif bp_type == "none":
+            pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
 
 
-    for item in pairings:
-        G.add_edge(item[0],item[1])
+        for item in pairings:
+            # print(points[item[0]], points[item[1]])
+            G.add_edge(item[0],item[1])
     
 
     edges = getBackBoneEdges(ids, chids, dssrids, dssrout)
@@ -441,15 +447,15 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     
     # If user does not want base pair annotations, turn these off
 
-    if bp_type == "dssr":
+    if bp_type == "dssr" and 'pairs' in dssrout.keys():
         for item in bp_markers:
             plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,
                     linewidth=1*magnification, edgecolor='k', label=item[3] )
-    elif bp_type == "saenger":
+    elif bp_type == "saenger" and 'pairs' in dssrout.keys():
         for item in bp_markers:
             plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification))
     
-    elif bp_type == "rnaview" or bp_type == "dssrLw":
+    elif (bp_type == "rnaview" or bp_type == "dssrLw") and 'pairs' in dssrout.keys():
         for item in bp_markers:
             if(item[1] == "ss" or item[1] == ">>" or item[1] == 'oo'): # just need one shape for these
                 plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification,
@@ -473,10 +479,27 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         for i in range(len(poses)):
             plt.text(poses[i][0],poses[i][1], texts[i], color='saddlebrown',  fontsize=(10+(magnification))*float(extra['numberSize']))
     
+    
+    bounds = np.max(points, axis=0), np.min(points, axis=0)
+    
+    special_points = np.array([[bounds[0][0], bounds[1][1]], [bounds[1][0], bounds[0][1]]])
+    center  =np.mean(special_points, axis=0)
+    #d = np.linalg.norm((special_points[0] - special_points[1]))/2.828
+    dir = (special_points[0] - center)
+    dir2 = (special_points[1] - center)
+    toplot = special_points[0] + (10)*dir/np.linalg.norm(dir)
+    toplot2 = special_points[1] + (9)*dir2/np.linalg.norm(dir2)
+    
+    #toplot2 = center + (d+15)*dir2/np.linalg.norm(dir)
+
+    plt.scatter(toplot[0], toplot[1], color="w",s=0)
+    plt.scatter(toplot2[0], toplot2[1], color="w",s=0)
+
     plt.tight_layout()
     plt.gca().set_aspect('equal')
     plt.savefig('{}/{}/{}{}{}.png'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, int(extra['counter'])))
     plt.savefig('{}/{}/{}{}{}.svg'.format(MEDIA_PATH,FIG_PATH,prefix,time_string, int(extra['counter'])))
+
 
     plt.close()
 
