@@ -204,8 +204,7 @@ function App() {
     setAdditionalFile(event.target.files[0]);
   }  
 
-  function handleDownloadLog(event) {
-    event.preventDefault();
+  function handleDownloadLog() {
     getLog(); // download and set the log text variable
 
      // Wait for the logText to be set
@@ -236,7 +235,7 @@ function App() {
   // based on user time string
   function getLog() {
     const url = baseUrl + '/rnaview/rnaview/get-log-file/';
-    setIsLoading(true); // Start loading
+    // setIsLoading(true); // Start loading
   
     axios({
       url: url,
@@ -263,12 +262,13 @@ function App() {
       console.error('Error downloading log!', error);
     })
     .finally(() => {
-      setIsLoading(false); // Stop loading
+      // setIsLoading(false); // Stop loading
     });
   }
 
 
-  const handleShowLog = () => {
+  const handleShowLog = (event) => {
+    event.preventDefault();
     // Set the log text and show the popup
     getLog();
     setShowLogPopup(true);
@@ -278,10 +278,9 @@ function App() {
 
   // Handle downloading an NPZ file. Call the endpoint and return the file
   // based on user time string
-  function handleDownloadNpz(event) {
-    event.preventDefault();
+  function handleDownloadNpz() {
     const url = baseUrl + '/rnaview/rnaview/get-npz-file/';
-    setIsLoading(true); // Start loading
+    // setIsLoading(true); // Start loading
   
     axios({
       url: url,
@@ -313,7 +312,7 @@ function App() {
       console.error('Error downloading NPZ!', error);
     })
     .finally(() => {
-      setIsLoading(false); // Stop loading
+      // setIsLoading(false); // Stop loading
     });
   }
   
@@ -1111,8 +1110,15 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       )}
        {showDocumentation && <Documentation />}
       {!showDocumentation && !isLoading && imageUrl && (
+        
         <div className="image-and-legend-container">
+                <LogPopup 
+        isVisible={showLogPopup} 
+        text={logText} 
+        onClose={() => setShowLogPopup(false)} 
+      />
         <div className="image-container">
+
         <div className="controls">
           <button onClick={zoomIn}>Zoom In</button>
           <button onClick={zoomOut}>Zoom Out</button>
@@ -1135,22 +1141,18 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               style={{ marginLeft: '0px', width: '50px' }} // Adjust style as needed
             />
           <button onClick={handleRegenPlot}>Regenerate Plot</button>
-          <button onClick={handleShowLog}>Show Log</button>
+          <button type="button" onClick={(e) => handleShowLog(e)}>Show Log</button>
           <div className="dropdown">
             <button type="button" className="dropbtn">Download</button>
             <div className="dropdown-content">
               <a href="#" onClick={() => handleDownloadAndRegenerate('SVG')}>SVG</a>
               <a href="#" onClick={() => handleDownloadAndRegenerate('PNG')}>PNG</a>
-              <a href="#" onClick={(e) => handleDownloadNpz(e)}>NPZ</a>
-              <a href="#" onClick={(e) => handleDownloadLog(e)}>Logfile</a>
+              <a href="#" onClick={() => handleDownloadNpz()}>NPZ</a>
+              <a href="#" onClick={() => handleDownloadLog()}>Logfile</a>
             </div>
           </div>
         </div>
-        <LogPopup 
-        isVisible={showLogPopup} 
-        text={logText} 
-        onClose={() => setShowLogPopup(false)} 
-      />
+
           <TransformWrapper 
             ref={transformWrapperRef} 
             minScale={0.1}
