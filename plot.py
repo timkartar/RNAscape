@@ -428,11 +428,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     for item in edges:
         G.add_edge(item[0],item[1])
 
-    d = deepcopy(G.edges)
-    for item in d:
-        if(points[item[0]][0] == points[item[1]][0]):
-            #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
-            G.remove_edge(item[0],item[1])
+    # d = deepcopy(G.edges)
+    # for item in d:
+    #     if(points[item[0]][0] == points[item[1]][0]):
+    #         #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
+    #         G.remove_edge(item[0],item[1])
     style = [style_dict[item] for item in G.edges]
     arrow = [arrow_dict[item]*extra['arrowsize'] for item in G.edges]
     nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False,
@@ -445,8 +445,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
             arrowsize=arrow, width=1*magnification, arrowstyle='->')
     
-    # If user does not want base pair annotations, turn these off
-
+    # If user does not want base pair annotations, turn these off by setting bp_type to something else
     if bp_type == "dssr" and 'pairs' in dssrout.keys():
         for item in bp_markers:
             plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,
