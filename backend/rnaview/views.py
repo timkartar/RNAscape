@@ -9,6 +9,9 @@ from django.utils.encoding import smart_str
 import requests
 import time
 import re
+from urllib.request import urlretrieve
+import gzip
+import shutil
 
 base_script_path = '/srv/www/rnascape/rnaview/'
 python_path = '/home/aricohen/.conda/envs/rnascape/bin/python'
@@ -19,13 +22,38 @@ python_path = '/home/aricohen/.conda/envs/rnascape/bin/python'
 #base_script_path = '/home/raktim/rnaview/'
 #python_path = '/home/raktim/anaconda3/bin/python'
 
-
 def is_file_served(url):
     try:
         response = requests.head(url)
         return response.status_code == 200
     except requests.RequestException:
         return False
+
+"""
+ISSUE PDB File names will be the same
+WHAT IF NO CIF
+WHAT ABOUT ASSEMBLY
+"""
+def get_pdb_file(pdb_id):
+
+    pdb_id = pdb_id.strip().upper()
+    if not pdb_id.isalnum():
+        return 'error', 'Bad PDB ID'
+    
+    out_gz_path = '{}/backend/media/uploads/{}-assembly1.cif.gz'.format(base_script_path, pdb_id)
+    out_cif_path = '{}/backend/media/uploads/{}-assembly1.cif'.format(base_script_path, pdb_id)
+
+    url = 'https://files.rcsb.org/download/{}-assembly1.cif.gz'.format(pdb_id)
+    urlretrieve(url, out_gz_path)
+    with gzip.open(out_gz_path, 'rb') as f_in:
+        with open(out_cif_path, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    filepath = f'uploads/{pdb_id}-assembly1.cif'
+    # if not os.path.exists(filepath): # if path doesn’t exist
+    #     return 'error', 'Bad PDB ID'
+        # while not is_download_complete():
+    #     time.sleep(1)
+    return filepath, pdb_id
 
 
 def test_get(request):
@@ -110,8 +138,8 @@ def run_regen_plot(request):
                         text=True,
                         check=True
                     )
-            image_path = result.stdout.strip().split(',')[0]
-            image_png_path = result.stdout.strip().split(',')[1]
+            image_path = result.stdout.strip().split(',,,')[0]
+            image_png_path = result.stdout.strip().split(',,,')[1]
 
 
             image_url = request.build_absolute_uri(default_storage.url(image_path))
@@ -132,6 +160,10 @@ def run_regen_plot(request):
 def run_rnaview(request):
     # Get the file from the request
     counter = str(request.POST.get('counter'))
+    pdbid = request.POST.get('pdbid')
+    pdb_download = False
+    if pdbid.strip() != '0':
+        pdb_download = True
 
     file = request.FILES.get('file')
     additionalFile = request.FILES.get('additionalFile')
@@ -163,49 +195,57 @@ def run_rnaview(request):
     # Now you can run your Python script using the saved file
     script_path = f'{base_script_path}/run.py'
 
-    if file:
+    if file or pdb_download:
         # Define file path (you can include a specific path if needed)
-        file_path = os.path.join('uploads', file.name)
+        if file:
+            file_path = os.path.join('uploads', file.name)
 
-        # CHECK FILE SIZE
-        max_file_size = 51 * 1024 * 1024  # 51MB MAX
-        if file.size > max_file_size:
-            return JsonResponse({'error': 'File size exceeds the allowed limit'}, status=400)
+            # CHECK FILE SIZE
+            max_file_size = 51 * 1024 * 1024  # 51MB MAX
+            if file.size > max_file_size:
+                return JsonResponse({'error': 'File size exceeds the allowed limit'}, status=400)
 
-        # Check file type (extension)
-        file_extension = os.path.splitext(file.name)[1]
-        if file_extension.lower() not in ['.cif', '.pdb']:
-            return JsonResponse({'error': 'Invalid file type'}, status=400)
+            # Check file type (extension)
+            file_extension = os.path.splitext(file.name)[1]
+            if file_extension.lower() not in ['.cif', '.pdb']:
+                return JsonResponse({'error': 'Invalid file type'}, status=400)
 
 
-        # Write file to disk
-        with default_storage.open(file_path, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
+            # Write file to disk
+            with default_storage.open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
         
-        # If RNAView, special case
-        if basePairAnnotation == "rnaview":
-            # check if a file is provided!
-            if additionalFile:
-                additional_file_path = os.path.join('uploads', additionalFile.name)
-                with default_storage.open(additional_file_path, 'wb+') as destination:
-                    for chunk in additionalFile.chunks():
-                        destination.write(chunk)
-            else:
-                return JsonResponse({"error": "No rnaview output file provided"}, status=400)
+            # If RNAView, special case
+            if basePairAnnotation == "rnaview":
+                # check if a file is provided!
+                if additionalFile:
+                    additional_file_path = os.path.join('uploads', additionalFile.name)
+                    with default_storage.open(additional_file_path, 'wb+') as destination:
+                        for chunk in additionalFile.chunks():
+                            destination.write(chunk)
+                else:
+                    return JsonResponse({"error": "No rnaview output file provided"}, status=400)
+        if pdb_download:
+            file_path, file_name = get_pdb_file(pdbid)
+            if file_path == 'error':
+                 return JsonResponse({"error": "Unable to download PDB File"}, status=400)
+            
         try:
             # Call your script with the file path as an argument
             result = None
+            if file:
+                file_name = file.name
             if basePairAnnotation == "rnaview":
                 result = subprocess.run(
-                    [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation, extra_string, additional_file_path], 
+                    [python_path, script_path, file_path, file_name, loopBulging, basePairAnnotation, extra_string, additional_file_path], 
                     capture_output=True, 
                     text=True,
                     check=True
                 )
             else:
                 result = subprocess.run(
-                   [python_path, script_path, file_path, file.name, loopBulging, basePairAnnotation, extra_string], 
+                   [python_path, script_path, file_path, file_name, loopBulging, basePairAnnotation, extra_string], 
                     capture_output=True, 
                     text=True,
                     check=True
@@ -214,9 +254,9 @@ def run_rnaview(request):
             # You can access result.stdout, result.stderr, result.returncode here
             # No need to save again, just construct the URL
 
-            image_path = result.stdout.split(',')[0].strip()
-            time_string = result.stdout.split(',')[1].strip()
-            image_png_path = result.stdout.split(',')[2].strip()
+            image_path = result.stdout.split(',,,')[0].strip()
+            time_string = result.stdout.split(',,,')[1].strip()
+            image_png_path = result.stdout.split(',,,')[2].strip()
 
             image_url = request.build_absolute_uri(default_storage.url(image_path))
             image_png_url = request.build_absolute_uri(default_storage.url(image_png_path))

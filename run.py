@@ -54,7 +54,7 @@ with open(json_filepath, 'w') as json_file:
     json.dump(dssrout, json_file)
 
 figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, extra=extra, out_path=out_path, time_string=time_string)
-print(figpath +"," + time_string + "," + pngpath)
+print(figpath +",,," + time_string + ",,," + pngpath)
 
 # Save output of rnaView function to enable regeneration of labels!
 npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)

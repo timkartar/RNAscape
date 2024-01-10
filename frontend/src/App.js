@@ -42,6 +42,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [showDocumentation, setShowDocumentation] = useState(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [pdbid, setPdbid] = useState("");
   const baseUrl = 'https://rohslab.usc.edu'
   // const baseUrl = 'http://10.136.114.14'
   //const baseUrl = 'http://10.136.113.92'
@@ -322,23 +323,35 @@ function App() {
     const url = baseUrl + '/rnaview/rnaview/run-rnaview/';
     event.preventDefault();
     setIsLoading(true); // Start loading
-    if (!file) {
-      alert('Please select a file first!');
+    if (!file && pdbid === "") {
+      alert('Please select a file or enter a PDB ID!');
+      setIsLoading(false);
       return;
     }
 
     // Check if additional file is required and selected
     if (basePairAnnotation === 'rnaview' && !additionalFile) {
       alert('Please select an output file from RNAView!');
+      setIsLoading(false);
       return;
   }
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('fileName', file.name);
+    let filenameToPass = null;
+    if(file !== null){
+      filenameToPass = file.name;
+    }
+    formData.append('fileName', filenameToPass);
     formData.append('basePairAnnotation', basePairAnnotation);
     formData.append('loopBulging', loopBulging);
     formData.append('counter', counter);
+    if(pdbid === ""){
+      formData.append('pdbid', '0');
+    }else{
+      formData.append('pdbid', pdbid);
+    }
+
 
     // advanced options
     formData.append('arrowSize', arrowSize);
@@ -418,6 +431,8 @@ function App() {
         formData.append('basePairAnnotation', basePairAnnotation);
         formData.append('loopBulging', loopBulging);
         formData.append('counter', counter);
+        formData.append('pdbid', '0'); // guarantee empty pdb id
+        
 
         // advanced options
         formData.append('arrowSize', arrowSize);
@@ -822,6 +837,10 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     }
   };
   
+  const handlePdbChange = (event) => {
+    setPdbid(event.target.value); // Update the pdbId state with the new value from the input field
+    
+  }
 
   //<option value="rnaview">Leontis-Westhof (RNAView)</option>
   return (
@@ -830,8 +849,11 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
         <label>mmCIF/PDB format file: </label>
-        <input type="file" onChange={handleChange} required />
-  
+        <input type="file" onChange={handleChange} />
+
+        <label>Or enter PDB ID: </label>
+        <input type="text" onChange={handlePdbChange} value={pdbid} /> {/* Added value attribute for controlled input */}
+
         <label>Base Pair Annotation:</label>
         <select 
           className="options-dropdown"
@@ -1103,7 +1125,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       <br/>
       <button type="submit">Run</button>
       <button id="run-example-button" type="button" onClick={loadExampleData}>Run on Example Data</button>
-
+      
       </form>
         {isLoading && (
         <div className="loading-container">

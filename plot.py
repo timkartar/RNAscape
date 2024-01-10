@@ -428,11 +428,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     for item in edges:
         G.add_edge(item[0],item[1])
 
-    # d = deepcopy(G.edges)
-    # for item in d:
-    #     if(points[item[0]][0] == points[item[1]][0]):
-    #         #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
-    #         G.remove_edge(item[0],item[1])
+    d = deepcopy(G.edges)
+    for item in d:
+        if(points[item[0]][0] == points[item[1]][0] and points[item[0]][1] == points[item[1]][1]):
+            #G.nodes[item[0]]['pos'] = (G.nodes[item[0]]['pos'] + np.random.random(2)*5)
+            G.remove_edge(item[0],item[1])
     style = [style_dict[item] for item in G.edges]
     arrow = [arrow_dict[item]*extra['arrowsize'] for item in G.edges]
     nx.draw(G, nx.get_node_attributes(G, 'pos'), with_labels=False,
