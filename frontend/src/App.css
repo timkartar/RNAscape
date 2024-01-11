@@ -58,6 +58,8 @@
 /* Style for the form */
 .upload-form {
   text-align: center;
+  /* margin-left: 200px; */
+
   /* margin-bottom: 40px; */
 }
 
@@ -282,14 +284,7 @@
   color: inherit; /* This will make the color the same as the parent element */
 }
 
-#run-example-button {
-  background-color: #f1f1f1;
-  color: black;
-}
 
-#run-example-button:hover{
-  background-color: #d0d3d7;
-}
 
 /* .advanced-settings {
   display: flex;
@@ -498,4 +493,17 @@
 #small-text {
   width: 100px;
   padding: 8px;
+}
+
+.beige-button {
+  background-color: #f1f1f1 !important;
+  color: black !important;
+}
+
+.beige-button:hover{
+  background-color: #d0d3d7 !important;
+}
+
+#run-on-ex-data{
+  margin-left: 0px;
 }

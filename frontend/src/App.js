@@ -220,7 +220,7 @@ function App() {
       const fileURL = URL.createObjectURL(file);
       const fileLink = document.createElement('a');
       fileLink.href = fileURL;
-      fileLink.setAttribute('download', 'structure.log'); // Set the download attribute
+      fileLink.setAttribute('download', 'structure_log.txt'); // Set the download attribute
       document.body.appendChild(fileLink);
       
       fileLink.click();
@@ -404,7 +404,7 @@ function App() {
         toggleDocumentation(); // hide documentation if it is being shown!
       }
     }).catch(error => {
-      alert('Error uploading file!');
+      alert('Error loading file!');
       console.error('Error uploading file:', error);
     }).finally(() => {
       setIsLoading(false); // Stop loading
@@ -859,14 +859,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
 
         <label>Or enter PDB ID:</label>
         <input id="small-text" type="text" onChange={handlePdbChange} value={pdbid} /> {/* Added value attribute for controlled input */}
-        <label>Bulge Out Loops:</label>
-        <select 
-          className="options-dropdown"
-          value={loopBulging}
-          onChange={(e) => setLoopBulging(e.target.value)}>
-          <option value="0">Always</option>
-          <option value="1">Conditional</option>
-        </select>
+
 
         {/* {basePairAnnotation === 'rnaview' && (
           <>
@@ -880,7 +873,15 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           </>
         )} */}
         <br/>
-        <button type="button" onClick={toggleAdvancedSettings}>
+        <label>Bulge Out Loops:</label>
+        <select 
+          className="options-dropdown"
+          value={loopBulging}
+          onChange={(e) => setLoopBulging(e.target.value)}>
+          <option value="0">Always</option>
+          <option value="1">Conditional</option>
+        </select>
+        <button class="beige-button" type="button" onClick={toggleAdvancedSettings}>
           {showAdvancedSettings ? 'Hide Advanced Settings' : 'Show Advanced Settings'}
         </button>
   
@@ -1128,9 +1129,9 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           </div>   
       )}
       <br/>
+      <button id="run-on-ex-data" class="beige-button" type="button" onClick={loadExampleData}>Run on Example Data</button>
       <button type="submit">Run</button>
-      <button id="run-example-button" type="button" onClick={loadExampleData}>Run on Example Data</button>
-      
+
       </form>
         {isLoading && (
         <div className="loading-container">
