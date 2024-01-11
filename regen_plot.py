@@ -43,4 +43,4 @@ with open(json_filepath, 'r') as json_file:
     dssrout = json.load(json_file)
 
 figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, out_path=out_path, extra=extra,time_string=time_string, rotation=rotation)
-print(figpath +"," + pngpath)
+print(figpath +",,," + pngpath)
