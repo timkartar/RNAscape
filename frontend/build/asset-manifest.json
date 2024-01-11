@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/rnascape/static/css/main.6baa7f48.css",
-    "main.js": "/rnascape/static/js/main.cd396330.js",
+    "main.js": "/rnascape/static/js/main.254822d6.js",
     "static/js/787.9e9f4ffd.chunk.js": "/rnascape/static/js/787.9e9f4ffd.chunk.js",
     "static/media/modern_logo.png": "/rnascape/static/media/modern_logo.ab90c00bdcbe34b18912.png",
     "static/media/logo.svg": "/rnascape/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/rnascape/index.html",
     "main.6baa7f48.css.map": "/rnascape/static/css/main.6baa7f48.css.map",
-    "main.cd396330.js.map": "/rnascape/static/js/main.cd396330.js.map",
+    "main.254822d6.js.map": "/rnascape/static/js/main.254822d6.js.map",
     "787.9e9f4ffd.chunk.js.map": "/rnascape/static/js/787.9e9f4ffd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6baa7f48.css",
-    "static/js/main.cd396330.js"
+    "static/js/main.254822d6.js"
   ]
 }
