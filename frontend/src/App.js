@@ -329,6 +329,12 @@ function App() {
       return;
     }
 
+    if (file && pdbid !== "") {
+      alert('A PDB ID and file are both selected as input. Please either clear the PDB ID text or reload the page to clear the file.');
+      setIsLoading(false);
+      return;
+    }
+
     // Check if additional file is required and selected
     if (basePairAnnotation === 'rnaview' && !additionalFile) {
       alert('Please select an output file from RNAView!');
@@ -848,24 +854,21 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       <SplashScreen />
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
       <form onSubmit={handleSubmit} className="upload-form">
-        <label>mmCIF/PDB format file: </label>
+        <label>Upload mmCIF/PDB file: </label>
         <input type="file" onChange={handleChange} />
 
-        <label>Or enter PDB ID: </label>
-        <input type="text" onChange={handlePdbChange} value={pdbid} /> {/* Added value attribute for controlled input */}
-
-        <label>Base Pair Annotation:</label>
+        <label>Or enter PDB ID:</label>
+        <input id="small-text" type="text" onChange={handlePdbChange} value={pdbid} /> {/* Added value attribute for controlled input */}
+        <label>Bulge Out Loops:</label>
         <select 
           className="options-dropdown"
-          value={basePairAnnotation}
-          onChange={(e) => setBasePairAnnotation(e.target.value)}
-        >
-          <option value="dssrLw">Leontis-Westhof</option>
-          <option value="dssr">DSSR</option>
-          <option value="saenger">Saenger</option>
-          <option value="none">None</option>
+          value={loopBulging}
+          onChange={(e) => setLoopBulging(e.target.value)}>
+          <option value="0">Always</option>
+          <option value="1">Conditional</option>
         </select>
-        {basePairAnnotation === 'rnaview' && (
+
+        {/* {basePairAnnotation === 'rnaview' && (
           <>
             <label class="pad-label" htmlFor="additional-file">Additional File for RNAView:</label>
             <input 
@@ -875,7 +878,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
               required 
             />
           </>
-        )}
+        )} */}
         <br/>
         <button type="button" onClick={toggleAdvancedSettings}>
           {showAdvancedSettings ? 'Hide Advanced Settings' : 'Show Advanced Settings'}
@@ -891,16 +894,18 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
              </div>
              <div className="nucleotide-settings-content">
                <div className="select-container">
-                 <label>Loop Bulging:</label>
-                 <select 
-                   className="options-dropdown"
-                   value={loopBulging}
-                   onChange={(e) => setLoopBulging(e.target.value)}>
-                   <option value="0">Always</option>
-                   <option value="1">Conditional</option>
-                 </select>
+                <label className="label-left-align">Base Pair Annotation:</label>
+                  <select 
+                    className="options-dropdown"
+                    value={basePairAnnotation}
+                    onChange={(e) => setBasePairAnnotation(e.target.value)}
+                  >
+                    <option value="dssrLw">Leontis-Westhof</option>
+                    <option value="dssr">DSSR</option>
+                    <option value="saenger">Saenger</option>
+                    <option value="none">None</option>
+                  </select>
                </div>
-
               <div className="slider-container">
                 <label>Arrow Size</label>
                 <input

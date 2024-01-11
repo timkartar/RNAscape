@@ -58,7 +58,7 @@
 /* Style for the form */
 .upload-form {
   text-align: center;
-  margin-bottom: 20px;
+  /* margin-bottom: 40px; */
 }
 
 /* Style for the file input */
@@ -68,6 +68,14 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.upload-form input[type="text"] {
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 /* Style for the upload button */
@@ -474,4 +482,20 @@
   display: block; /* Ensures each option is on its own line */
   margin-bottom: 20px; /* Increase space between each option */
   text-align: center;
+}
+
+.label-left-align {
+  text-align: left;
+}
+
+.select-container {
+  display: flex;
+  align-items: center; /* Aligns items vertically in the center */
+  gap: 10px; /* Adjust this value for spacing between label and select dropdown */
+  margin-bottom: 10px;
+}
+
+#small-text {
+  width: 100px;
+  padding: 8px;
 }
