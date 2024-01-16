@@ -120,10 +120,6 @@ def run_regen_plot(request):
 
         # numbers
         showNumberLabels = request.GET.get('showNumberLabels')
-        if showNumberLabels:
-            showNumberLabels = "1"
-        else:
-            showNumberLabels = "0"
         numberSeparation = request.GET.get('numberSeparation')
         numberSize = request.GET.get('numberSize')
 
@@ -140,7 +136,6 @@ def run_regen_plot(request):
                     )
             image_path = result.stdout.strip().split(',,,')[0]
             image_png_path = result.stdout.strip().split(',,,')[1]
-
 
             image_url = request.build_absolute_uri(default_storage.url(image_path))
             image_png_url = request.build_absolute_uri(default_storage.url(image_png_path))

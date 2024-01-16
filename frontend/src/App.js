@@ -529,6 +529,12 @@ function App() {
     setIsLoading(true); // Start loading
     // Define the URL for the GET request
     const url = baseUrl + `/rnaview/rnaview/run-regen_plot`;
+    var toAddShowNumberLabels;
+    if(showNumberLabels){
+      toAddShowNumberLabels = "1";
+    } else{
+      toAddShowNumberLabels = "0";
+    }
 
     // Set up the query parameters
     const params = {
@@ -543,7 +549,7 @@ function App() {
       circleSize: circleSize,
       circleLabelSize: circleLabelSize,
       arrowSize: arrowSize,
-      showNumberLabels: showNumberLabels,
+      showNumberLabels: toAddShowNumberLabels,
       numberSeparation: numberSeparation,
       numberSize: numberSize,
       counter:counter,
