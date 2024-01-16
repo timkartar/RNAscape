@@ -404,7 +404,7 @@ function App() {
         toggleDocumentation(); // hide documentation if it is being shown!
       }
     }).catch(error => {
-      alert('Error loading file!');
+      alert('Error loading file! This is most commonly caused by a structure file that is too large, formatted improperly, or by an incorrect PDB ID.');
       console.error('Error uploading file:', error);
     }).finally(() => {
       setIsLoading(false); // Stop loading
@@ -568,6 +568,7 @@ function App() {
       .finally(() => {
         setIsLoading(false); // Stop loading
         setCounter(counter + 1);
+        setUploadBasePairAnnotation(basePairAnnotation);
       });
   }
   const downloadImage = (url, isPng) => {

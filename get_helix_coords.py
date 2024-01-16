@@ -173,6 +173,7 @@ def get_helix_coords(dssrout, model):
                 if np.linalg.norm(first - prelast) < 20: #(check if within certain distance)
                     if deviation < np.pi/5: # check if axis deviation less than pi/6 (30 degrees)
                         toalign[-1].append(axis)
+                        # toalign.append([axis])
                     else:
                         toalign.append([axis])
                 else:
