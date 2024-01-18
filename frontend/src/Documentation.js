@@ -30,9 +30,9 @@ function Documentation() {
         <img class="doc-image" src = "/rnascape/3zp8.svg" alt="Example Output 3zp8"/>
         <h2>Documentation</h2>
         <h3 id="quickstart" class="left-h3">Quickstart</h3>
-        <p>To get started, click <b>Run on Example Data</b>. This runs RNAscape on PDB structure <a href="https://www.rcsb.org/structure/3ZP8">3zp8</a> using your selected settings.</p>
+        <p>To get started, click <b>Run on Example Data</b> in the website header. This runs RNAscape on PDB structure <a href="https://www.rcsb.org/structure/3ZP8">3zp8</a> using your selected settings.</p>
         <p>You can also enter a PDB ID and click <b>Run</b> to run RNAscape on the selected PDB ID.</p>
-        <p>Lastly, you can click <b>Example Input</b> in the website header to download an example input data file.</p>
+        <p>Lastly, you can click <a href="/rnascape/3zp8-assembly1.cif" download>Example Input</a> here to download an example input data file.</p>
         <h3 id="uploading-data" class="left-h3">Uploading Data</h3>
         <p>RNAscape supports <b>mmCIF or PDF format file uploads</b>.</p>
         <img class="doc-image" src="/rnascape/upload_file_edited.png" alt="Upload file box"/>

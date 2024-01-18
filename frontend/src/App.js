@@ -860,7 +860,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
   return (
     <div className="App">
       <SplashScreen />
-      <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} />
+      <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} onLoadExampleData={loadExampleData} />
       <form onSubmit={handleSubmit} className="upload-form">
         <label>Upload mmCIF/PDB file: </label>
         <input type="file" onChange={handleChange} />
@@ -886,16 +886,20 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           className="options-dropdown"
           value={loopBulging}
           onChange={(e) => setLoopBulging(e.target.value)}>
-          <option value="0">Always</option>
+          <option value="0">Always (Default)</option>
           <option value="1">Conditional</option>
         </select>
         <button class="beige-button" type="button" onClick={toggleAdvancedSettings}>
-          {showAdvancedSettings ? 'Hide Advanced Settings' : 'Show Advanced Settings'}
+          {/* {showAdvancedSettings ? 'Hide Advanced Settings' : 'Show Advanced Settings'} */}
+          Advanced Settings
         </button>
   
 
   
-        {showAdvancedSettings && (
+        
+      {/* <br/> */}
+      <button type="submit">Run</button>
+      {showAdvancedSettings && (
            <div className="advanced-settings">
            <div className="nucleotide-settings-container">
              <div className="nucleotide-settings-header">
@@ -909,7 +913,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
                     value={basePairAnnotation}
                     onChange={(e) => setBasePairAnnotation(e.target.value)}
                   >
-                    <option value="dssrLw">Leontis-Westhof</option>
+                    <option value="dssrLw">Leontis-Westhof (Default)</option>
                     <option value="dssr">DSSR</option>
                     <option value="saenger">Saenger</option>
                     <option value="none">None</option>
@@ -1136,10 +1140,6 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         </div>
           </div>   
       )}
-      <br/>
-      <button id="run-on-ex-data" class="beige-button" type="button" onClick={loadExampleData}>Run on Example Data</button>
-      <button type="submit">Run</button>
-
       </form>
         {isLoading && (
         <div className="loading-container">

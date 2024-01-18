@@ -1,16 +1,17 @@
 import React from 'react';
 import './TopRow.css';
 
-function TopRow({ onToggleDocumentation, showDocumentation }) {
+function TopRow({ onToggleDocumentation, showDocumentation, onLoadExampleData}) {
   return (
     <div className="top-row">
       <h2><a href="https://rohslab.usc.edu/rnascape/#" class="main">RNAscape</a></h2>
       <div className="right-section">
-        <a href="/rnascape/3zp8-assembly1.cif" download className="download-link">
-          Example Input
-        </a>
+        <button id="run-on-ex-data" className="toggle-docs-btn" type="button" onClick={onLoadExampleData}>
+          Run on Example Data
+        </button>
         <button className="toggle-docs-btn" onClick={onToggleDocumentation}>
-          {showDocumentation ? "Hide Documentation" : "Show Documentation"}
+          {/* {showDocumentation ? "Hide Documentation" : "Show Documentation"} */}
+          Documentation
         </button>
       </div>
     </div>
