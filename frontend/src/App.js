@@ -881,6 +881,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           </>
         )} */}
         <br/>
+        <div id="row-2">
         <label>Bulge Out Loops:</label>
         <select 
           className="options-dropdown"
@@ -899,6 +900,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
         
       {/* <br/> */}
       <button type="submit">Run</button>
+      </div>
       {showAdvancedSettings && (
            <div className="advanced-settings">
            <div className="nucleotide-settings-container">
