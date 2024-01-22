@@ -138,7 +138,7 @@
   justify-content: center; /* Centers children horizontally */
   align-items: flex-start; /* Aligns children at the top */
   width: 100%; /* Full width of its parent */
-  max-width: 1200px; /* Adjust this to limit the maximum size */
+  max-width: 90%; /* Increase this to allow more space */
   margin: 0 auto; /* Auto margin for horizontal centering */
 }
 
@@ -151,11 +151,13 @@
 .img-and-text-container {
   display: block; /* Ensures vertical layout */
   width: 100%; /* Container takes full width of its parent */
+  max-width: 80%; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the container */
 }
 
 .img-legend {
-  max-height: 30vh; /* Maximum height relative to the viewport height */
-  width: 100%; /* Image width adjusts to the container width */
+  max-height: 40vh; /* Increase the maximum height */
+  width: auto; /* Adjust width to auto */
   height: auto; /* Maintain aspect ratio */
   display: block; /* Ensures the image doesn't inline with other elements */
   margin-bottom: 10px; /* Space between image and text */
@@ -163,6 +165,7 @@
 
 .legend-text {
   text-align: left;
+  width: 100%; /* Allows the text to take up the full width of its container */
 }
 
 .app-footer {
