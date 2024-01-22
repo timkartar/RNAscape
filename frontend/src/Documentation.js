@@ -26,7 +26,7 @@ function Documentation() {
           <a href="#bp-annotation" onClick={scrollToSection}>Base Pair Annotation</a>
       </div>
       <div className="documentation">
-        <h3 class="centered-h3"><b>RNAscape</b> is a tool for the geometric mapping and customizable 2D visualization of 3D RNA structures.</h3>
+        <h3 class="centered-h3"><b>RNAscape</b> is a tool for the geometric mapping and interactive visualization of RNA structure.</h3>
         <img class="doc-image" src = "/rnascape/3zp8.svg" alt="Example Output 3zp8"/>
         <h2>Documentation</h2>
         <h3 id="quickstart" class="left-h3">Quickstart</h3>

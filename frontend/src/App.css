@@ -148,13 +148,21 @@
   position: relative; /* For absolute positioning of TransformWrapper */
 }
 
+.img-and-text-container {
+  display: block; /* Ensures vertical layout */
+  width: 100%; /* Container takes full width of its parent */
+}
+
 .img-legend {
-  max-height: 30vh; /* Max height as a percentage of the viewport height */
-  max-width: 25%;  /* Max width as a percentage of the containing element's width */
-  height: auto; /* Height auto for maintaining aspect ratio */
-  width: auto; /* Width auto for maintaining aspect ratio */
-  flex-shrink: 0; /* Prevents the image from shrinking */
-  align-self: flex-start; /* Aligns the image at the top */
+  max-height: 30vh; /* Maximum height relative to the viewport height */
+  width: 100%; /* Image width adjusts to the container width */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Ensures the image doesn't inline with other elements */
+  margin-bottom: 10px; /* Space between image and text */
+}
+
+.legend-text {
+  text-align: left;
 }
 
 .app-footer {

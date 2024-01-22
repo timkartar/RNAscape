@@ -1210,11 +1210,21 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       )}
           </TransformWrapper>
           </div>
-          {uploadBasePairAnnotation !== "saenger" && uploadBasePairAnnotation !== "none" && <img 
+          {uploadBasePairAnnotation !== "saenger" && uploadBasePairAnnotation !== "none" && (
+              <div className="img-and-text-container">
+              <img 
                 src={getImageSrc()}
                 alt="Legend"
                 className="img-legend"
-                />}
+              />
+              <div className="legend-text">
+                {uploadBasePairAnnotation === "dssrLw" && <div><b>c/t</b>: cis/trans bond orientation<br/><b>W/H/S</b>: Watson-Crick, Hoogsteen, or Sugar edge</div>}
+                {uploadBasePairAnnotation === "dssr" && <div><b>c/t</b>: cis/trans bond orientation<br/><b>M/m/W</b>: major groove, minor groove, or Watson-Crick edge</div>}
+                {/* Add other conditions and text as needed */}
+              </div>
+            </div>
+          )}
+
         </div>
       )}
       <footer className="app-footer">
