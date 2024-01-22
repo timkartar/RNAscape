@@ -42,3 +42,21 @@
   color: inherit; /* blue colors for links too */
   text-decoration: inherit; /* no underline */
 }
+
+.usc-logo {
+  max-height: 50px; /* Set a max height for the logo */
+  width: auto; /* Maintain aspect ratio */
+  margin-left: 30px; /* Optional: add some space between logo and title */
+  margin-right: 10px; /* Optional: add some space between logo and title */
+
+}
+
+.button-container {
+  display: flex; /* Makes the buttons align horizontally */
+  align-items: center; /* Aligns buttons vertically */
+}
+
+.buttons-and-logo {
+  display: flex; /* Aligns buttons and logo horizontally */
+  align-items: center; /* Ensures vertical alignment */
+}
