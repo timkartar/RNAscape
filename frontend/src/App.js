@@ -884,7 +884,6 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
             />
           </>
         )} */}
-        <br/>
         <div id="row-2">
         <label>Bulge Out Loops:</label>
         <select 

@@ -541,22 +541,30 @@
     display: block; /* Stacks the input groups vertically on small screens */
   }
 
+  .input-group {
+    width: 100%; /* Ensures the container takes full width */
+    text-align: center; /* Centers the content within the container */
+  }
   
-  .input-group label,
-  .input-group input {
+  .input-group label{
       display: block; /* Forces each element to take a full width */
-      width: 95%; /* Sets the width to full container width */
+      width: 100%; /* Sets the width to full container width */
       margin-bottom: 10px; /* Adds space below each element */
   }
 
   .input-group input {
-      width: calc(100% - 20px); /* Adjusts width to account for padding/margins */
-      margin-right: 0; /* Resets the right margin */
-  }
+    display: block; /* Forces each element to take a full width */  
+    width: 60%; /* Adjusts width to account for padding/margins */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px; /* Adds space below each element */
+    }
   #small-text {
-    width: 95%;
+    width: 50%;
     display: block; /* Forces each element to take a full width */
     margin-bottom: 10px; /* Adds space below each element */
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 

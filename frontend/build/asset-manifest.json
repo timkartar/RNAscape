@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/rnascape/static/css/main.5bed020e.css",
-    "main.js": "/rnascape/static/js/main.43148372.js",
+    "main.css": "/rnascape/static/css/main.78a7129e.css",
+    "main.js": "/rnascape/static/js/main.423df427.js",
     "static/js/787.9e9f4ffd.chunk.js": "/rnascape/static/js/787.9e9f4ffd.chunk.js",
     "static/media/modern_logo.png": "/rnascape/static/media/modern_logo.650575c0461300bc7f69.png",
     "static/media/usc_logotype_white.png": "/rnascape/static/media/usc_logotype_white.68e531c2d4a76b0c9e6d.png",
     "static/media/logo.svg": "/rnascape/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/rnascape/index.html",
-    "main.5bed020e.css.map": "/rnascape/static/css/main.5bed020e.css.map",
-    "main.43148372.js.map": "/rnascape/static/js/main.43148372.js.map",
+    "main.78a7129e.css.map": "/rnascape/static/css/main.78a7129e.css.map",
+    "main.423df427.js.map": "/rnascape/static/js/main.423df427.js.map",
     "787.9e9f4ffd.chunk.js.map": "/rnascape/static/js/787.9e9f4ffd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5bed020e.css",
-    "static/js/main.43148372.js"
+    "static/css/main.78a7129e.css",
+    "static/js/main.423df427.js"
   ]
 }

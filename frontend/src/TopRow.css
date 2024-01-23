@@ -52,7 +52,7 @@
 
 .top-row h2 {
   text-align: left;
-  padding-left: 30px;
+  padding-left: 20px;
   font-size: 2rem;
   margin-right: 10px;
 }
@@ -92,7 +92,7 @@
   }
 
   .toggle-docs-btn, .download-link {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .usc-logo {
