@@ -115,10 +115,14 @@
 /* Media query for small screens */
 @media (max-width: 600px) {
   .sidebar {
-    max-width: 150px; /* Smaller width for mobile */
+    max-width: 200px; /* Smaller width for mobile */
     padding: 10px; /* Slightly less padding */
-    font-size: 13px; /* Slightly smaller font size */
+    font-size: 12px; /* Slightly smaller font size */
     word-wrap: break-word; /* Ensures text wraps within the sidebar */
     overflow-x: hidden; /* Hide horizontal scrollbar */
+  }
+
+  .sidebar h3{
+    font-size: 14px; /* Slightly smaller font size */
   }
 }

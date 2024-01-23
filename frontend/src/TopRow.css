@@ -1,23 +1,20 @@
 /* src/TopRow.css */
 .top-row {
   background-color: black;
-  color: #fff;
-  padding: 1rem;
+  color: white;
+  padding: 0.07rem .2rem; /* Reduced vertical padding */
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* Allows elements to wrap to the next line */
-  width: 100%; /* Ensures full width */
-  box-sizing: border-box; /* Ensures padding is included in width calculation */
-  max-width: 100vw; /* Prevents horizontal scrolling */
-  width: 100%; /* Ensures full width */
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100vw;
   font-family: Helvetica, Arial, sans-serif;
-  /* padding-bottom: 20px; */
 }
 
 .usc-logo {
-  max-height: 50px;
+  max-height: 40px;
   width: auto; /* Maintain aspect ratio */
   margin-left: auto; /* Optional: add some space between logo and title */
   margin-right: 10px; /* Optional: add some space between logo and title */
