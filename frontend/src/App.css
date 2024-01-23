@@ -522,3 +522,41 @@
 #row-2{
   margin-bottom: 10px;
 }
+
+.same-line-div {
+  display: flex; /* Aligns children in a row */
+  justify-content: center; /* Spaces out the children evenly */
+  align-items: center; /* Aligns items vertically in the center */
+  gap: 20px;
+}
+
+
+.input-group label,
+.input-group input {
+    margin-right: 10px; /* Add some space to the right of each label and input */
+}
+
+@media (max-width: 600px) { /* Adjust 600px based on your breakpoint */
+  .same-line-div {
+    display: block; /* Stacks the input groups vertically on small screens */
+  }
+
+  
+  .input-group label,
+  .input-group input {
+      display: block; /* Forces each element to take a full width */
+      width: 95%; /* Sets the width to full container width */
+      margin-bottom: 10px; /* Adds space below each element */
+  }
+
+  .input-group input {
+      width: calc(100% - 20px); /* Adjusts width to account for padding/margins */
+      margin-right: 0; /* Resets the right margin */
+  }
+  #small-text {
+    width: 95%;
+    display: block; /* Forces each element to take a full width */
+    margin-bottom: 10px; /* Adds space below each element */
+  }
+}
+

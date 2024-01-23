@@ -11,7 +11,7 @@ function TopRow({ onToggleDocumentation, showDocumentation, onLoadExampleData}) 
           <button id="run-on-ex-data" className="toggle-docs-btn" type="button" onClick={onLoadExampleData}>
             Run on Example Data
           </button>
-          <button className="toggle-docs-btn" onClick={onToggleDocumentation}>
+          <button className="toggle-docs-btn" id="toggle-docs-btn-id" onClick={onToggleDocumentation}>
             Documentation
           </button>
         </div>

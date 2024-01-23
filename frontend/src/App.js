@@ -862,12 +862,16 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
       <SplashScreen />
       <TopRow onToggleDocumentation={toggleDocumentation} showDocumentation={showDocumentation} onLoadExampleData={loadExampleData} />
       <form onSubmit={handleSubmit} className="upload-form">
-        <label>Upload mmCIF/PDB file: </label>
-        <input type="file" onChange={handleChange} />
-
-        <label>Or enter PDB ID:</label>
-        <input id="small-text" type="text" onChange={handlePdbChange} value={pdbid} /> {/* Added value attribute for controlled input */}
-
+        <div className="same-line-div">
+          <div className="input-group">
+            <label>Upload mmCIF/PDB file: </label>
+            <input type="file" onChange={handleChange} />
+          </div>
+          <div className="input-group">
+            <label>Or enter PDB ID:</label>
+            <input id="small-text" type="text" onChange={handlePdbChange} value={pdbid} /> {/* Added value attribute for controlled input */}
+          </div>
+        </div>
 
         {/* {basePairAnnotation === 'rnaview' && (
           <>
