@@ -115,7 +115,7 @@
 /* Media query for small screens */
 @media (max-width: 600px) {
   .sidebar {
-    max-width: 120px; /* Smaller width for mobile */
+    max-width: 150px; /* Smaller width for mobile */
     padding: 10px; /* Slightly less padding */
     font-size: 13px; /* Slightly smaller font size */
     word-wrap: break-word; /* Ensures text wraps within the sidebar */
