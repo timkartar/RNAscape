@@ -12,19 +12,17 @@
 .sidebar {
   font-family: 'Arial', sans-serif;
   position: sticky;
-  top: 0; /* Adjust as necessary, depending on your page's header size */
-  max-width: 200px; /* Adjust as needed */
+  top: 0;
+  max-width: 200px;
   padding: 20px;
   margin: 20px 0;
-  background-color: #e4e4e4; /* Light grey background */
-  height: 100vh; /* Optional: Makes the sidebar take up the full height of the viewport */
-  overflow-y: auto; /* Optional: Adds a scrollbar if the sidebar content is too long */
+  background-color: #e4e4e4;
+  height: 100vh;
+  overflow-y: auto;
   text-align: left;
   padding-left: 14px;
   padding-right: 14px;
   font-size: 14px;
-  /* border-right: 2px solid black;
-  border-top: 2px solid black; */
 }
 
 .documentation-container {
@@ -112,4 +110,15 @@
 
 .sidebar a:hover {
   text-decoration: underline;
+}
+
+/* Media query for small screens */
+@media (max-width: 600px) {
+  .sidebar {
+    max-width: 120px; /* Smaller width for mobile */
+    padding: 10px; /* Slightly less padding */
+    font-size: 13px; /* Slightly smaller font size */
+    word-wrap: break-word; /* Ensures text wraps within the sidebar */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+  }
 }

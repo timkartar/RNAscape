@@ -169,18 +169,18 @@
 }
 
 .app-footer {
-  background-color: #282c34;
-  color: white; /* Light text color for contrast */
-  text-align: center; /* Center the text */
-  padding: 10px 0; /* Padding for spacing */
-  margin-top: 40px; /* Top margin as requested */
-  position: fixed; /*Fix position to the bottom*/
-  bottom: 0; /* Align to bottom */
-  width: 100%; /* Full width */
-  font-size: 0.9rem; /* Adjust font size as needed */
-  height: 40px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 40px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  font-size: 0.9rem;
+  height: auto; /* Allow height to adjust based on content */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
-
 .options-dropdown {
   padding: 8px 12px;
   border: 1px solid #ccc;
@@ -551,8 +551,15 @@
       width: 100%; /* Sets the width to full container width */
       margin-bottom: 10px; /* Adds space below each element */
   }
+  .input-group input[type="file"]{
+    display: block; /* Forces each element to take a full width */  
+    width: 60%; /* Adjusts width to account for padding/margins */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px; /* Adds space below each element */
+  }
 
-  .input-group input {
+  .input-group input{
     display: block; /* Forces each element to take a full width */  
     width: 60%; /* Adjusts width to account for padding/margins */
     margin-left: auto;
@@ -566,5 +573,11 @@
     margin-left: auto;
     margin-right: auto;
   }
+  .app-footer {
+    font-size: 0.8rem; /* Slightly smaller font size on small screens */
+    padding: 15px 10px; /* Increase padding for better readability */
+    position: static; /* Static position so it doesn't overlap content */
+  }
+
 }
 

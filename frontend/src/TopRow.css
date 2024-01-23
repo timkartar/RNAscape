@@ -1,6 +1,6 @@
 /* src/TopRow.css */
 .top-row {
-  background-color: #282c34;
+  background-color: black;
   color: #fff;
   padding: 1rem;
   margin-bottom: 10px;
@@ -29,17 +29,18 @@
 }
 
 .toggle-docs-btn, .download-link {
-  background-color: #f1f1f1;
-  color: black;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+  background-color: transparent; /* No background color */
+  color: white; /* White text */
+  border: none; /* No borders */
+  padding: 10px 20px; /* Padding for clickable area */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Cursor changes to pointer on hover */
   font-size: 16px;
   margin-left: 10px; /* Adds space between link and button */
   margin-right: 10px; /* Adds space between link and button */
   text-decoration: none; /* Remove underline from link */
   display: inline-block; /* Align link with the button */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
 }
 
 #toggle-docs-btn-id{
@@ -47,8 +48,8 @@
 }
 
 .toggle-docs-btn:hover, .download-link:hover {
-  background-color: #d0d3d7;
-}
+  background-color: #f1f1f1; /* Slight background on hover for feedback */
+  color: black; /* Change text color on hover */}
 
 .top-row h2 {
   text-align: left;
