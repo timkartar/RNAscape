@@ -869,7 +869,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           </div>
           <div className="input-group">
             <label>Or enter PDB ID:</label>
-            <input id="small-text" type="text" onChange={handlePdbChange} value={pdbid} /> {/* Added value attribute for controlled input */}
+            <input id="small-text" type="text" onChange={handlePdbChange} value={pdbid} placeholder="6R47, 6UFH, 4NOE" /> {/* Added value attribute for controlled input */}
           </div>
         </div>
 

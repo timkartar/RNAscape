@@ -115,14 +115,15 @@
 /* Media query for small screens */
 @media (max-width: 600px) {
   .sidebar {
-    max-width: 200px; /* Smaller width for mobile */
-    padding: 10px; /* Slightly less padding */
-    font-size: 12px; /* Slightly smaller font size */
-    word-wrap: break-word; /* Ensures text wraps within the sidebar */
-    overflow-x: hidden; /* Hide horizontal scrollbar */
+    /* max-width: 200px;
+    padding: 10px;
+    font-size: 12px;
+    word-wrap: break-word; 
+    overflow-x: hidden; */
+    display: none;
   }
 
-  .sidebar h3{
-    font-size: 14px; /* Slightly smaller font size */
-  }
+  /* .sidebar h3{
+    font-size: 14px;
+  } */
 }
