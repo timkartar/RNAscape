@@ -172,15 +172,16 @@
   background-color: black;
   color: white;
   text-align: center;
-  padding: 10px 0;
+  padding: 5px 0; /* Reduced vertical padding */
   margin-top: 40px;
   position: fixed;
   bottom: 0;
   width: 100%;
-  font-size: 0.9rem;
-  height: auto; /* Allow height to adjust based on content */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  font-size: 0.9rem; /* Slightly smaller font size */
+  height: auto;
+  box-sizing: border-box;
 }
+
 .options-dropdown {
   padding: 8px 12px;
   border: 1px solid #ccc;
