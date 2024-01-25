@@ -123,9 +123,10 @@ def run_regen_plot(request):
         showNumberLabels = request.GET.get('showNumberLabels')
         numberSeparation = request.GET.get('numberSeparation')
         numberSize = request.GET.get('numberSize')
+        markerSize = request.GET.get('markerSize')
 
         extra_list=[circleSize, circleLabelSize, arrowSize, colorA, colorC, colorG, colorU, colorX,
-                showNumberLabels, numberSeparation, numberSize, counter]
+                showNumberLabels, numberSeparation, numberSize, counter, markerSize]
         extra_string = ','.join(extra_list)
 
         try:
@@ -181,9 +182,10 @@ def run_rnascape(request):
     showNumberLabels = request.POST.get('showNumberLabels')
     numberSeparation = request.POST.get('numberSeparation')
     numberSize = request.POST.get('numberSize')
+    markerSize = request.POST.get('markerSize')
 
     extra_list=[circleSize, circleLabelSize, arrowSize, colorA, colorC, colorG, colorU, colorX,
-                showNumberLabels, numberSeparation, numberSize, counter]
+                showNumberLabels, numberSeparation, numberSize, counter, markerSize]
     extra_string = ','.join(extra_list)
 
     additional_file_path=""

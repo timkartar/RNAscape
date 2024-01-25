@@ -350,10 +350,11 @@ def getResNumPoints(points, ids, G, k=10, separation=1):
 def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=False, bp_type='DSSR',
         out_path=None, time_string="ac1", extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'],
-            'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1,
+            'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1, 'markerSize': 1
             }):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
+    marker_size = float(extra['markerSize']) #default 1
     dssrids = list(dssrids) # for npz
     rotation_string = "" # used to append to file name
     if not rotation:
@@ -448,25 +449,25 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     # If user does not want base pair annotations, turn these off by setting bp_type to something else
     if bp_type == "dssr" and 'pairs' in dssrout.keys():
         for item in bp_markers:
-            plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification,
-                    linewidth=1*magnification, edgecolor='k', label=item[3] )
+            plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification*marker_size,
+                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )
     elif bp_type == "saenger" and 'pairs' in dssrout.keys():
         for item in bp_markers:
-            plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification))
+            plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification)*marker_size)
     
     elif (bp_type == "rnaview" or bp_type == "dssrLw") and 'pairs' in dssrout.keys():
         for item in bp_markers:
             if(item[1] == "ss" or item[1] == ">>" or item[1] == 'oo'): # just need one shape for these
-                plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification,
-                    linewidth=1*magnification, edgecolor='k', label=item[3] )
+                plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification*marker_size,
+                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )
             else:
                 # first shape!
-                plt.scatter(item[0][1][0], item[0][1][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification,
-                    linewidth=1*magnification, edgecolor='k', label=item[3] )
+                plt.scatter(item[0][1][0], item[0][1][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification*marker_size,
+                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )
                 
                 # second shape!
-                plt.scatter(item[0][2][0], item[0][2][1], marker=getCustomMarker(1, item), color=item[2], s = 80*magnification,
-                    linewidth=1*magnification, edgecolor='k', label=item[3] )        
+                plt.scatter(item[0][2][0], item[0][2][1], marker=getCustomMarker(1, item), color=item[2], s = 80*magnification*marker_size,
+                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )        
 
     '''
     handles, labels = plt.gca().get_legend_handles_labels()

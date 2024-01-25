@@ -18,7 +18,7 @@ bp_type = sys.argv[4]
 # rnaview file is 5,
 extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'], #A,C,G,U,X
-            'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1, 'counter': 0
+            'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1, 'counter': 0, 'markerSize': 1
             } 
 if len(sys.argv) != 5: # append extra if length equals 5 (did not pass extra)
     extra_string = sys.argv[5]
@@ -27,7 +27,7 @@ if len(sys.argv) != 5: # append extra if length equals 5 (did not pass extra)
                 'circle_labelsize':float(extra_list[1]), 'cols':[extra_list[3], extra_list[4],
                     extra_list[5], extra_list[6], extra_list[7]],  #A,C,G,U,X
                 'showNumberLabels':extra_list[8], 'numberSeparation': extra_list[9], 'numberSize': extra_list[10],
-                'counter': extra_list[11],
+                'counter': extra_list[11], 'markerSize': extra_list[12]
                 }
 
 out_path = ""

@@ -61,6 +61,8 @@ function App() {
   const [arrowSize, setArrowSize] = useState(1);
   const [circleSize, setCircleSize] = useState(1);
   const [circleLabelSize, setCircleLabelSize] = useState(1);
+  const [markerSize, setMarkerSize] = useState(1);
+
 
   // For showing residue numbers on the output image, at a specified interval
   const [showNumberLabels, setShowNumberLabels] = useState(false);
@@ -362,7 +364,9 @@ function App() {
     formData.append('arrowSize', arrowSize);
     formData.append('circleSize', circleSize);
     formData.append('circleLabelSize', circleLabelSize);
-    
+    formData.append('markerSize', markerSize);
+
+
     // colors
     formData.append('colorA', colorA);
     formData.append('colorC', colorC);
@@ -443,6 +447,7 @@ function App() {
         formData.append('arrowSize', arrowSize);
         formData.append('circleSize', circleSize);
         formData.append('circleLabelSize', circleLabelSize);
+        formData.append('markerSize', markerSize);
 
         // colors
         formData.append('colorA', colorA);
@@ -552,6 +557,7 @@ function App() {
       numberSeparation: numberSeparation,
       numberSize: numberSize,
       counter:counter,
+      markerSize: markerSize,
     };
     // Send the GET request with the query parameters
     return axios.get(url, { params })
