@@ -53,6 +53,7 @@ def get_pdb_file(pdb_id):
     #     return 'error', 'Bad PDB ID'
         # while not is_download_complete():
     #     time.sleep(1)
+    os.remove(out_gz_path)
     return filepath, pdb_id
 
 
@@ -152,7 +153,7 @@ def run_regen_plot(request):
 
 @csrf_exempt  # Exempting from CSRF for demonstration purposes only
 @require_POST
-def run_rnaview(request):
+def run_rnascape(request):
     # Get the file from the request
     counter = str(request.POST.get('counter'))
     pdbid = request.POST.get('pdbid')

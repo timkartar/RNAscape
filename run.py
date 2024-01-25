@@ -1,4 +1,4 @@
-from rnaview import rnaView
+from rnascape import rnascape
 import os, sys, subprocess
 from config import *
 from plot import Plot
@@ -40,15 +40,17 @@ json_path = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
 subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json","--prefix={}".format(cif)], cwd=CWD)
 subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}".format(json_path),"-idstr=long","--json","--prefix={}".format(cif),
     "--cleanup"], cwd=CWD)
-points, markers, ids, chids, dssrids, dssrout, prefix = rnaView(prefix, cif, json_path,
+points, markers, ids, chids, dssrids, dssrout, prefix = rnascape(prefix, cif, json_path,
         cond_bulging=cond_bulging)
 
+# delete structure file
+os.remove(cif)
 
-# If just generating for the first time, call time string
-# Otherwise no!
 time_string = str(int(time.time())) + str(random.randint(0,100))
+
 # Generate the file path for the JSON file
 json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
+
 # Serialize and save dssrout as a JSON file
 with open(json_filepath, 'w') as json_file:
     json.dump(dssrout, json_file)

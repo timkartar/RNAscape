@@ -63,7 +63,7 @@ function App() {
   const [circleLabelSize, setCircleLabelSize] = useState(1);
 
   // For showing residue numbers on the output image, at a specified interval
-  const [showNumberLabels, setShowNumberLabels] = useState(true);
+  const [showNumberLabels, setShowNumberLabels] = useState(false);
   const handleCheckboxChange = (event) => {
     setShowNumberLabels(event.target.checked);
   };
@@ -172,7 +172,6 @@ function App() {
     setColorX(event.target.value);
   };
 
-  // /rnaview/rnaview/run-rnaview/';
   const toggleAdvancedSettings = () => {
     setShowAdvancedSettings(!showAdvancedSettings);
   };
@@ -320,7 +319,7 @@ function App() {
 
   // Main function to handle uploading a file!
   function handleSubmit(event) {
-    const url = baseUrl + '/rnaview/rnaview/run-rnaview/';
+    const url = baseUrl + '/rnaview/rnaview/run-rnascape/';
     event.preventDefault();
     setIsLoading(true); // Start loading
     if (!file && pdbid === "") {
@@ -414,7 +413,7 @@ function App() {
 
   // Automatically load example structure
   const loadExampleData = () => {
-    const url = baseUrl + '/rnaview/rnaview/run-rnaview/';
+    const url = baseUrl + '/rnaview/rnaview/run-rnascape/';
     setIsLoading(true); // Start loading
     fetch('/rnascape/3zp8-assembly1.cif')
       .then(response => response.blob())

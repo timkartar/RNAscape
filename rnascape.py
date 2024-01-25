@@ -307,7 +307,7 @@ cond_bulging: True = attempt to condense non-base-pairing nucleotides. False = a
 prefix: everything before .cif or .pdb in the file
 cif_file: cif or pdb file path
 """
-def rnaView(prefix, cif_file, json_file, cond_bulging=True ):
+def rnascape(prefix, cif_file, json_file, cond_bulging=True ):
     global tree, dssrout, conditional_bulging
     conditional_bulging = cond_bulging
     #prefix = sys.argv[1]

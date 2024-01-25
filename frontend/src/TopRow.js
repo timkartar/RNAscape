@@ -1,6 +1,6 @@
 import React from 'react';
 import './TopRow.css';
-import uscLogo from './usc_logotype_white.png'; // Import the USC logo
+import uscLogo from './usc_logotype_gold.png'; // Import the USC logo
 
 function TopRow({ onToggleDocumentation, showDocumentation, onLoadExampleData}) {
   return (

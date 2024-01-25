@@ -483,6 +483,7 @@
 .color-container input[type="color"],
 .color-container input[type="text"] {
   align-self: center; /* Align inputs in the center vertically */
+  width: 80px; /* Adjust width to make it smaller */
 }
 
 .nucleotide-settings-content{
