@@ -35,7 +35,7 @@ extra={'arrowsize':float(extra_list[2]), 'circlesize':float(extra_list[0]),
             'circle_labelsize':float(extra_list[1]), 'cols':[extra_list[3], extra_list[4],
                 extra_list[5], extra_list[6], extra_list[7]],  #A,C,G,U,X
             'showNumberLabels':extra_list[8], 'numberSeparation': extra_list[9], 'numberSize': extra_list[10],
-            'counter': extra_list[11],
+            'counter': extra_list[11], 'markerSize': extra_list[12],
 }
 
 # Open and read the JSON file to get the object
