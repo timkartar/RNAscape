@@ -1,2 +1,4 @@
 # RNAScape
-Geometry faithful 2D RNA visualization
+Geometric mapping and interactive visualization of RNA structure
+
+### Hi
