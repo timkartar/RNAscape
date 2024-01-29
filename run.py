@@ -30,10 +30,6 @@ if len(sys.argv) != 5: # append extra if length equals 5 (did not pass extra)
                 'counter': extra_list[11], 'markerSize': extra_list[12]
                 }
 
-out_path = ""
-if bp_type.strip() == "rnaview":
-    out_path = "{}/{}".format(MEDIA_PATH,sys.argv[6].strip())
-
 # cif = "{}/{}-assembly1.cif".format(CIF_PATH, prefix)
 json_path = "{}/{}-dssr.json".format(DSSR_PATH, prefix)
 
@@ -58,12 +54,12 @@ with open(json_filepath, 'w') as json_file:
 figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, bp_type=bp_type, extra=extra, out_path=out_path, time_string=time_string)
 print(figpath +",,," + time_string + ",,," + pngpath)
 
-# Save output of rnaView function to enable regeneration of labels!
+# Save output of rnascape function to enable regeneration of labels!
 npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
 
 with open("{}/saved_output/{}.log".format(MEDIA_PATH,time_string), 'w') as log_file:
     log_file.write(log)
 
 np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
-         chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,time_string=time_string,
-         out_path=out_path, log=log)
+         chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,
+         time_string=time_string, log=log)
