@@ -1,4 +1,4 @@
-# RNAScape
+# RNAscape
 ### Geometric mapping and interactive visualization of RNA structure
 
 ### Getting Started
