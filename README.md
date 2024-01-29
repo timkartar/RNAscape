@@ -1,6 +1,6 @@
 # RNAscape
 ### Geometric mapping and interactive visualization of RNA structure
-![What is this](graphical_abstract.png")
+![What is this](graphical_abstract.png)
 ### Getting Started
 1. Ensure Python 3.9+ is installed
 2. Run `pip install -r requirements.txt`
