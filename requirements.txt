@@ -1,4 +1,6 @@
-networkx
+biopython
 numpy
+scikit-learn
 matplotlib
-sre_yield
+networkx
+sre-yield
