@@ -55,14 +55,14 @@ figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, pref
                              rotation=rotation, FIG_PATH=FIG_PATH, MEDIA_PATH=MEDIA_PATH)
 
 # Save output of RNAscape function to enable regeneration of labels!
-npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
+# npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
 
 with open("{}/saved_output/{}.log".format(MEDIA_PATH,time_string), 'w') as log_file:
     log_file.write(log)
 
-np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
-        chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,
-        time_string=time_string, log=log)
+# np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
+#         chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,
+#         time_string=time_string, log=log)
 
 # print non-WC nucleotides if applicable
 print(log)
