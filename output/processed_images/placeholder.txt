@@ -1,0 +1,1 @@
+Processed images are by default stored here.
