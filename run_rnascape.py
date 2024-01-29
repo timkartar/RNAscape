@@ -38,7 +38,6 @@ import json
 subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}/{}-dssr.json".format(json_path, prefix),"-idstr=long","--json","--prefix={}".format(prefix)], cwd=os.getcwd())
 # -O of this is the problem!
 
-print("Did this!")
 points, markers, ids, chids, dssrids, dssrout, prefix = rnascape(prefix, cif, '{}/{}-dssr.json'.format(json_path, prefix),
         cond_bulging=cond_bulging)
 
@@ -46,9 +45,9 @@ points, markers, ids, chids, dssrids, dssrout, prefix = rnascape(prefix, cif, '{
 time_string = str(int(time.time())) + str(random.randint(0,100))
 
 # keep track of important DSSR info
-json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
-with open(json_filepath, 'w') as json_file:
-    json.dump(dssrout, json_file)
+# json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
+#with open(json_filepath, 'w') as json_file:
+#    json.dump(dssrout, json_file)
 
 figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, 
                              bp_type=bp_type, extra=extra, time_string=time_string, 
