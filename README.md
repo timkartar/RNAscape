@@ -1,4 +1,4 @@
-# RNAscape Command Line
+# RNAscape command line
 ### Geometric mapping and interactive visualization of RNA structure
 ![What is this](graphical_abstract_no_transparent.png)
 ### Getting Started
