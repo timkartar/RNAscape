@@ -1,5 +1,5 @@
 # RNAScape
-Geometric mapping and interactive visualization of RNA structure
+### Geometric mapping and interactive visualization of RNA structure
 
 ### Getting Started
 1. Ensure Python 3.9+ is installed
