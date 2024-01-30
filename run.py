@@ -15,7 +15,7 @@ prefix = sys.argv[2]
 prefix = prefix.split('.cif')[0].strip() # MUST INCLUDE CIF or breaks, error handle later!
 cond_bulging = bool(int(sys.argv[3]))
 bp_type = sys.argv[4]
-# rnaview file is 5,
+# rnascape file is 5,
 extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'], #A,C,G,U,X
             'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1, 'counter': 0, 'markerSize': 1

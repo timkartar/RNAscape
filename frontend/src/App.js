@@ -236,7 +236,7 @@ function App() {
   // Handle downloading a log file. Call the endpoint and return the file
   // based on user time string
   function getLog() {
-    const url = baseUrl + '/rnaview/rnaview/get-log-file/';
+    const url = baseUrl + '/rnascape/rnascape/get-log-file/';
     // setIsLoading(true); // Start loading
   
     axios({
@@ -281,7 +281,7 @@ function App() {
   // Handle downloading an NPZ file. Call the endpoint and return the file
   // based on user time string
   function handleDownloadNpz() {
-    const url = baseUrl + '/rnaview/rnaview/get-npz-file/';
+    const url = baseUrl + '/rnascape/rnascape/get-npz-file/';
     // setIsLoading(true); // Start loading
   
     axios({
@@ -321,7 +321,7 @@ function App() {
 
   // Main function to handle uploading a file!
   function handleSubmit(event) {
-    const url = baseUrl + '/rnaview/rnaview/run-rnascape/';
+    const url = baseUrl + '/rnascape/rnascape/run-rnascape/';
     event.preventDefault();
     setIsLoading(true); // Start loading
     if (!file && pdbid === "") {
@@ -337,8 +337,8 @@ function App() {
     }
 
     // Check if additional file is required and selected
-    if (basePairAnnotation === 'rnaview' && !additionalFile) {
-      alert('Please select an output file from RNAView!');
+    if (basePairAnnotation === 'rnascape' && !additionalFile) {
+      alert('Please select an output file from rnascape!');
       setIsLoading(false);
       return;
   }
@@ -384,7 +384,7 @@ function App() {
     formData.append('numberSize', numberSize);
 
     // Append additional file if it's required and provided
-    if (basePairAnnotation === 'rnaview' && additionalFile) {
+    if (basePairAnnotation === 'rnascape' && additionalFile) {
       formData.append('additionalFile', additionalFile);
       formData.append('additionalFileName', additionalFile.name);
     }
@@ -417,7 +417,7 @@ function App() {
 
   // Automatically load example structure
   const loadExampleData = () => {
-    const url = baseUrl + '/rnaview/rnaview/run-rnascape/';
+    const url = baseUrl + '/rnascape/rnascape/run-rnascape/';
     setIsLoading(true); // Start loading
     fetch('/rnascape/3zp8-assembly1.cif')
       .then(response => response.blob())
@@ -428,8 +428,8 @@ function App() {
         // Programmatically set the file to your state and initiate upload
         setFile(file);
           // Check if additional file is required and selected
-        if (basePairAnnotation === 'rnaview') {
-          alert('Unable to use RNAView output for the example!');
+        if (basePairAnnotation === 'rnascape') {
+          alert('Unable to use rnascape output for the example!');
           setIsLoading(false);
           return;
         }
@@ -498,7 +498,7 @@ function App() {
  function testDjango(event) {
   setIsLoading(true); // Start loading
   // Define the URL for the GET request
-  const url = baseUrl+`/rnaview/rnaview/test-get/`;
+  const url = baseUrl+`/rnascape/rnascape/test-get/`;
 
   // Set up the query parameters
   const params = {
@@ -532,7 +532,7 @@ function App() {
   function handleRegenPlot(event) {
     setIsLoading(true); // Start loading
     // Define the URL for the GET request
-    const url = baseUrl + `/rnaview/rnaview/run-regen_plot`;
+    const url = baseUrl + `/rnascape/rnascape/run-regen_plot`;
     var toAddShowNumberLabels;
     if(showNumberLabels){
       toAddShowNumberLabels = "1";
@@ -846,7 +846,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     switch (uploadBasePairAnnotation) {
       case 'dssrLw':
         return '/rnascape/lw_legend.svg';
-      case 'rnaview':
+      case 'rnascape':
         return '/rnascape/lw_legend.svg';
       case 'dssr':
         return '/rnascape/legend.png';
@@ -861,7 +861,7 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
     
   }
 
-  //<option value="rnaview">Leontis-Westhof (RNAView)</option>
+  //<option value="rnascape">Leontis-Westhof (rnascape)</option>
   return (
     <div className="App">
       <SplashScreen />
@@ -878,9 +878,9 @@ const rotateAndDownloadPNG = (imagePngUrl, rotationDegrees) => {
           </div>
         </div>
 
-        {/* {basePairAnnotation === 'rnaview' && (
+        {/* {basePairAnnotation === 'rnascape' && (
           <>
-            <label class="pad-label" htmlFor="additional-file">Additional File for RNAView:</label>
+            <label class="pad-label" htmlFor="additional-file">Additional File for rnascape:</label>
             <input 
               type="file" 
               onChange={handleAdditionalFileChange} 

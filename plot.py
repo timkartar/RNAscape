@@ -19,7 +19,7 @@ arrow_dict = {}
 log = []
 
 chem_components = dict(np.load(CWD + "/modified_parents.npz",allow_pickle=True))
-#python /home/aricohen/Desktop/rnaview/run.py uploads/7vnv-assembly1.cif 7vnv 1 rnaview uploads/7vnv-assembly1.cif.out
+#python /home/aricohen/Desktop/rnascape/run.py uploads/7vnv-assembly1.cif 7vnv 1 rnascape uploads/7vnv-assembly1.cif.out
 
 """
 Get index of a nucleotide from chain id and resid
@@ -32,7 +32,7 @@ def getIndex(target_chid, target_resid, ids, chids):
             return cur_index
 
 """
-Use DSSR to get LW annotations rather than Rnaview file upload
+Use DSSR to get LW annotations rather than rnascape file upload
 """
 def getCustomMarker(pos, item):
     marker = item[1][pos]
@@ -123,25 +123,25 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
         bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ])
     return edges, bp_markers, bp_map
 
-def getBasePairingEdgesRnaview(points, ids, chids, out_path):
-    rnaview_bp_types= ["{}/{}".format(e[0], e[1]) for e in list(sre_yield.AllStrings('[WHS][WHS]'))]
-    rnaview_bp_types.remove("W/W")
+def getBasePairingEdgesrnascape(points, ids, chids, out_path):
+    rnascape_bp_types= ["{}/{}".format(e[0], e[1]) for e in list(sre_yield.AllStrings('[WHS][WHS]'))]
+    rnascape_bp_types.remove("W/W")
 
 
-    #rnaview_markers = ['so', '<o', 'os', 'ss', '<s', 'o>', 's>', '<>']
-    rnaview_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
+    #rnascape_markers = ['so', '<o', 'os', 'ss', '<s', 'o>', 's>', '<>']
+    rnascape_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
     
     bp_map = {}
-    for item in rnaview_bp_types:
-        bp_map[item] = rnaview_markers[rnaview_bp_types.index(item)]
+    for item in rnascape_bp_types:
+        bp_map[item] = rnascape_markers[rnascape_bp_types.index(item)]
     # ['H/W', 'S/W', 'W/H', 'H/H', 'S/H', 'W/S', 'H/S', 'S/S']
     
     magnification = max(1, min(len(points)/40, 10))
     edges = []
     bp_markers = []
 
-    # GET OUTPUT FROM RNAView
-    bp_list = readRnaview(out_path)
+    # GET OUTPUT FROM rnascape
+    bp_list = readrnascape(out_path)
 
     for item in bp_list:
         chain_id = item["ch_id"]
@@ -173,7 +173,7 @@ def getBasePairingEdgesRnaview(points, ids, chids, out_path):
 
         typ = item["bp_type"]
         
-        if "." in typ or "?" in typ: # RNAView couldn't determine properly
+        if "." in typ or "?" in typ: # rnascape couldn't determine properly
             continue
         if typ == "+/+" or typ == "-/-" or typ == "W/W": #do not show watson crick pairs
             continue
@@ -411,8 +411,8 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
             pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
         elif bp_type == "saenger":
             pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
-        elif bp_type == "rnaview":
-            pairings, bp_markers, bp_map = getBasePairingEdgesRnaview(points, ids, chids, out_path=out_path)
+        elif bp_type == "rnascape":
+            pairings, bp_markers, bp_map = getBasePairingEdgesrnascape(points, ids, chids, out_path=out_path)
         elif bp_type == "dssrLw":
             pairings, bp_markers, bp_map = getBasePairingEdgesDssrLw(dssrout, dssrids, points)
         elif bp_type == "none":
@@ -454,7 +454,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         for item in bp_markers:
             plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification)*marker_size)
     
-    elif (bp_type == "rnaview" or bp_type == "dssrLw") and 'pairs' in dssrout.keys():
+    elif (bp_type == "rnascape" or bp_type == "dssrLw") and 'pairs' in dssrout.keys():
         for item in bp_markers:
             if(item[1] == "ss" or item[1] == ">>" or item[1] == 'oo'): # just need one shape for these
                 plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification*marker_size,
