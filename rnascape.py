@@ -142,7 +142,7 @@ def generate_coords(helix_coords, helix_ids, dic, helix_dssrids, dssrout):
     
     return positions, markers, ids, chids, dssrids
 
-def get_linear_coords(nts, helix_ids, helix_coords, dssrids, dssrout):
+def get_coords(nts, helix_ids, helix_coords, dssrids, dssrout):
     dic = {} #keys are like (start, end) values are like [(nt_id, rest1),...]
 
     start = None
@@ -367,7 +367,7 @@ def rnascape(prefix, cif_file, json_file, cond_bulging=True ):
                 helix_chids)
         '''
         
-        rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_linear_coords(dssrout,
+        rest_positions, rest_markers, rest_ids, rest_chids, rest_dssrids = get_coords(dssrout,
                 helix_ids, helix_points, helix_dssrids, dssrout)
         
         points = np.array(helix_points.tolist() + rest_positions)
