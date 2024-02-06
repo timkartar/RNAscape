@@ -1,15 +1,14 @@
-import sys
 
-# example: python run_rnascape.py 1ivs.cif 1ivs
-
-# This file runs RNAscape on a cif or pdb file using your specified settings
-# If downloading from the PDB, use the biological assembly file
+# Quick Example: 'python run_rnascape.py 1ivs.cif 1ivs'
+# This script runs RNAscape on a cif or pdb file using your specified settings
+# If downloading from the PDB, use a biological assembly file
 
 # BEGIN USER SETTINGS ----------------------------------------------
-# file must be cif or pdb
+# NOTE: file must be cif or pdb
+import sys
 cif = sys.argv[1].strip()
 prefix = sys.argv[2].strip()
-X3DNA_PATH = '/home/aricohen/Desktop/DeepPBS/dependencies/bin/x3dna-dssr' # path to DSSR binary
+X3DNA_PATH = 'PLEASE FILL' # path to DSSR binary (e.g., /bin/x3dna-dssr')
 json_path = './json/' # by default, DSSR output will be saved to the json folder
 MEDIA_PATH = './output/' # where all output of RNAscape will be stored
 FIG_PATH = '/processed_images/' # figures will be in MEDIA_PATH/FIG_PATH
@@ -44,24 +43,18 @@ points, markers, ids, chids, dssrids, dssrout, prefix = rnascape(prefix, cif, '{
 # to keep track of each file
 time_string = str(int(time.time())) + str(random.randint(0,100))
 
-# keep track of important DSSR info
-# json_filepath = f"{MEDIA_PATH}/saved_output/{time_string}_dssrout.json"
-#with open(json_filepath, 'w') as json_file:
-#    json.dump(dssrout, json_file)
-
 figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, 
                              bp_type=bp_type, extra=extra, time_string=time_string, 
                              rotation=rotation, FIG_PATH=FIG_PATH, MEDIA_PATH=MEDIA_PATH)
 
-# Save output of RNAscape function to enable regeneration of labels!
+# Uncomment below lines to save geometrically mapped points and other output to an NPZ file
 # npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
-
-with open("{}/saved_output/{}.log".format(MEDIA_PATH,time_string), 'w') as log_file:
-    log_file.write(log)
-
 # np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
 #         chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,
 #         time_string=time_string, log=log)
+
+with open("{}/saved_output/{}.log".format(MEDIA_PATH,time_string), 'w') as log_file:
+    log_file.write(log)
 
 # print non-WC nucleotides if applicable
 print(log)
