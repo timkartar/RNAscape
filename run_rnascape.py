@@ -1,4 +1,3 @@
-
 # Quick Example: 'python run_rnascape.py 1ivs.cif 1ivs'
 # This script runs RNAscape on a cif or pdb file using your specified settings
 # If downloading from the PDB, use a biological assembly file
@@ -8,14 +7,17 @@
 import sys
 cif = sys.argv[1].strip()
 prefix = sys.argv[2].strip()
-X3DNA_PATH = 'PLEASE FILL' # path to DSSR binary (e.g., /bin/x3dna-dssr')
+X3DNA_PATH = '/home/aricohen/Desktop/DeepPBS/dependencies/bin/x3dna-dssr' # path to DSSR binary (e.g., /bin/x3dna-dssr')
 json_path = './json/' # by default, DSSR output will be saved to the json folder
 MEDIA_PATH = './output/' # where all output of RNAscape will be stored
 FIG_PATH = '/processed_images/' # figures will be in MEDIA_PATH/FIG_PATH
 
 # default arguments for RNAscape
 cond_bulging = False # this bulges out all loops to create more space on the graph. Change to True to only conditionally bulge loops (condense them)
-bp_type = "dssrLw" #BP annotation types: dssr, saenger, none
+
+bp_type = "dssrLw" #BP annotation types: dssrLW, dssr, saenger, none
+# dssrLw refers to Leontis-Westhof base pair annotation style
+
 rotation = 0 # float between 0 and 360
 extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'], #A,C,G,U,X (non-standard)
@@ -29,23 +31,21 @@ import os, sys, subprocess
 from plot import Plot
 import time
 import random
-import json
 import numpy as np
-import json
 
 # run DSSR and save output to json folder
 subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}/{}-dssr.json".format(json_path, prefix),"-idstr=long","--json","--prefix={}".format(prefix)], cwd=os.getcwd())
-# -O of this is the problem!
-
+subprocess.run([X3DNA_PATH,"-i={}".format(cif),"-o={}/{}-dssr.json".format(json_path, prefix),"-idstr=long","--json","--prefix={}".format(prefix),
+    "--cleanup"], cwd=os.getcwd())
 points, markers, ids, chids, dssrids, dssrout, prefix = rnascape(prefix, cif, '{}/{}-dssr.json'.format(json_path, prefix),
-        cond_bulging=cond_bulging)
+        cond_bulging=cond_bulging, mFIG_PATH=FIG_PATH, mDSSR_PATH = X3DNA_PATH)
 
 # to keep track of each file
 time_string = str(int(time.time())) + str(random.randint(0,100))
 
 figpath, pngpath, log = Plot(points, markers, ids, chids, dssrids, dssrout, prefix, 
                              bp_type=bp_type, extra=extra, time_string=time_string, 
-                             rotation=rotation, FIG_PATH=FIG_PATH, MEDIA_PATH=MEDIA_PATH)
+                             rotation=rotation, mFIG_PATH=FIG_PATH, mMEDIA_PATH=MEDIA_PATH)
 
 # Uncomment below lines to save geometrically mapped points and other output to an NPZ file
 # npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
@@ -58,3 +58,5 @@ with open("{}/saved_output/{}.log".format(MEDIA_PATH,time_string), 'w') as log_f
 
 # print non-WC nucleotides if applicable
 print(log)
+print('Output:', MEDIA_PATH + figpath)
+print('Output:', MEDIA_PATH + pngpath)

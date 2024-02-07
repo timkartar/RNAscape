@@ -8,9 +8,12 @@ import matplotlib.pyplot as plt
 from get_helix_coords import get_helix_coords, process_resid
 from plot import Plot
 from math import cos, sin
-from config import DSSR_PATH, CIF_PATH, FIG_PATH
 import re 
 from sklearn.neighbors import KDTree
+
+DSSR_PATH = ''
+CIF_PATH=''
+FIG_PATH=''
 
 dssrout = None
 tree=None
@@ -307,7 +310,9 @@ cond_bulging: True = attempt to condense non-base-pairing nucleotides. False = a
 prefix: everything before .cif or .pdb in the file
 cif_file: cif or pdb file path
 """
-def rnascape(prefix, cif_file, json_file, cond_bulging=True ):
+def rnascape(prefix, cif_file, json_file, cond_bulging=True, mDSSR_PATH='', mFIG_PATH='' ):
+    DSSR_PATH = mDSSR_PATH
+    FIG_PATH = mFIG_PATH
     global tree, dssrout, conditional_bulging
     conditional_bulging = cond_bulging
     #prefix = sys.argv[1]

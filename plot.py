@@ -2,14 +2,15 @@ import networkx as nx
 from matplotlib import pyplot as plt
 import numpy as np
 import sre_yield
-from config import FIG_PATH, MEDIA_PATH
 from copy import deepcopy
 from math import cos, sin
 from get_helix_coords import process_resid
 import time
 import random
 import os, sys
-from config import *
+
+FIG_PATH = ''
+MEDIA_PATH = ''
 
 plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
@@ -18,7 +19,7 @@ arrow_dict = {}
 
 log = []
 
-chem_components = dict(np.load(CWD + "/modified_parents.npz",allow_pickle=True))
+chem_components = dict(np.load(os.getcwd() + "/modified_parents.npz",allow_pickle=True))
 #python /home/aricohen/Desktop/rnascape/run.py uploads/7vnv-assembly1.cif 7vnv 1 rnascape uploads/7vnv-assembly1.cif.out
 
 """
@@ -350,9 +351,11 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         out_path=None, time_string="ac1", extra={'arrowsize':1, 'circlesize':1,
             'circle_labelsize':1, 'cols':['#FF9896', '#AEC7E8', '#90CC84', '#DBDB8D', '#FFFFFF'],
             'showNumberLabels': True, 'numberSeparation': 1, 'numberSize': 1, 'markerSize': 1
-            }, FIG_PATH=FIG_PATH, MEDIA_PATH=MEDIA_PATH):
+            }, mFIG_PATH='', mMEDIA_PATH=''):
     '''rotation is False if no rotation is wished, otherwise, one
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
+    FIG_PATH = mFIG_PATH
+    MEDIA_PATH = mMEDIA_PATH
     marker_size = float(extra['markerSize']) #default 1
     dssrids = list(dssrids) # for npz
     rotation_string = "" # used to append to file name
