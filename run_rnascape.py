@@ -7,7 +7,7 @@
 import sys
 cif = sys.argv[1].strip()
 prefix = sys.argv[2].strip()
-X3DNA_PATH = '/home/aricohen/Desktop/DeepPBS/dependencies/bin/x3dna-dssr' # path to DSSR binary (e.g., /bin/x3dna-dssr')
+X3DNA_PATH = 'ENTER DSSR PATH' # path to DSSR binary (e.g., /bin/x3dna-dssr')
 json_path = './json/' # by default, DSSR output will be saved to the json folder
 MEDIA_PATH = './output/' # where all output of RNAscape will be stored
 FIG_PATH = '/processed_images/' # figures will be in MEDIA_PATH/FIG_PATH
