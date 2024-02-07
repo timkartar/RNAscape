@@ -1,1 +1,1 @@
-Placeholder for JSON file output
+Placeholder for DSSR JSON file output
