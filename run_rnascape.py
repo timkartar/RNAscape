@@ -5,11 +5,13 @@
 # BEGIN USER SETTINGS ----------------------------------------------
 # NOTE: file must be cif or pdb
 import sys
+import os
+
 cif = sys.argv[1].strip()
 prefix = sys.argv[2].strip()
-X3DNA_PATH = 'ENTER DSSR PATH' # path to DSSR binary (e.g., /bin/x3dna-dssr')
-json_path = './json/' # by default, DSSR output will be saved to the json folder
-MEDIA_PATH = './output/' # where all output of RNAscape will be stored
+X3DNA_PATH = 'x3dna-dssr' # path to DSSR binary (e.g., /bin/x3dna-dssr')
+json_path = os.path.dirname(os.path.abspath(__file__)) + '/json/' # by default, DSSR output will be saved to the json folder
+MEDIA_PATH = os.path.dirname(os.path.abspath(__file__))+'/output/' # where all output of RNAscape will be stored
 FIG_PATH = '/processed_images/' # figures will be in MEDIA_PATH/FIG_PATH
 
 # default arguments for RNAscape
@@ -60,3 +62,12 @@ with open("{}/saved_output/{}.log".format(MEDIA_PATH,time_string), 'w') as log_f
 print(log)
 print('Output:', MEDIA_PATH + figpath)
 print('Output:', MEDIA_PATH + pngpath)
+
+# Save output of rnascape function to enable regeneration of labels!
+npz_filepath = "{}/saved_output/{}.npz".format(MEDIA_PATH,time_string)
+
+np.savez(npz_filepath, points=points, markers=markers, ids=ids, dssrids=dssrids,
+         chids=chids, prefix=prefix, bp_type=bp_type, extra=extra,
+         time_string=time_string, log=log)
+
+print("saved raw outputs at: " + npz_filepath)

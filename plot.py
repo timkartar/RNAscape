@@ -19,7 +19,7 @@ arrow_dict = {}
 
 log = []
 
-chem_components = dict(np.load(os.getcwd() + "/modified_parents.npz",allow_pickle=True))
+chem_components = dict(np.load(os.path.dirname(os.path.abspath(__file__)) + "/modified_parents.npz",allow_pickle=True))
 #python /home/aricohen/Desktop/rnascape/run.py uploads/7vnv-assembly1.cif 7vnv 1 rnascape uploads/7vnv-assembly1.cif.out
 
 """
