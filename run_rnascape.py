@@ -22,7 +22,7 @@ bp_type = "dssrLw" #BP annotation types: dssrLW, dssr, saenger, none
 
 rotation = 0 # float between 0 and 360
 extra={'arrowsize':1, 'circlesize':1,
-            'circle_labelsize':1, 'cols':['#FF9896', '#DBDB8D', '#AEC7E8', '#90CC84', '#FFFFFF'], #A,C,G,U,X (non-standard)
+            'circle_labelsize':1, 'cols':['#FF9896', '#DBDB8D', '#90CC84', '#AEC7E8', '#FFFFFF'], #A,C,G,U,X (non-standard)
             'showNumberLabels': False, 'numberSeparation': 1, 'numberSize': 1, 'counter': 0, 'markerSize': 1,
             'numberColor': 'saddlebrown', 
 } # other small visual settings
