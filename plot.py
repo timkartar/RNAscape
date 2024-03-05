@@ -76,6 +76,62 @@ def getCustomMarker(pos, item):
     else:
         return marker
 
+def getBasePairingEdges(dssrout, dssrids, points):
+    
+    #bp types: DSSR [ct][MWm][+-][MWm]
+    dssr_bp_types = list(sre_yield.AllStrings('[WMm][WMm]'))
+    #['MM', 'WM', 'mM', 'MW', 'WW', 'mW', 'Mm', 'Wm', 'mm']
+
+
+    bp_marker_types = ['oo','so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
+    #marker_bp_types = list(sre_yield.AllStrings(bp_marker_types))
+    
+    bp_map = {}
+    for item in dssr_bp_types:
+        bp_map[item] = bp_marker_types[dssr_bp_types.index(item)]
+    
+    # print(bp_map)
+    
+    magnification = max(1, min(len(dssrids)/40, 10))
+    edges = []
+    bp_markers = []
+
+    for item in dssrout['pairs']:
+        i1 = dssrids.index(item['nt1'])
+        i2 = dssrids.index(item['nt2'])
+        edges.append((i1, i2))
+        style_dict[(i1, i2)] = ':'#'dashed'
+        arrow_dict[(i1, i2)] = 0.001*magnification
+
+        v = points[i1] - points[i2]
+        d = np.linalg.norm(v)
+
+        if d < 2: ## do not show bp type for too small edges
+            continue
+        p = points[i2]+v/2 
+        typ = item['DSSR'][1]+ item['DSSR'][3]
+        
+        direc = v / d
+        SCALAR = 0.8
+        p2 = p + (-1 * direc * SCALAR)
+        p1 = p + (direc * SCALAR)
+        p=[p,p1,p2] # use p if hoog/hoog or sugar/sugar, otherwise p1 and p2
+
+
+        if "." in typ: # DSSR couldn't determine properly
+            continue
+        if typ == "WW" and item['LW'][0] == 'c': #do not show cis watson crick pairs
+            continue
+        if item['DSSR'][0] == 'c':
+            orient = 'k'
+        else:
+            orient = 'w'
+        bp_markers.append([p, bp_map[typ], orient, item['DSSR'][0]+typ])
+
+        
+    return edges, bp_markers, bp_map
+
+
 def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
     dssr_lw_bp_types = list(sre_yield.AllStrings('[WHS][WHS]'))
     # dssr_lw_bp_types.remove("WW")
@@ -124,69 +180,7 @@ def getBasePairingEdgesDssrLw(dssrout, dssrids, points):
         bp_markers.append([p, bp_map[typ], orient, item['LW'][0]+typ])
     return edges, bp_markers, bp_map
 
-def getBasePairingEdgesrnascape(points, ids, chids, out_path):
-    rnascape_bp_types= ["{}/{}".format(e[0], e[1]) for e in list(sre_yield.AllStrings('[WHS][WHS]'))]
-    rnascape_bp_types.remove("W/W")
-
-
-    #rnascape_markers = ['so', '<o', 'os', 'ss', '<s', 'o>', 's>', '<>']
-    rnascape_markers = ['so', '>o', 'os', 'ss', '>s', 'o>', 's>', '>>']
-    
-    bp_map = {}
-    for item in rnascape_bp_types:
-        bp_map[item] = rnascape_markers[rnascape_bp_types.index(item)]
-    # ['H/W', 'S/W', 'W/H', 'H/H', 'S/H', 'W/S', 'H/S', 'S/S']
-    
-    magnification = max(1, min(len(points)/40, 10))
-    edges = []
-    bp_markers = []
-
-    # GET OUTPUT FROM rnascape
-    bp_list = readrnascape(out_path)
-
-    for item in bp_list:
-        chain_id = item["ch_id"]
-        res_id = item["res_id"]
-        i1 = int(getIndex(chain_id, res_id, ids, chids))
-        
-        chain_id2 = item["ch_id2"]
-        res_id2 = item["res_id2"]
-        i2 = int(getIndex(chain_id2, res_id2, ids, chids))
-
-        edges.append((i1, i2))
-        
-        style_dict[(i1, i2)] = ':'#'dashed'
-        arrow_dict[(i1, i2)] = 0.001*magnification
-        v = points[i1] - points[i2]
-        d = np.linalg.norm(v)
-
-        if d < 2: ## do not show bp type for too small edges
-            continue
-
-        p = points[i2]+v/2
-
-        # Compute points for each shape based on directional vector
-        direc = v / d
-        SCALAR = 0.8
-        p2 = p + (-1 * direc * SCALAR)
-        p1 = p + (direc * SCALAR)
-        p=[p,p1,p2] # use p if hoog/hoog or sugar/sugar, otherwise p1 and p2
-
-        typ = item["bp_type"]
-        
-        if "." in typ or "?" in typ: # rnascape couldn't determine properly
-            continue
-        if typ == "+/+" or typ == "-/-" or typ == "W/W": #do not show watson crick pairs
-            continue
-        if item['orient'].strip() == 'cis':
-            orient = 'k'
-        else:
-            orient = 'w'
-        bp_markers.append([p, bp_map[typ], orient, item['orient'][0]+typ]) # FOR NOW PASS IT LIKE HE HAS IT!
-
-    return edges, bp_markers, bp_map
-        
-        # Get index of second nucleotide
+    # Get index of second nucleotide
 
     #     i1 = dssrids.index(item['nt1'])
     #     i2 = dssrids.index(item['nt2'])
@@ -259,51 +253,6 @@ def getBasePairingEdgesSaenger(dssrout, dssrids, points):
     return edges, bp_markers, bp_map
 
 
-def getBasePairingEdges(dssrout, dssrids, points):
-    
-    #bp types: DSSR [ct][MWm][+-][MWm]
-    dssr_bp_types = list(sre_yield.AllStrings('[MWm][MWm]'))
-    bp_marker_types = '[o^pdDshP*]'
-    marker_bp_types = list(sre_yield.AllStrings(bp_marker_types))
-    
-    bp_map = {}
-    for item in dssr_bp_types:
-        bp_map[item] = marker_bp_types[dssr_bp_types.index(item)]
-    
-    # print(bp_map)
-    
-    magnification = max(1, min(len(dssrids)/40, 10))
-    edges = []
-    bp_markers = []
-
-    for item in dssrout['pairs']:
-        i1 = dssrids.index(item['nt1'])
-        i2 = dssrids.index(item['nt2'])
-        edges.append((i1, i2))
-        style_dict[(i1, i2)] = ':'#'dashed'
-        arrow_dict[(i1, i2)] = 0.001*magnification
-
-        v = points[i1] - points[i2]
-        d = np.linalg.norm(v)
-
-        if d < 2: ## do not show bp type for too small edges
-            continue
-        p = points[i2]+v/2 
-        typ = item['DSSR'][1]+ item['DSSR'][3]
-        
-        if "." in typ: # DSSR couldn't determine properly
-            continue
-        if typ == "WW" and item['LW'][0] == 'c': #do not show cis watson crick pairs
-            continue
-        if item['DSSR'][0] == 'c':
-            orient = 'k'
-        else:
-            orient = 'w'
-        bp_markers.append([p, bp_map[typ], orient, item['DSSR'][0]+typ])
-
-        
-    return edges, bp_markers, bp_map
-
 def getBackBoneEdges(ids, chids, dssrids, dssrout):
 
     magnification = max(1, min(len(ids)/40, 10))
@@ -356,6 +305,13 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     can a pass a value in radian e.g. np.pi , np.pi/2, np.pi/3 etc. '''
     FIG_PATH = mFIG_PATH
     MEDIA_PATH = mMEDIA_PATH
+    
+    BP_EDGE_COLOR = 'royalblue' ## base-pairing edge color
+    BB_EDGE_COLOR = 'k' ## back bone edge color
+    BP_MARKER_COLOR = 'royalblue' ## base-pairing annotation marker
+    
+    edge_color_dict = {}
+
     marker_size = float(extra['markerSize']) #default 1
     dssrids = list(dssrids) # for npz
     rotation_string = "" # used to append to file name
@@ -409,13 +365,13 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     pairings = None
     bp_markers = None
     bp_map = None
+    
+    edgecolors = []
     if 'pairs' in dssrout.keys():
         if bp_type == "dssr":
             pairings, bp_markers, bp_map = getBasePairingEdges(dssrout, dssrids, points)
         elif bp_type == "saenger":
             pairings, bp_markers, bp_map = getBasePairingEdgesSaenger(dssrout, dssrids, points)
-        elif bp_type == "rnascape":
-            pairings, bp_markers, bp_map = getBasePairingEdgesrnascape(points, ids, chids, out_path=out_path)
         elif bp_type == "dssrLw":
             pairings, bp_markers, bp_map = getBasePairingEdgesDssrLw(dssrout, dssrids, points)
         elif bp_type == "none":
@@ -425,11 +381,12 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
         for item in pairings:
             # print(points[item[0]], points[item[1]])
             G.add_edge(item[0],item[1])
-    
+            edge_color_dict[(item[0],item[1])]= BP_EDGE_COLOR
 
     edges = getBackBoneEdges(ids, chids, dssrids, dssrout)
     for item in edges:
         G.add_edge(item[0],item[1])
+        edge_color_dict[(item[0],item[1])]= BB_EDGE_COLOR
 
     d = deepcopy(G.edges)
     for item in d:
@@ -445,31 +402,38 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
     nx.draw_networkx_labels(G, nx.get_node_attributes(G, 'pos'), labels,
             font_size=(10+(magnification))*extra['circle_labelsize'], font_family='monospace',
             verticalalignment='center')
-    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), style=style,
+    nx.draw_networkx_edges(G, nx.get_node_attributes(G, 'pos'), edgelist=G.edges, style=style,
+            edge_color=[edge_color_dict[item] for item in G.edges],
             arrowsize=arrow, width=1*magnification, arrowstyle='->')
     
     # If user does not want base pair annotations, turn these off by setting bp_type to something else
-    if bp_type == "dssr" and 'pairs' in dssrout.keys():
-        for item in bp_markers:
-            plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification*marker_size,
-                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )
-    elif bp_type == "saenger" and 'pairs' in dssrout.keys():
-        for item in bp_markers:
-            plt.text(item[0][0], item[0][1], item[1], color='k', fontsize=10*np.sqrt(magnification)*marker_size)
+
+    #if bp_type == "dssr" and 'pairs' in dssrout.keys():
+    #    for item in bp_markers:
+    #        if item[2] == "k":
+    #            item[2] = BP_MARKER_COLOR
+    #        plt.scatter(item[0][0], item[0][1], marker=item[1], color=item[2], s = 80*magnification*marker_size,
+    #                linewidth=1*magnification*marker_size, edgecolor=BP_MARKER_COLOR, label=item[3] )
     
-    elif (bp_type == "rnascape" or bp_type == "dssrLw") and 'pairs' in dssrout.keys():
+    if bp_type == "saenger" and 'pairs' in dssrout.keys():
         for item in bp_markers:
+            plt.text(item[0][0], item[0][1], item[1], color=BP_MARKER_COLOR, fontsize=10*np.sqrt(magnification)*marker_size)
+    
+    elif (bp_type == "dssrLw" or bp_type == "dssr") and 'pairs' in dssrout.keys():
+        for item in bp_markers:
+            if item[2] == "k":
+                item[2] = BP_MARKER_COLOR
             if(item[1] == "ss" or item[1] == ">>" or item[1] == 'oo'): # just need one shape for these
                 plt.scatter(item[0][0][0], item[0][0][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification*marker_size,
-                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )
+                    linewidth=1*magnification*marker_size, edgecolor=BP_MARKER_COLOR, label=item[3] )
             else:
                 # first shape!
                 plt.scatter(item[0][1][0], item[0][1][1], marker=getCustomMarker(0, item), color=item[2], s = 80*magnification*marker_size,
-                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )
+                    linewidth=1*magnification*marker_size, edgecolor=BP_MARKER_COLOR, label=item[3] )
                 
                 # second shape!
                 plt.scatter(item[0][2][0], item[0][2][1], marker=getCustomMarker(1, item), color=item[2], s = 80*magnification*marker_size,
-                    linewidth=1*magnification*marker_size, edgecolor='k', label=item[3] )        
+                    linewidth=1*magnification*marker_size, edgecolor=BP_MARKER_COLOR, label=item[3] )        
 
     '''
     handles, labels = plt.gca().get_legend_handles_labels()
