@@ -384,7 +384,7 @@ cif_file: cif or pdb file path
 def rnascape(prefix, cif_file, json_file, cond_bulging=True, mDSSR_PATH='', mFIG_PATH='' ):
     DSSR_PATH = mDSSR_PATH
     FIG_PATH = mFIG_PATH
-    global tree, dssrout, conditional_bulging
+    global tree, dssrout, conditional_bulging, Model
     conditional_bulging = cond_bulging
     #prefix = sys.argv[1]
     #if os.path.exists("{}/{}.png".format(FIG_PATH, prefix)):
