@@ -22,7 +22,7 @@ def untillastnumber(l):
             break
     return revl[idx:][::-1]
 
-def process_resid(nt1):
+def process_resid(nt1, model):
     spl1 = nt1.split(".")
     if len(spl1) < 6:
         if "^" in spl1[1]:
@@ -57,8 +57,20 @@ def process_resid(nt1):
         else:
             het1=' '
         chid = spl1[2]
-        
-    return spl1, (het1.strip("/"), int(res1), icode), rest1_n.strip("/"), chid
+
+    def check_len5_residue(spl1, id1, rest1, chid1):
+        try:
+            model[chid1][id1]
+        except:
+            for res in model[chid1]:
+                if id1[1] == res.get_id()[1]:
+                    spl1[3] = res.get_resname()
+                    id1 = (res.get_id()[0], id1[1], id1[2])
+                    rest1 = res.get_resname()
+        return spl1, id1, rest1, chid1
+
+    return check_len5_residue(spl1, (het1.strip("/"), int(res1), icode), rest1_n.strip("/"), chid)
+    #return spl1, (het1.strip("/"), int(res1), icode), rest1_n.strip("/"), chid
     #return spl1, (het1.strip("/"), int(res1), icode), rest1.strip("/"), chid
 
 
@@ -79,8 +91,8 @@ def get_helix_coords(dssrout, model):
             nt1 = pair['nt1']
             nt2 = pair['nt2']
             
-            spl1, id1, rest1, chid1 = process_resid(nt1)
-            spl2, id2, rest2, chid2 = process_resid(nt2)
+            spl1, id1, rest1, chid1 = process_resid(nt1, model)
+            spl2, id2, rest2, chid2 = process_resid(nt2, model)
             ntc1 = get_cetroid(model[chid1][id1])
             ntc2 = get_cetroid(model[chid2][id2])
             #    sys.exit()
