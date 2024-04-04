@@ -258,8 +258,10 @@ def getBackBoneEdges(ids, chids, dssrids, dssrout):
     magnification = max(1, min(len(ids)/40, 10))
     edges = []
     for i in range(len(dssrids) -1):
-        _,_,_, chid1 = process_resid(dssrout['nts'][i]["nt_id"])
-        _,_,_, chid_next = process_resid(dssrout['nts'][i+1]["nt_id"])
+        #_,_,_, chid1 = process_resid(dssrout['nts'][i]["nt_id"])
+        #_,_,_, chid_next = process_resid(dssrout['nts'][i+1]["nt_id"])
+        chid1 = dssrout['nts'][i]["nt_id"].split(".")[2]#process_resid(dssrout['nts'][i]["nt_id"], model)
+        chid_next = dssrout['nts'][i+1]["nt_id"].split(".")[2]#process_resid(dssrout['nts'][i+1]["nt_id"], model)
         
         try:
             if chid1 == chid_next:
@@ -350,7 +352,7 @@ def Plot(points, markers, ids, chids, dssrids, dssrout, prefix="", rotation=Fals
                 labels[i] = parent[-1].lower()
             else:
                 labels[i] = 'X'
-            log.append("Non standard residue {} assigned label {}.".format(dssrids[i], labels[i]))
+            log.append("Non standard residue {} ({}, chain {}) assigned label {}.".format(marker, ids[i], chids[i], labels[i]))
         try:
             colors.append(cold[marker])
         except:
