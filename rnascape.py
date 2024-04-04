@@ -18,6 +18,7 @@ FIG_PATH=''
 dssrout = None
 tree=None
 conditional_bulging = True
+Model = None
 def sorted_nicely( l ): 
     """ Sort the given iterable in the way that humans expect.""" 
     convert = lambda text: int(text) if text.isdigit() else text 
@@ -223,7 +224,7 @@ def get_coords(nts, helix_ids, helix_coords, dssrids, dssrout):
     starters = []
     
     for item in dssrout['nts']:
-        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])  
+        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'], Model)  
 
         if nt_id not in helix_ids or item['nt_id'] not in dssrids:
             starters.append((nt_id, rest1, chid, item['nt_id']))
@@ -232,7 +233,7 @@ def get_coords(nts, helix_ids, helix_coords, dssrids, dssrout):
 
     enders = []
     for item in dssrout['nts'][::-1]:
-        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
+        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'], Model)
         if nt_id not in helix_ids or item['nt_id'] not in dssrids:      
             enders.append((nt_id, rest1, chid, item['nt_id']))
         else:
@@ -245,7 +246,7 @@ def get_coords(nts, helix_ids, helix_coords, dssrids, dssrout):
     curr_chain = None
     
     for item in dssrout['nts']:
-        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'])
+        spl1, nt_id, rest1, chid =  process_resid(item['nt_id'], Model)
 
         if nt_id in helix_ids and item['nt_id'] in dssrids:
             if prev == False:
@@ -396,6 +397,7 @@ def rnascape(prefix, cif_file, json_file, cond_bulging=True, mDSSR_PATH='', mFIG
         parser = PDBParser()
     #model = parser.get_structure(prefix,"./vn/{}-assembly1.cif".format(prefix))[0]
     model = parser.get_structure(prefix,cif_file)[0]
+    Model = model
     
     figpath=''
 
@@ -411,7 +413,7 @@ def rnascape(prefix, cif_file, json_file, cond_bulging=True, mDSSR_PATH='', mFIG
         chids = []
         dssrids = []
         for item in dssrout['nts']:
-            spl1, nt_id, rest, chid = process_resid(item['nt_id'])
+            spl1, nt_id, rest, chid = process_resid(item['nt_id'], Model)
             ntc = get_cetroid(model[chid][nt_id])
             coords.append(ntc)
             markers.append('${}$'.format(rest))
